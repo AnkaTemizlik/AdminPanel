@@ -1,0 +1,3285 @@
+{
+  "ScreenConfig": {
+    "Names": [
+      "DocumentHeader",
+      "DocumentLine",
+      "Product",
+      "CurrentAccount",
+      "Warehouse",
+      "Currency",
+      "Collection",
+      "FastCollection",
+      "SafeDeposit",
+      "PaymentDefinition",
+      "CollectionMethod",
+      "Statement",
+      "StatementHeader",
+      "BankRemittance",
+      "Document"
+    ],
+    "Lists": {
+      "DateFormats": [
+        {
+          "localized": "LT",
+          "format": {
+            "tr": "HH:mm",
+            "en": "h:mm a"
+          },
+          "caption": "18:25"
+        },
+        {
+          "localized": "LTS",
+          "format": {
+            "tr": "HH:mm:ss",
+            "en": "h:mm:ss a"
+          },
+          "caption": "18:25:03"
+        },
+        {
+          "localized": "L",
+          "format": {
+            "tr": "dd.MM.yyyy",
+            "en": "MM/dd/YYYY"
+          },
+          "caption": "02.01.2021"
+        },
+        {
+          "localized": "l",
+          "format": {
+            "tr": "d.M.yy",
+            "en": "M/d/yy"
+          },
+          "caption": "2.1.21"
+        },
+        {
+          "localized": "LL",
+          "format": {
+            "tr": "d MMMM yyyy",
+            "en": "MMMM d yyyy"
+          },
+          "caption": "2 January 2021"
+        },
+        {
+          "localized": "ll",
+          "format": {
+            "tr": "d MMM yy",
+            "en": "MMM d yy"
+          },
+          "caption": "2 Jan 21"
+        },
+        {
+          "localized": "LLL",
+          "format": {
+            "tr": "dd.MM.yyyy HH:mm",
+            "en": "MM/dd/yyyy h:mm a"
+          },
+          "caption": "02.01.2021 18:25"
+        },
+        {
+          "localized": "lll",
+          "format": {
+            "tr": "d.M.yy H:m",
+            "en": "M/d/yy h:mm a"
+          },
+          "caption": "2.1.21 18:25"
+        },
+        {
+          "localized": "LLLL",
+          "format": {
+            "tr": "dd.MM.yyyy HH:mm:ss.SSS",
+            "en": "dddd, MMMM yyyy h:mm:ss.SSS a"
+          },
+          "caption": "02.01.2021 18:25:03.313"
+        },
+        {
+          "localized": "llll",
+          "format": {
+            "tr": "dd.M.yy H:m:ss.SS",
+            "en": "ddd, MMM yy h:mm:ss.SSS a"
+          },
+          "caption": "02.1.21 18:25:03.31"
+        }
+      ],
+      "LogLevelTypes": [
+        {
+          "value": "Info",
+          "id": 0
+        },
+        {
+          "value": "Warn",
+          "id": 1
+        },
+        {
+          "value": "Error",
+          "id": 2
+        },
+        {
+          "value": "Debug",
+          "id": 3
+        }
+      ],
+      "OperatorTypes": [
+        {
+          "value": "Equals",
+          "id": 1
+        },
+        {
+          "value": "Contains",
+          "id": 2
+        },
+        {
+          "value": "DoesNotContain",
+          "id": 3
+        },
+        {
+          "value": "StartsWith",
+          "id": 4
+        },
+        {
+          "value": "EndsWith",
+          "id": 5
+        },
+        {
+          "value": "DoesNotEqual",
+          "id": 6
+        },
+        {
+          "value": "IsLessThan",
+          "id": 7
+        },
+        {
+          "value": "IsGreaterThan",
+          "id": 8
+        },
+        {
+          "value": "IsLessThanOrEqualTo",
+          "id": 9
+        },
+        {
+          "value": "IsGreaterThanOrEqualTo",
+          "id": 10
+        },
+        {
+          "value": "IsBlank",
+          "id": 11
+        },
+        {
+          "value": "IsNotBlank",
+          "id": 12
+        },
+        {
+          "value": "IsBetween",
+          "id": 13
+        }
+      ],
+      "IO": [
+        {
+          "value": "Income",
+          "id": 1
+        },
+        {
+          "value": "Expense",
+          "id": 2
+        }
+      ],
+      "ERPModuleType": [
+        {
+          "value": "CurrentAccount",
+          "id": 0
+        },
+        {
+          "value": "Invoice",
+          "id": 1
+        },
+        {
+          "value": "Other",
+          "id": 2
+        },
+        {
+          "value": "Note",
+          "id": 3
+        },
+        {
+          "value": "Check",
+          "id": 4
+        },
+        {
+          "value": "Transfer",
+          "id": 5
+        },
+        {
+          "value": "Bank",
+          "id": 6
+        }
+      ],
+      "CurrentAccountType": [
+        {
+          "value": "Customer",
+          "id": 1
+        },
+        {
+          "value": "Seller",
+          "id": 2
+        },
+        {
+          "value": "Wholesaler",
+          "id": 3
+        },
+        {
+          "value": "Guarantor",
+          "id": 4
+        },
+        {
+          "value": "Productive",
+          "id": 5
+        },
+        {
+          "value": "Other",
+          "id": 6
+        },
+        {
+          "value": "Broker",
+          "id": 7
+        },
+        {
+          "value": "Lawyer",
+          "id": 8
+        }
+      ],
+      "ReceiptType": [
+        {
+          "value": "Customer",
+          "id": 1
+        },
+        {
+          "value": "Product",
+          "id": 2
+        },
+        {
+          "value": "Accounting",
+          "id": 3
+        },
+        {
+          "value": "Bank",
+          "id": 4
+        }
+      ],
+      "NoXProcessState": [
+        {
+          "value": "None",
+          "id": 0
+        },
+        {
+          "value": "Preparing",
+          "id": 1
+        },
+        {
+          "value": "Retrieving",
+          "id": 2
+        },
+        {
+          "value": "Mapping",
+          "id": 3
+        },
+        {
+          "value": "Saving",
+          "id": 4
+        },
+        {
+          "value": "Posting",
+          "id": 5
+        },
+        {
+          "value": "Completed",
+          "id": 10
+        }
+      ],
+      "DocumentType": [
+        {
+          "value": "SalesInvoice",
+          "id": 0
+        },
+        {
+          "value": "PurchaseInvoice",
+          "id": 1
+        },
+        {
+          "value": "SalesWaybill",
+          "id": 2
+        },
+        {
+          "value": "PurchaseWaybill",
+          "id": 3
+        },
+        {
+          "value": "DAT",
+          "id": 4
+        },
+        {
+          "value": "LocalDAT",
+          "id": 5
+        },
+        {
+          "value": "PurchaseOrder",
+          "id": 6
+        },
+        {
+          "value": "SalesOrder",
+          "id": 7
+        },
+        {
+          "value": "WarehouseInput",
+          "id": 8
+        },
+        {
+          "value": "WarehouseOutput",
+          "id": 9
+        },
+        {
+          "value": "ftSSIrs",
+          "id": 10
+        },
+        {
+          "value": "ftSAIrs",
+          "id": 11
+        },
+        {
+          "value": "PurchaseRequest",
+          "id": 12
+        },
+        {
+          "value": "PurchaseOffer",
+          "id": 13
+        },
+        {
+          "value": "SalesRequest",
+          "id": 14
+        },
+        {
+          "value": "SalesOffer",
+          "id": 15
+        },
+        {
+          "value": "ftSPSIrs",
+          "id": 16
+        },
+        {
+          "value": "ftSPAIrs",
+          "id": 17
+        },
+        {
+          "value": "ftSProforma",
+          "id": 18
+        }
+      ],
+      "DocumentModel": [
+        {
+          "value": "Empty",
+          "id": 0
+        },
+        {
+          "value": "Closed",
+          "id": 1
+        },
+        {
+          "value": "Open",
+          "id": 2
+        },
+        {
+          "value": "Sundry",
+          "id": 3
+        },
+        {
+          "value": "Return",
+          "id": 4
+        },
+        {
+          "value": "ZReturn",
+          "id": 5
+        },
+        {
+          "value": "DomesticAbroad",
+          "id": 6
+        },
+        {
+          "value": "Domestic",
+          "id": 7
+        },
+        {
+          "value": "Abroad",
+          "id": 8
+        }
+      ],
+      "CollectionType": [
+        {
+          "value": "CashCollection",
+          "id": 1
+        },
+        {
+          "value": "CreditCardCollection",
+          "id": 2
+        },
+        {
+          "value": "RemittanceCollection",
+          "id": 3
+        },
+        {
+          "value": "CashOnDelivery",
+          "id": 4
+        },
+        {
+          "value": "GiftVoucher",
+          "id": 5
+        }
+      ],
+      "CollectionModule": [
+        {
+          "value": "SafeDeposit",
+          "id": 1
+        },
+        {
+          "value": "MixedReceipt",
+          "id": 2
+        },
+        {
+          "value": "Statement",
+          "id": 3
+        },
+        {
+          "value": "BankRemittanceTransfer",
+          "id": 4
+        }
+      ],
+      "CollectionDebitType": [
+        {
+          "Id": 1,
+          "Module": 4,
+          "Name": "Bank",
+          "ReceiptType": 4
+        },
+        {
+          "Id": 2,
+          "Module": 2,
+          "Name": "Deposit & Contract",
+          "ReceiptType": 0
+        },
+        {
+          "Id": 3,
+          "Module": 1,
+          "Name": "Deposit",
+          "ReceiptType": 0
+        },
+        {
+          "Id": 4,
+          "Module": 3,
+          "Name": "Customer",
+          "ReceiptType": 1
+        },
+        {
+          "Id": 5,
+          "Module": 3,
+          "Name": "Bank",
+          "ReceiptType": 4
+        },
+        {
+          "Id": 6,
+          "Module": 3,
+          "Name": "Accounting",
+          "ReceiptType": 3
+        }
+      ],
+      "CollectionCreditType": [
+        {
+          "Id": 1,
+          "Module": 4,
+          "Name": "Customer",
+          "ReceiptType": 1
+        },
+        {
+          "Id": 2,
+          "Module": 2,
+          "Name": "Customer",
+          "ReceiptType": 1
+        },
+        {
+          "Id": 3,
+          "Module": 1,
+          "Name": "Customer",
+          "ReceiptType": 1
+        },
+        {
+          "Id": 4,
+          "Module": 1,
+          "Name": "Accounting",
+          "ReceiptType": 3
+        },
+        {
+          "Id": 5,
+          "Module": 3,
+          "Name": "Customer",
+          "ReceiptType": 1
+        },
+        {
+          "Id": 6,
+          "Module": 3,
+          "Name": "Accounting",
+          "ReceiptType": 3
+        }
+      ],
+      "CollectionTypeModule": [
+        {
+          "Id": 1,
+          "Type": 3,
+          "Module": 3,
+          "Name": "Statement"
+        },
+        {
+          "Id": 2,
+          "Type": 3,
+          "Module": 4,
+          "Name": "BankRemittanceTransfer"
+        },
+        {
+          "Id": 3,
+          "Type": 5,
+          "Module": 1,
+          "Name": "SafeDeposit"
+        },
+        {
+          "Id": 4,
+          "Type": 5,
+          "Module": 3,
+          "Name": "Statement"
+        },
+        {
+          "Id": 5,
+          "Type": 4,
+          "Module": 3,
+          "Name": "Statement"
+        },
+        {
+          "Id": 6,
+          "Type": 2,
+          "Module": 2,
+          "Name": "MixedReceipt"
+        },
+        {
+          "Id": 7,
+          "Type": 2,
+          "Module": 1,
+          "Name": "SafeDeposit"
+        },
+        {
+          "Id": 8,
+          "Type": 2,
+          "Module": 3,
+          "Name": "Statement"
+        },
+        {
+          "Id": 9,
+          "Type": 1,
+          "Module": 2,
+          "Name": "MixedReceipt"
+        },
+        {
+          "Id": 10,
+          "Type": 1,
+          "Module": 1,
+          "Name": "SafeDeposit"
+        }
+      ],
+      "BankTransferType": [
+        {
+          "value": "Customer",
+          "id": 0
+        },
+        {
+          "value": "Bank",
+          "id": 1
+        },
+        {
+          "value": "Transfer",
+          "id": 2
+        }
+      ]
+    },
+    "Screens": {
+      "Document": {
+        "title": "Documents",
+        "route": "document",
+        "keyFieldName": "Id",
+        "hideInSidebar": true,
+        "subModels": [
+          {
+            "name": "DocumentHeader",
+            "title": "Header",
+            "type": "property",
+            "showIn": "tab",
+            "icon": "home",
+            "relationFieldNames": [
+              "DocumentNumber",
+              "DocumentNumber"
+            ]
+          },
+          {
+            "name": "DocumentLine",
+            "title": "Lines",
+            "type": "list",
+            "showIn": "tab",
+            "icon": "home",
+            "relationFieldNames": [
+              "DocumentNumber",
+              "DocumentNumber"
+            ]
+          }
+        ],
+        "columns": [
+          {
+            "name": "Id",
+            "index": 0,
+            "type": "numeric",
+            "hidden": true
+          },
+          {
+            "name": "DocumentNumber",
+            "index": 1,
+            "type": "text",
+            "width": 140
+          },
+          {
+            "name": "UpdateTime",
+            "index": 2,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "SerialCode",
+            "index": 3,
+            "type": "text"
+          },
+          {
+            "name": "SerialNumber",
+            "type": "text",
+            "index": 4
+          },
+          {
+            "name": "State",
+            "autoComplete": "NoXProcessState",
+            "type": "numeric",
+            "index": 5
+          },
+          {
+            "name": "LastError",
+            "type": "textArea",
+            "index": 6
+          },
+          {
+            "name": "NumberAutoChange",
+            "index": 7,
+            "type": "check",
+            "hidden": true
+          },
+          {
+            "name": "CalculateWithSerial",
+            "index": 8,
+            "type": "check",
+            "hidden": true
+          },
+          {
+            "name": "CalculateWithConditon",
+            "index": 9,
+            "type": "check",
+            "hidden": true
+          },
+          {
+            "name": "AutomaticallyConvert",
+            "index": 10,
+            "type": "check",
+            "hidden": true
+          },
+          {
+            "name": "CreationTime",
+            "index": 11,
+            "type": "datetime",
+            "format": "LLL",
+            "hidden": true
+          },
+          {
+            "name": "HeaderId",
+            "index": 12,
+            "type": "numeric",
+            "hidden": true
+          }
+        ]
+      },
+      "DocumentHeader": {
+        "title": "Documents",
+        "route": "documents",
+        "keyFieldName": "Id",
+        "hideInSidebar": false,
+        "subMenus": [
+          {
+            "name": "SalesOrder",
+            "title": "Sales Orders",
+            "defaultFilter": [
+              "DocumentType",
+              "=",
+              7
+            ],
+            "showInSidebar": true
+          },
+          {
+            "name": "SalesInvoice",
+            "title": "Sales Invoices",
+            "defaultFilter": [
+              "DocumentType",
+              "=",
+              0
+            ],
+            "showInSidebar": true
+          },
+          {
+            "name": "SalesWaybill",
+            "title": "Sales Waybills",
+            "defaultFilter": [
+              "DocumentType",
+              "=",
+              2
+            ],
+            "showInSidebar": true
+          },
+          {
+            "name": "PurchaseInvoice",
+            "title": "Purchase Invoices",
+            "defaultFilter": [
+              "DocumentType",
+              "=",
+              1
+            ],
+            "showInSidebar": true
+          },
+          {
+            "name": "PurchaseOrder",
+            "title": "Purchase Orders",
+            "defaultFilter": [
+              "DocumentType",
+              "=",
+              6
+            ],
+            "showInSidebar": true
+          },
+          {
+            "name": "PurchaseWaybill",
+            "title": "Purchase Waybills",
+            "defaultFilter": [
+              "DocumentType",
+              "=",
+              3
+            ],
+            "showInSidebar": true
+          },
+          {
+            "name": "LocalDAT",
+            "title": "Local DAT",
+            "defaultFilter": [
+              "DocumentType",
+              "=",
+              5
+            ],
+            "showInSidebar": true
+          }
+        ],
+        "subModels": [
+          {
+            "name": "Document",
+            "title": "Document",
+            "type": "property",
+            "showIn": "tab",
+            "icon": "home",
+            "relationFieldNames": [
+              "DocumentNumber",
+              "DocumentNumber"
+            ]
+          },
+          {
+            "name": "DocumentLine",
+            "title": "Lines",
+            "type": "list",
+            "showIn": "tab",
+            "icon": "menu",
+            "relationFieldNames": [
+              "DocumentNumber",
+              "DocumentNumber"
+            ]
+          }
+        ],
+        "columns": [
+          {
+            "name": "Id",
+            "index": 0,
+            "type": "numeric"
+          },
+          {
+            "name": "DocumentNumber",
+            "index": 1,
+            "type": "text",
+            "width": 140
+          },
+          {
+            "name": "AccountCode",
+            "index": 2,
+            "type": "text"
+          },
+          {
+            "name": "Date",
+            "index": 3,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "DocumentType",
+            "index": 4,
+            "autoComplete": "DocumentType",
+            "type": "numeric"
+          },
+          {
+            "name": "Code1",
+            "index": 5,
+            "type": "text"
+          },
+          {
+            "name": "Code2",
+            "index": 6,
+            "type": "text"
+          },
+          {
+            "name": "DocumentModel",
+            "index": 7,
+            "autoComplete": "DocumentModel",
+            "type": "numeric"
+          },
+          {
+            "name": "Rounding",
+            "index": 8,
+            "type": "numeric"
+          },
+          {
+            "name": "SurplusDiscount",
+            "index": 9,
+            "type": "numeric"
+          },
+          {
+            "name": "Discount1",
+            "index": 10,
+            "type": "numeric"
+          },
+          {
+            "name": "Discount2",
+            "index": 11,
+            "type": "numeric"
+          },
+          {
+            "name": "Discount3",
+            "index": 12,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalCost1",
+            "index": 13,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalCost2",
+            "index": 14,
+            "type": "numeric"
+          },
+          {
+            "name": "SafeDepositCode",
+            "index": 15,
+            "type": "text"
+          },
+          {
+            "name": "DueDay",
+            "index": 16,
+            "type": "numeric"
+          },
+          {
+            "name": "DueDate",
+            "index": 17,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "IntegrationDate",
+            "index": 18,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "VATIncluded",
+            "index": 19,
+            "type": "check"
+          },
+          {
+            "name": "DeliveryDate",
+            "index": 20,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "DifferentDeliveryCode",
+            "index": 21,
+            "type": "text"
+          },
+          {
+            "name": "SalesmanCode",
+            "index": 22,
+            "type": "text"
+          },
+          {
+            "name": "CurrencyType",
+            "index": 23,
+            "type": "numeric"
+          },
+          {
+            "name": "ProjectCode",
+            "index": 24,
+            "type": "text"
+          },
+          {
+            "name": "ConditionCode",
+            "index": 25,
+            "type": "text"
+          },
+          {
+            "name": "PriceDate",
+            "index": 26,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "ConditionDate",
+            "index": 27,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "ExportType",
+            "index": 28,
+            "type": "numeric"
+          },
+          {
+            "name": "ExportSecurityDate",
+            "index": 29,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "ExportActualDate",
+            "index": 30,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "ExportReferanceNumber",
+            "index": 31,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation1",
+            "index": 32,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation2",
+            "index": 33,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation3",
+            "index": 34,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation4",
+            "index": 35,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation5",
+            "index": 36,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation6",
+            "index": 37,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation7",
+            "index": 38,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation8",
+            "index": 39,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation9",
+            "index": 40,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation10",
+            "index": 41,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation11",
+            "index": 42,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation12",
+            "index": 43,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation13",
+            "index": 44,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation14",
+            "index": 45,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation15",
+            "index": 46,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalExplanation16",
+            "index": 47,
+            "type": "text"
+          },
+          {
+            "name": "ActualDate",
+            "index": 48,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "PaymentCode",
+            "index": 49,
+            "type": "text"
+          },
+          {
+            "name": "ConditionDueDay",
+            "index": 50,
+            "type": "numeric"
+          },
+          {
+            "name": "GIBDocumentNumber",
+            "index": 51,
+            "type": "text",
+            "width": 140
+          },
+          {
+            "name": "EInvoiceSpecialCode",
+            "index": 52,
+            "type": "numeric"
+          },
+          {
+            "name": "OKCSerialNumber",
+            "index": 53,
+            "type": "text"
+          },
+          {
+            "name": "ZReportNumber",
+            "index": 54,
+            "type": "text"
+          },
+          {
+            "name": "OKCDate",
+            "index": 55,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "OKCVoucherNumber",
+            "index": 56,
+            "type": "text"
+          },
+          {
+            "name": "OKCVoucherType",
+            "index": 57,
+            "type": "text"
+          },
+          {
+            "name": "SpecialConsumptionTax",
+            "index": 58,
+            "type": "numeric"
+          },
+          {
+            "name": "ConnectionNo",
+            "index": 59,
+            "type": "numeric"
+          },
+          {
+            "name": "Description",
+            "index": 60,
+            "type": "textArea"
+          },
+          {
+            "name": "GeneralTotal",
+            "index": 61,
+            "type": "numeric"
+          },
+          {
+            "name": "DiscountIsRatio",
+            "index": 62,
+            "type": "check"
+          },
+          {
+            "name": "CreationTime",
+            "index": 63,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "index": 64,
+            "type": "datetime",
+            "format": "LLL"
+          }
+        ]
+      },
+      "DocumentLine": {
+        "title": "DocumentLine Screen",
+        "route": "document-line",
+        "keyFieldName": "Id",
+        "hideInSidebar": true,
+        "columns": [
+          {
+            "name": "DocumentNumber",
+            "index": 0,
+            "type": "text",
+            "width": 140
+          },
+          {
+            "name": "ProductCode",
+            "index": 1,
+            "type": "text"
+          },
+          {
+            "name": "LineNumber",
+            "index": 2,
+            "type": "numeric"
+          },
+          {
+            "name": "Quantity",
+            "index": 3,
+            "type": "numeric"
+          },
+          {
+            "name": "QuantityTwo",
+            "index": 4,
+            "type": "numeric"
+          },
+          {
+            "name": "UnitConvert",
+            "index": 5,
+            "type": "numeric"
+          },
+          {
+            "name": "NetPrice",
+            "index": 6,
+            "type": "numeric"
+          },
+          {
+            "name": "GrossPrice",
+            "index": 7,
+            "type": "numeric"
+          },
+          {
+            "name": "VATRate",
+            "index": 8,
+            "type": "numeric"
+          },
+          {
+            "name": "IsRatioDiscount1",
+            "index": 9,
+            "type": "check"
+          },
+          {
+            "name": "Discount1",
+            "index": 10,
+            "type": "numeric"
+          },
+          {
+            "name": "Discount2",
+            "index": 11,
+            "type": "numeric"
+          },
+          {
+            "name": "Discount3",
+            "index": 12,
+            "type": "numeric"
+          },
+          {
+            "name": "Discount4",
+            "index": 13,
+            "type": "numeric"
+          },
+          {
+            "name": "Discount5",
+            "index": 14,
+            "type": "numeric"
+          },
+          {
+            "name": "Discount6",
+            "index": 15,
+            "type": "numeric"
+          },
+          {
+            "name": "SurplusDiscount",
+            "index": 16,
+            "type": "numeric"
+          },
+          {
+            "name": "CurrencyType",
+            "index": 17,
+            "type": "numeric"
+          },
+          {
+            "name": "CurrencyPrice",
+            "index": 18,
+            "type": "numeric"
+          },
+          {
+            "name": "DueDay",
+            "index": 19,
+            "type": "numeric"
+          },
+          {
+            "name": "Code1",
+            "index": 20,
+            "type": "text"
+          },
+          {
+            "name": "Code2",
+            "index": 21,
+            "type": "text"
+          },
+          {
+            "name": "OrderNumber",
+            "index": 22,
+            "type": "text"
+          },
+          {
+            "name": "OrderLineNumber",
+            "index": 23,
+            "type": "numeric"
+          },
+          {
+            "name": "Salesman",
+            "index": 24,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalField1",
+            "index": 25,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalField2",
+            "index": 26,
+            "type": "text"
+          },
+          {
+            "name": "SpecialConsumptionTax",
+            "index": 27,
+            "type": "numeric"
+          },
+          {
+            "name": "WayBillNumber",
+            "index": 28,
+            "type": "text"
+          },
+          {
+            "name": "WayBillLineNumber",
+            "index": 29,
+            "type": "numeric"
+          },
+          {
+            "name": "ConditionCode",
+            "index": 30,
+            "type": "text"
+          },
+          {
+            "name": "DeliveryDate",
+            "index": 31,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "AccountingCode",
+            "index": 32,
+            "type": "text"
+          },
+          {
+            "name": "ReferanceCode",
+            "index": 33,
+            "type": "text"
+          },
+          {
+            "name": "ProjectCode",
+            "index": 34,
+            "type": "text"
+          },
+          {
+            "name": "DifferentDeliveryCode",
+            "index": 35,
+            "type": "text"
+          },
+          {
+            "name": "WarehouseCode",
+            "index": 36,
+            "type": "numeric"
+          },
+          {
+            "name": "LineExplanation",
+            "index": 37,
+            "type": "textArea"
+          },
+          {
+            "name": "ActualDate",
+            "index": 38,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "QuantityUnit",
+            "index": 39,
+            "type": "numeric"
+          },
+          {
+            "name": "PriceUnit",
+            "index": 40,
+            "type": "numeric"
+          },
+          {
+            "name": "Id",
+            "index": 41,
+            "type": "numeric",
+            "hidden": true
+          },
+          {
+            "name": "CreationTime",
+            "index": 42,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "index": 43,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "TargetWarehouseCode",
+            "type": "numeric",
+            "index": 44
+          }
+        ]
+      },
+      "SafeDeposit": {
+        "title": "Safe Deposits",
+        "route": "safe-deposit",
+        "keyFieldName": "Id",
+        "hideInSidebar": false,
+        "columns": [
+          {
+            "name": "SafeDepositCode",
+            "index": 0,
+            "type": "text"
+          },
+          {
+            "name": "SafeDepositDate",
+            "index": 1,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "VoucherNumber",
+            "index": 2,
+            "type": "text"
+          },
+          {
+            "name": "Description",
+            "index": 4,
+            "type": "textArea"
+          },
+          {
+            "name": "Amount",
+            "index": 6,
+            "type": "numeric"
+          },
+          {
+            "name": "CurrencyType",
+            "index": 9,
+            "type": "numeric"
+          },
+          {
+            "name": "CurrencyAmount",
+            "index": 10,
+            "type": "numeric"
+          },
+          {
+            "name": "ExchangeRate",
+            "index": 11,
+            "type": "numeric"
+          },
+          {
+            "name": "SalesmanCode",
+            "index": 12,
+            "type": "text"
+          },
+          {
+            "name": "PaymentType",
+            "index": 13,
+            "type": "numeric"
+          },
+          {
+            "name": "CreditCardNumber",
+            "index": 14,
+            "type": "text"
+          },
+          {
+            "name": "VATRate",
+            "index": 15,
+            "type": "numeric"
+          },
+          {
+            "name": "VATIncluded",
+            "index": 16,
+            "type": "check"
+          },
+          {
+            "name": "ProjectCode",
+            "index": 17,
+            "type": "text"
+          },
+          {
+            "name": "BFormAccountCode",
+            "index": 19,
+            "type": "text"
+          },
+          {
+            "name": "Time",
+            "index": 21,
+            "type": "text"
+          },
+          {
+            "name": "ReferanceCode",
+            "index": 22,
+            "type": "text"
+          },
+          {
+            "name": "SafeDepositId",
+            "index": 23,
+            "type": "numeric"
+          },
+          {
+            "name": "Id",
+            "index": 24,
+            "type": "numeric",
+            "hidden": true
+          },
+          {
+            "name": "CreationTime",
+            "index": 25,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "index": 26,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "BranchCode",
+            "type": "numeric"
+          },
+          {
+            "name": "IncomeExpense",
+            "autoComplete": "IO",
+            "type": "numeric"
+          },
+          {
+            "name": "ERPModule",
+            "autoComplete": "ERPModuleType",
+            "type": "numeric"
+          },
+          {
+            "name": "AccountCode",
+            "type": "text"
+          }
+        ]
+      },
+      "Product": {
+        "title": "Products",
+        "route": "product",
+        "keyFieldName": "Id",
+        "hideInSidebar": false,
+        "columns": [
+          {
+            "name": "Id",
+            "index": 0,
+            "type": "numeric",
+            "width": "80",
+            "hidden": true
+          },
+          {
+            "name": "ProductCode",
+            "index": 1,
+            "type": "text",
+            "width": "80"
+          },
+          {
+            "name": "CreationTime",
+            "index": 2,
+            "type": "datetime",
+            "format": "LLL",
+            "hidden": true
+          },
+          {
+            "name": "UpdateTime",
+            "index": 3,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "ProductName",
+            "index": 4,
+            "type": "text",
+            "width": "200"
+          },
+          {
+            "name": "BranchCode",
+            "index": 5,
+            "type": "numeric"
+          },
+          {
+            "name": "WarehouseCode",
+            "index": 6,
+            "type": "numeric"
+          },
+          {
+            "name": "SupplierCode",
+            "index": 7,
+            "type": "text"
+          },
+          {
+            "name": "SalesCurrencyType",
+            "index": 8,
+            "type": "numeric"
+          },
+          {
+            "name": "PurchaseCurrencyPrice",
+            "index": 9,
+            "type": "numeric"
+          },
+          {
+            "name": "SalesCurrencyPrice",
+            "index": 10,
+            "type": "numeric"
+          },
+          {
+            "name": "AccountingDetailCode",
+            "index": 11,
+            "type": "numeric"
+          },
+          {
+            "name": "SalesVATRate",
+            "index": 12,
+            "type": "numeric"
+          },
+          {
+            "name": "PurchaseVATRate",
+            "index": 13,
+            "type": "numeric"
+          },
+          {
+            "name": "PurchaseCurrencyType",
+            "index": 14,
+            "type": "numeric"
+          },
+          {
+            "name": "ExportSecurityCode",
+            "index": 15,
+            "type": "text"
+          },
+          {
+            "name": "GroupCode",
+            "index": 16,
+            "type": "text"
+          },
+          {
+            "name": "Width",
+            "index": 17,
+            "type": "numeric"
+          },
+          {
+            "name": "Unit1",
+            "index": 18,
+            "type": "text"
+          },
+          {
+            "name": "Height",
+            "index": 19,
+            "type": "numeric"
+          },
+          {
+            "name": "Diameter",
+            "index": 20,
+            "type": "numeric"
+          },
+          {
+            "name": "Type",
+            "index": 21,
+            "type": "text"
+          },
+          {
+            "name": "CompanyCode",
+            "index": 22,
+            "type": "numeric"
+          },
+          {
+            "name": "EnglishName",
+            "index": 23,
+            "type": "text"
+          },
+          {
+            "name": "Code1",
+            "index": 24,
+            "type": "text"
+          },
+          {
+            "name": "Code2",
+            "index": 25,
+            "type": "text"
+          },
+          {
+            "name": "Code3",
+            "index": 26,
+            "type": "text"
+          },
+          {
+            "name": "Code4",
+            "index": 27,
+            "type": "text"
+          },
+          {
+            "name": "Code5",
+            "index": 28,
+            "type": "text"
+          },
+          {
+            "name": "Divided",
+            "index": 29,
+            "type": "numeric"
+          },
+          {
+            "name": "Dividing",
+            "index": 30,
+            "type": "numeric"
+          },
+          {
+            "name": "Unit2",
+            "index": 31,
+            "type": "text"
+          },
+          {
+            "name": "Unit3",
+            "index": 32,
+            "type": "text"
+          },
+          {
+            "name": "Divided2",
+            "index": 33,
+            "type": "numeric"
+          },
+          {
+            "name": "Dividing2",
+            "index": 34,
+            "type": "numeric"
+          },
+          {
+            "name": "SalesPrice1",
+            "index": 35,
+            "type": "numeric"
+          },
+          {
+            "name": "SalesPrice2",
+            "index": 36,
+            "type": "numeric"
+          },
+          {
+            "name": "SalesPrice3",
+            "index": 37,
+            "type": "numeric"
+          },
+          {
+            "name": "SalesPrice4",
+            "index": 38,
+            "type": "numeric"
+          },
+          {
+            "name": "Barcode1",
+            "index": 39,
+            "type": "textArea"
+          },
+          {
+            "name": "Barcode2",
+            "index": 40,
+            "type": "textArea"
+          },
+          {
+            "name": "Barcode3",
+            "index": 41,
+            "type": "textArea"
+          },
+          {
+            "name": "PurchasePrice1",
+            "index": 42,
+            "type": "numeric"
+          },
+          {
+            "name": "PurchasePrice2",
+            "index": 43,
+            "type": "numeric"
+          },
+          {
+            "name": "PurchasePrice3",
+            "index": 44,
+            "type": "numeric"
+          },
+          {
+            "name": "PurchasePrice4",
+            "index": 45,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalField1",
+            "index": 46,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField2",
+            "index": 47,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField3",
+            "index": 48,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField4",
+            "index": 49,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField5",
+            "index": 50,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField6",
+            "index": 51,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField7",
+            "index": 52,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField8",
+            "index": 53,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalNumberField1",
+            "index": 54,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField2",
+            "index": 55,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField3",
+            "index": 56,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField4",
+            "index": 57,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField5",
+            "index": 58,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField6",
+            "index": 59,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField7",
+            "index": 60,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField8",
+            "index": 61,
+            "type": "numeric"
+          },
+          {
+            "name": "TrackingNumberId",
+            "index": 62,
+            "type": "numeric"
+          }
+        ]
+      },
+      "CurrentAccount": {
+        "title": "Current Accounts",
+        "route": "current-account",
+        "keyFieldName": "Id",
+        "hideInSidebar": false,
+        "columns": [
+          {
+            "name": "Id",
+            "index": 0,
+            "type": "numeric",
+            "hidden": false,
+            "width": "80"
+          },
+          {
+            "name": "CurrentAccountCode",
+            "index": 1,
+            "type": "text",
+            "width": "100"
+          },
+          {
+            "name": "CurrentAccountName",
+            "index": 2,
+            "type": "text",
+            "width": "200"
+          },
+          {
+            "name": "AccountingCode",
+            "index": 3,
+            "type": "text"
+          },
+          {
+            "name": "Telephone",
+            "index": 4,
+            "type": "text"
+          },
+          {
+            "name": "TaxAdministration",
+            "index": 5,
+            "type": "text"
+          },
+          {
+            "name": "TaxNumber",
+            "index": 6,
+            "type": "text"
+          },
+          {
+            "name": "TCIdentificationNumber",
+            "index": 7,
+            "type": "text"
+          },
+          {
+            "name": "Email",
+            "index": 8,
+            "type": "text"
+          },
+          {
+            "name": "City",
+            "index": 9,
+            "type": "text"
+          },
+          {
+            "name": "TypeNetsis",
+            "index": 10,
+            "type": "text"
+          },
+          {
+            "name": "Address",
+            "index": 11,
+            "type": "textArea"
+          },
+          {
+            "name": "Town",
+            "index": 12,
+            "type": "text"
+          },
+          {
+            "name": "Fax",
+            "index": 13,
+            "type": "text"
+          },
+          {
+            "name": "PostalCode",
+            "index": 14,
+            "type": "text"
+          },
+          {
+            "name": "GroupCode",
+            "index": 15,
+            "type": "text"
+          },
+          {
+            "name": "ConditionCode",
+            "index": 16,
+            "type": "text"
+          },
+          {
+            "name": "DueDay",
+            "index": 17,
+            "type": "numeric"
+          },
+          {
+            "name": "Country",
+            "index": 18,
+            "type": "text"
+          },
+          {
+            "name": "CurrencyType",
+            "index": 19,
+            "type": "numeric"
+          },
+          {
+            "name": "IsCurrencyNetsis",
+            "index": 20,
+            "type": "text"
+          },
+          {
+            "name": "IsCurrency",
+            "index": 21,
+            "type": "check"
+          },
+          {
+            "name": "SalesmanCode",
+            "index": 22,
+            "type": "text"
+          },
+          {
+            "name": "WebURL",
+            "index": 23,
+            "type": "text"
+          },
+          {
+            "name": "PriceGroup",
+            "index": 24,
+            "type": "text"
+          },
+          {
+            "name": "IsNotAging",
+            "index": 25,
+            "type": "check"
+          },
+          {
+            "name": "IsNotAgingNetsis",
+            "index": 26,
+            "type": "text"
+          },
+          {
+            "name": "CreationTime",
+            "index": 27,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "index": 28,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "Description1",
+            "index": 29,
+            "type": "textArea"
+          },
+          {
+            "name": "Description2",
+            "index": 30,
+            "type": "textArea"
+          },
+          {
+            "name": "Description3",
+            "index": 31,
+            "type": "textArea"
+          },
+          {
+            "name": "Code1",
+            "index": 32,
+            "type": "text"
+          },
+          {
+            "name": "Code2",
+            "index": 33,
+            "type": "text"
+          },
+          {
+            "name": "Code3",
+            "index": 34,
+            "type": "text"
+          },
+          {
+            "name": "Code4",
+            "index": 35,
+            "type": "text"
+          },
+          {
+            "name": "Code5",
+            "index": 36,
+            "type": "text"
+          },
+          {
+            "name": "AdditionalNumberField1",
+            "index": 37,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField2",
+            "index": 38,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField3",
+            "index": 39,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField4",
+            "index": 40,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField5",
+            "index": 41,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField6",
+            "index": 42,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField7",
+            "index": 43,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalNumberField8",
+            "index": 44,
+            "type": "numeric"
+          },
+          {
+            "name": "AdditionalField1",
+            "index": 45,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField2",
+            "index": 46,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField3",
+            "index": 47,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField4",
+            "index": 48,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField5",
+            "index": 49,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField6",
+            "index": 50,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField7",
+            "index": 51,
+            "type": "textArea"
+          },
+          {
+            "name": "AdditionalField8",
+            "index": 52,
+            "type": "textArea"
+          },
+          {
+            "name": "TrackingNumberId",
+            "index": 53,
+            "type": "numeric"
+          },
+          {
+            "name": "CurrentAccountType",
+            "autoComplete": "CurrentAccountType",
+            "type": "numeric"
+          }
+        ]
+      },
+      "Warehouse": {
+        "title": "Warehouse Codes",
+        "route": "warehouse",
+        "keyFieldName": "Id",
+        "icon": "local_convenience_store",
+        "hideInSidebar": false,
+        "isDefinitionModel": true,
+        "columns": [
+          {
+            "name": "Id",
+            "index": 0,
+            "type": "numeric",
+            "hidden": false,
+            "width": "80"
+          },
+          {
+            "name": "Code",
+            "index": 1,
+            "type": "numeric",
+            "width": "80"
+          },
+          {
+            "name": "Name",
+            "index": 2,
+            "type": "text",
+            "width": "200"
+          },
+          {
+            "name": "BranchCode",
+            "index": 3,
+            "type": "numeric",
+            "width": "80"
+          },
+          {
+            "name": "AccountCode",
+            "index": 4,
+            "type": "text"
+          },
+          {
+            "name": "NegativeBalance",
+            "index": 5,
+            "type": "text",
+            "width": "80"
+          },
+          {
+            "name": "PriceType",
+            "index": 6,
+            "type": "text",
+            "width": "80"
+          },
+          {
+            "name": "Locked",
+            "index": 7,
+            "type": "text",
+            "width": "80"
+          },
+          {
+            "name": "C_Spare2",
+            "index": 8,
+            "type": "text"
+          },
+          {
+            "name": "SafeDeposit",
+            "index": 9,
+            "type": "text"
+          },
+          {
+            "name": "S_Spare1",
+            "index": 10,
+            "type": "text"
+          },
+          {
+            "name": "S_Spare2",
+            "index": 11,
+            "type": "text"
+          },
+          {
+            "name": "I_Spare1",
+            "index": 12,
+            "type": "numeric"
+          },
+          {
+            "name": "I_Spare2",
+            "index": 13,
+            "type": "numeric"
+          },
+          {
+            "name": "C_Spare1",
+            "index": 14,
+            "type": "text"
+          },
+          {
+            "name": "D_Spare1",
+            "index": 15,
+            "type": "datetime",
+            "format": "LLLL"
+          },
+          {
+            "name": "CreationTime",
+            "index": 16,
+            "type": "date",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "index": 17,
+            "type": "date",
+            "format": "LLL"
+          }
+        ]
+      },
+      "Currency": {
+        "title": "Currency Codes",
+        "route": "currency",
+        "keyFieldName": "Id",
+        "icon": "local_atm",
+        "hideInSidebar": false,
+        "isDefinitionModel": true,
+        "columns": [
+          {
+            "name": "Id",
+            "index": 0,
+            "type": "numeric",
+            "hidden": false
+          },
+          {
+            "name": "Sequence",
+            "index": 1,
+            "type": "numeric"
+          },
+          {
+            "name": "Name",
+            "index": 2,
+            "type": "text",
+            "width": 120
+          },
+          {
+            "name": "ERPSequence",
+            "index": 3,
+            "type": "numeric"
+          },
+          {
+            "name": "UpdateTime",
+            "index": 4,
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "CreationTime",
+            "index": 5,
+            "type": "date",
+            "format": "LLL"
+          }
+        ]
+      },
+      "Collection": {
+        "title": "MixedReceipt Lines",
+        "route": "collection",
+        "keyFieldName": "Id",
+        "hideInSidebar": true,
+        "columns": [
+          {
+            "name": "ContractCode",
+            "type": "text"
+          },
+          {
+            "name": "FastCollectionId",
+            "type": "numeric",
+            "hidden": true
+          },
+          {
+            "name": "InstallmentCount",
+            "type": "numeric"
+          },
+          {
+            "name": "CurrencyAmount",
+            "type": "numeric"
+          },
+          {
+            "name": "ExchangeRate",
+            "type": "numeric"
+          },
+          {
+            "name": "Amount",
+            "type": "numeric"
+          },
+          {
+            "name": "CardNumber",
+            "type": "text"
+          },
+          {
+            "name": "SalesmanCode",
+            "type": "text"
+          },
+          {
+            "name": "ProjectCode",
+            "type": "text"
+          },
+          {
+            "name": "ReferanceCode",
+            "type": "text"
+          },
+          {
+            "name": "IntegratedFKey",
+            "type": "text"
+          },
+          {
+            "name": "Description",
+            "type": "text"
+          },
+          {
+            "name": "SafeDepositCode",
+            "type": "text"
+          },
+          {
+            "name": "Id",
+            "type": "numeric"
+          },
+          {
+            "name": "CreationTime",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "type": "datetime",
+            "format": "LLL"
+          }
+        ]
+      },
+      "FastCollection": {
+        "title": "Mixed Receipts",
+        "route": "fast-collection",
+        "keyFieldName": "Id",
+        "hideInSidebar": false,
+        "subModels": [
+          {
+            "name": "Collection",
+            "title": "MixedReceipts",
+            "type": "list",
+            "showIn": "tab",
+            "icon": "menu",
+            "relationFieldNames": [
+              "Id",
+              "FastCollectionId"
+            ]
+          }
+        ],
+        "columns": [
+          {
+            "name": "SafeDepositCode",
+            "type": "text"
+          },
+          {
+            "name": "AccountCode",
+            "type": "text"
+          },
+          {
+            "name": "TransactionDate",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "DocumentNumber",
+            "type": "text",
+            "width": 140
+          },
+          {
+            "name": "CurrencyType",
+            "type": "numeric"
+          },
+          {
+            "name": "Id",
+            "type": "numeric"
+          },
+          {
+            "name": "CreationTime",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "type": "datetime",
+            "format": "LLL"
+          }
+        ]
+      },
+      "PaymentDefinition": {
+        "title": "Payment Definitions",
+        "route": "payment-definition",
+        "keyFieldName": "Id",
+        "icon": "payment",
+        "hideInSidebar": false,
+        "isDefinitionModel": true,
+        "editing": {
+          "enabled": true,
+          "mode": "popup",
+          "allowUpdating": true,
+          "allowAdding": true,
+          "allowDeleting": true,
+          "roles": [ "Admin", "Writer" ]
+        },
+        "columns": [
+          {
+            "name": "Id",
+            "type": "numeric",
+            "hidden": true
+          },
+          {
+            "name": "Description",
+            "type": "text",
+            "colSpan": 2,
+            "allowEditing": true,
+            "required": true,
+            "width": 240
+          },
+          {
+            "name": "CollectionType",
+            "autoComplete": "CollectionType",
+            "type": "numeric",
+            "width": 160,
+            "allowEditing": true,
+            "required": true
+          },
+          {
+            "name": "CollectionTypeModule",
+            "type": "numeric",
+            "width": 140,
+            "allowEditing": true,
+            "allowFiltering": false,
+            "required": true,
+            "data": {
+              "type": "simpleArray",
+              "name": "CollectionTypeModule",
+              "valueExpr": "Module",
+              "displayExpr": "Name",
+              "filter": [
+                "Type",
+                "=",
+                "CollectionType"
+              ]
+            }
+          },
+          {
+            "name": "DebitType",
+            "type": "numeric",
+            "width": 140,
+            "allowEditing": true,
+            "allowFiltering": false,
+            "required": true,
+            "data": {
+              "type": "simpleArray",
+              "name": "CollectionDebitType",
+              "valueExpr": "Id",
+              "displayExpr": "Name",
+              "filter": [
+                "Module",
+                "=",
+                "CollectionTypeModule"
+              ]
+            }
+          },
+          {
+            "name": "CreditType",
+            "type": "numeric",
+            "width": 120,
+            "allowEditing": true,
+            "allowFiltering": false,
+            "required": true,
+            "data": {
+              "type": "simpleArray",
+              "name": "CollectionCreditType",
+              "valueExpr": "Id",
+              "displayExpr": "Name",
+              "filter": [
+                "Module",
+                "=",
+                "CollectionTypeModule"
+              ]
+            }
+          },
+          {
+            "name": "CreationTime",
+            "type": "datetime",
+            "format": "LLL",
+            "hidden": true
+          },
+          {
+            "name": "UpdateTime",
+            "type": "datetime",
+            "format": "LLL",
+            "hidden": true
+          }
+        ]
+      },
+      "CollectionMethod": {
+        "title": "Collection Methods",
+        "route": "collection-method",
+        "keyFieldName": "Id",
+        "hideInSidebar": false,
+        "isDefinitionModel": true,
+        "icon": "payments",
+        "editing": {
+          "enabled": true,
+          "mode": "popup",
+          "allowUpdating": true,
+          "allowAdding": true,
+          "allowDeleting": true,
+          "roles": [ "Admin", "Writer" ]
+        },
+        "columns": [
+          {
+            "name": "Id",
+            "type": "numeric",
+            "width": 60
+          },
+          {
+            "name": "Description",
+            "type": "text",
+            "width": 200,
+            "allowEditing": true,
+            "required": true,
+            "colSpan": 2
+          },
+          {
+            "name": "PaymentDefinitionId",
+            "type": "numeric",
+            "width": 200,
+            "allowEditing": true,
+            "required": true,
+            "colSpan": 2,
+            "data": {
+              "type": "customStore",
+              "name": "PaymentDefinition",
+              "url": "/api/entity?name=PaymentDefinition",
+              "valueExpr": "Id",
+              "displayExpr": "Description"
+            },
+            "editWith": {
+              "type": "table",
+              "key": "Id",
+              "valueExpr": "Id",
+              "displayExpr": "Description",
+              "columns": [
+                {
+                  "name": "Id",
+                  "type": "numeric",
+                  "width": 50
+                },
+                {
+                  "name": "Description",
+                  "width": 200
+                },
+                {
+                  "name": "CollectionType",
+                  "autoComplete": "CollectionType",
+                  "type": "numeric",
+                  "width": 160
+                },
+                {
+                  "name": "CollectionTypeModule",
+                  "type": "numeric",
+                  "width": 140,
+                  "data": {
+                    "type": "simpleArray",
+                    "name": "CollectionTypeModule",
+                    "valueExpr": "Module",
+                    "displayExpr": "Name"
+                  }
+                },
+                {
+                  "name": "DebitType",
+                  "type": "numeric",
+                  "width": 140,
+                  "data": {
+                    "type": "simpleArray",
+                    "name": "CollectionDebitType",
+                    "valueExpr": "Id",
+                    "displayExpr": "Name"
+                  }
+                },
+                {
+                  "name": "CreditType",
+                  "type": "numeric",
+                  "width": 120,
+                  "data": {
+                    "type": "simpleArray",
+                    "name": "CollectionCreditType",
+                    "valueExpr": "Id",
+                    "displayExpr": "Name"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "CollectionCode",
+            "type": "text",
+            "allowEditing": true,
+            "required": true
+          },
+          {
+            "name": "ContractCode",
+            "type": "text",
+            "allowEditing": true,
+            "required": true
+          },
+          {
+            "name": "AdditionalInfo",
+            "type": "text",
+            "allowEditing": true
+          },
+          {
+            "name": "CreationTime",
+            "type": "datetime",
+            "format": "LLL",
+            "hidden": true
+          },
+          {
+            "name": "UpdateTime",
+            "type": "datetime",
+            "format": "LLL",
+            "hidden": true
+          }
+        ]
+      },
+      "Statement": {
+        "title": "Statements",
+        "route": "statement",
+        "keyFieldName": "Id",
+        "hideInSidebar": false,
+        "subModels": [
+          {
+            "name": "StatementHeader",
+            "title": "Header",
+            "type": "property",
+            "showIn": "tab",
+            "relationFieldNames": [
+              "Id",
+              "StatementHeaderId"
+            ]
+          }
+        ],
+        "columns": [
+          {
+            "name": "StatementHeaderId",
+            "type": "numeric",
+            "hidden": true
+          },
+          {
+            "name": "SerialNumber",
+            "type": "text"
+          },
+          {
+            "name": "StatementNumber",
+            "type": "numeric"
+          },
+          {
+            "name": "VoucherNumber",
+            "type": "text"
+          },
+          {
+            "name": "StatementDate",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "DueDate",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "DueDay",
+            "type": "numeric"
+          },
+          {
+            "name": "ERPModule",
+            "type": "text"
+          },
+          {
+            "name": "DebitOrCredit",
+            "type": "text"
+          },
+          {
+            "name": "Code",
+            "type": "text"
+          },
+          {
+            "name": "ReferanceCode",
+            "type": "text"
+          },
+          {
+            "name": "SalesmanCode",
+            "type": "text"
+          },
+          {
+            "name": "Description1",
+            "type": "text"
+          },
+          {
+            "name": "Description2",
+            "type": "text"
+          },
+          {
+            "name": "Description3",
+            "type": "text"
+          },
+          {
+            "name": "Description4",
+            "type": "text"
+          },
+          {
+            "name": "Amount",
+            "type": "numeric"
+          },
+          {
+            "name": "VATIncluded",
+            "type": "check"
+          },
+          {
+            "name": "Quantity",
+            "type": "numeric"
+          },
+          {
+            "name": "IsCurrency",
+            "type": "check"
+          },
+          {
+            "name": "CurrencyType",
+            "type": "numeric"
+          },
+          {
+            "name": "CurrencyAmount",
+            "type": "numeric"
+          },
+          {
+            "name": "ProjectCode",
+            "type": "text"
+          },
+          {
+            "name": "ExportReferanceNumber",
+            "type": "text"
+          },
+          {
+            "name": "BFormAccountCode",
+            "type": "text"
+          },
+          {
+            "name": "WarehouseCode",
+            "type": "numeric"
+          },
+          {
+            "name": "DocumentType",
+            "autoComplete": "ReceiptType",
+            "type": "numeric"
+          },
+          {
+            "name": "PaymentType",
+            "type": "text"
+          },
+          {
+            "name": "Id",
+            "type": "numeric"
+          },
+          {
+            "name": "CreationTime",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "type": "datetime",
+            "format": "LLL"
+          }
+        ]
+      },
+      "BankRemittance": {
+        "title": "Bank Remittance Transfers",
+        "route": "bank-remittance",
+        "keyFieldName": "Id",
+        "hideInSidebar": false,
+        "columns": [
+          {
+            "name": "TransferType",
+            "autoComplete": "BankTransferType",
+            "type": "numeric"
+          },
+          {
+            "name": "CollectionCode",
+            "type": "text"
+          },
+          {
+            "name": "CurrentAccountCode",
+            "type": "text"
+          },
+          {
+            "name": "Amount",
+            "type": "numeric"
+          },
+          {
+            "name": "ReferanceCode",
+            "type": "text"
+          },
+          {
+            "name": "SalesmanCode",
+            "type": "text"
+          },
+          {
+            "name": "ProjectCode",
+            "type": "text"
+          },
+          {
+            "name": "Id",
+            "type": "numeric"
+          },
+          {
+            "name": "CreationTime",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "CurrencyType",
+            "type": "numeric"
+          },
+          {
+            "name": "CurrencyAmount",
+            "type": "numeric"
+          },
+          {
+            "name": "Description",
+            "type": "text"
+          },
+          {
+            "name": "CollectionCode",
+            "type": "text"
+          },
+          {
+            "name": "CurrentAccountCode",
+            "type": "text"
+          },
+          {
+            "name": "VoucherNumber",
+            "type": "text"
+          },
+          {
+            "name": "BankRemittanceDate",
+            "type": "datetime",
+            "format": "LLL"
+          }
+        ]
+      },
+      "StatementHeader": {
+        "title": "StatementHeader Screen",
+        "route": "statement-header",
+        "keyFieldName": "Id",
+        "hideInSidebar": true,
+        "columns": [
+          {
+            "name": "SerialNumber",
+            "type": "text",
+            "width": 240
+          },
+          {
+            "name": "Id",
+            "type": "numeric",
+            "hidden": true
+          },
+          {
+            "name": "CreationTime",
+            "type": "datetime",
+            "format": "LLL"
+          },
+          {
+            "name": "UpdateTime",
+            "type": "datetime",
+            "format": "LLL"
+          }
+        ]
+      }
+    },
+    "Cards": {
+      "Names": [
+        "LogSummary"
+      ],
+      "LogSummary": {
+        "title": "Log Summary",
+        "argumentField": "Day",
+        "noDataText": "No Data",
+        "series": [
+          {
+            "type": "bar",
+            "title": "Errors",
+            "valueField": "Count"
+          }
+        ]
+      }
+    },
+    "Queries": {
+      "Document": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_Document"
+          ]
+        },
+        "InsertQuery": {
+          "Lines": [
+            "INSERT INTO DNA_NoX_Document ({Fields})",
+            "VALUES ({Parameters})"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_Document ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_Document ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "DocumentHeader": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_DocumentHeader"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_DocumentHeader ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_DocumentHeader ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "DocumentLine": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_DocumentLine"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_DocumentLine ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_DocumentLine ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "SafeDeposit": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_SafeDeposit"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_SafeDeposit ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_SafeDeposit ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "InterWarehouseTransfer": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_InterWarehouseTransfer"
+          ]
+        },
+        "InsertQuery": {
+          "Lines": [
+            "INSERT INTO DNA_NoX_InterWarehouseTransfer ({Fields})",
+            "VALUES ({Parameters})"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_InterWarehouseTransfer ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_InterWarehouseTransfer ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "Product": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_Product"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_Product ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_Product ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "CurrentAccount": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_CurrentAccount"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_CurrentAccount ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_CurrentAccount ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "Warehouse": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_Warehouse"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_Warehouse ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_Warehouse ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "Currency": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_Currency"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_Currency ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_Currency ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "PaymentType": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_PaymentType"
+          ]
+        },
+        "InsertQuery": {
+          "Lines": [
+            "INSERT INTO DNA_NoX_PaymentType ({Fields})",
+            "VALUES ({Parameters})"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_PaymentType ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_PaymentType ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "Collection": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_MixedReceipt"
+          ]
+        }
+      },
+      "FastCollection": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_MixedReceiptMain"
+          ]
+        }
+      },
+      "PaymentDefinition": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_PaymentDefinition"
+          ],
+          "OrderBy": "Id"
+        },
+        "InsertQuery": {
+          "Lines": [
+            "INSERT INTO DNA_NoX_PaymentDefinition ({Fields})",
+            "VALUES ({Parameters})"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_PaymentDefinition ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_PaymentDefinition ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "CollectionMethod": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_CollectionMethod"
+          ],
+          "OrderBy": "Id"
+        },
+        "InsertQuery": {
+          "Lines": [
+            "INSERT INTO DNA_NoX_CollectionMethod ({Fields})",
+            "VALUES ({Parameters})"
+          ]
+        },
+        "UpdateQuery": {
+          "Lines": [
+            "UPDATE DNA_NoX_CollectionMethod ",
+            "SET {Fields}",
+            "WHERE Id = @Id"
+          ]
+        },
+        "DeleteQuery": {
+          "Lines": [
+            "DELETE FROM DNA_NoX_CollectionMethod ",
+            "WHERE Id = @Id"
+          ]
+        }
+      },
+      "Statement": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_Statement"
+          ]
+        }
+      },
+      "BankRemittance": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_BankRemittance"
+          ]
+        }
+      },
+      "StatementHeader": {
+        "SelectQuery": {
+          "Lines": [
+            "SELECT *",
+            "FROM DNA_NoX_StatementHeader"
+          ]
+        }
+      }
+    },
+    "CardQueries": {
+      "LogSummary": "SELECT CONVERT(VARCHAR, Logged, 104) AS [Day], COUNT(0) AS [Count], DAY(Logged) AS [Max] FROM dbo.DNA_NLOG l WHERE l.Logged > GETDATE() - 10 AND l.[Level] != 'Info' GROUP BY CONVERT(VARCHAR, Logged, 104), DAY(Logged)"
+    }
+  }
+}
