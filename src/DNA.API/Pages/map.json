@@ -1,0 +1,67 @@
+[
+  {
+    "to": "/help",
+    "label": "Help",
+    "name": "help",
+    "isHeaderVisible": true,
+    "areMenusVisible": true,
+    "menus": [
+      {
+        "label": "GİB",
+        "name": "gib",
+        "to": "/gib",
+        "noLink": true,
+        "isHeaderVisible": true,
+        "areMenusVisible": true,
+        "description": "GIB Help Menu Description",
+        "icon": "account_balance",
+        "menus": [
+          {
+            "to": "/detailed-status-codes",
+            "label": "Detailed Status Codes",
+            "name": "detailed-status-codes",
+            "description": "Detailed Status Codes Description",
+            "icon": "fact_check",
+            "menus": []
+          }
+        ]
+      },
+      //{
+      //  "label": "Test",
+      //  "name": "test",
+      //  "to": "/test",
+      //  "isHeaderVisible": true,
+      //  "areMenusVisible": true,
+      //  "description": "Test Menu",
+      //  "menus": [
+      //    {
+      //      "to": "/test-sub",
+      //      "label": "Test Sub Menu",
+      //      "name": "test-sub",
+      //      "description": "Test Sub Menu Description",
+      //      "icon": "format_paint",
+      //      "menus": []
+      //    },
+      //    {
+      //      "to": "/test-sub-2",
+      //      "label": "Test Sub Menu 2",
+      //      "name": "test-sub-2",
+      //      "description": "Test Sub Menu 2 Description",
+      //      "icon": "format_color_reset",
+      //      "menus": []
+      //    }
+      //  ]
+      //},
+      //{
+      //  "label": "Task List",
+      //  "name": "readme",
+      //  "to": "/readme",
+      //  "isHeaderVisible": true,
+      //  "role": [ "Admin" ],
+      //  "description": "Task List for Module",
+      //  "icon": "playlist_add_check",
+      //  "menus": []
+      //}
+    ]
+  }
+]

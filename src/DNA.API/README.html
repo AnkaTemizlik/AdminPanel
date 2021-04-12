@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Kurulum Notları</title>
+</head>
+<body>
+
+    <h1 id="kurulum-notlar">Kurulum Notları</h1>
+<ul>
+<li>Veritabanı oluşturup, <code>ConnectionString</code> güncellenmeli</li>
+</ul>
+<blockquote>
+<p>Entegrasyon noktalarını tamamen bağımsız yapabilmek için Reflection ile Assembly okunacak. EBilet servisleri şimdilik referanslardan projeye takılı.</p>
+</blockquote>
+<h1 id="windows-service">Windows Service</h1>
+<h4 id="publish">Publish</h4>
+<p>Projeyi sağ tıkla ve publish et.</p>
+<h4 id="create">Create</h4>
+<p><code>sc.exe create &quot;DNA.API Service&quot; binPath=D:\DNA\DNA.API\DNA.API.exe start= auto</code></p>
+<h4 id="query-start-stop-delete">query, start, stop, delete</h4>
+<p><code>sc.exe query &quot;DNA.API Service&quot;</code>
+<code>sc.exe start &quot;DNA.API Service&quot;</code>
+<code>sc.exe stop &quot;DNA.API Service&quot;</code>
+<code>sc.exe delete &quot;DNA.API Service&quot;</code></p>
+<h4 id="stop-publish-start">stop, publish, start</h4>
+<pre><code>cd D:\Develop\DNA\DNA\DNA.API
+sc.exe stop &quot;DNA.API Service&quot;; dotnet publish -c Release -o D:\Develop\DNA\publish; sc.exe start &quot;DNA.API Service&quot;
+</code></pre>
+<h1 id="hangfire">Hangfire</h1>
+<h4 id="delete-queue">Delete Queue</h4>
+<pre><code>DELETE j FROM HangFire.Job AS j
+    LEFT JOIN HangFire.JobQueue AS jq ON jq.JobId=j.Id
+    WHERE jq.[Queue]='default' AND (StateName='Enqueued');
+DELETE FROM HangFire.JobQueue WHERE [Queue]='default'
+</code></pre>
+<h4 id="admin">Admin:</h4>
+<p><code>bilgi@dna.com.tr</code> <code>Adm1n@dna</code></p>
+<h1 id="todo-list">TODO List ✓</h1>
+<table>
+<thead>
+<tr>
+<th>CreateDate</th>
+<th>✓</th>
+<th>Todo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2020-10-03</td>
+<td></td>
+<td><a href="https://github.com/DevExpress-Examples/reporting-eud-designer-in-javascript-with-react">https://github.com/DevExpress-Examples/reporting-eud-designer-in-javascript-with-react</a></td>
+</tr>
+<tr>
+<td>2020-10-08</td>
+<td></td>
+<td>Hangfire Token Based Auth <a href="https://medium.com/we-code/hangfire-dashboard-and-jwt-authentication-751aae3bcd4a">https://medium.com/we-code/hangfire-dashboard-and-jwt-authentication-751aae3bcd4a</a></td>
+</tr>
+<tr>
+<td>2020-10-08</td>
+<td></td>
+<td>Hangfire Readonly dashboard (yetkisiz kullanıcılar job silip tetiklemesin)</td>
+</tr>
+<tr>
+<td>2020-10-08</td>
+<td>✓</td>
+<td>IRestService eklenmesi (RestClient ile çağırılacak noktalar için ortak servis)</td>
+</tr>
+<tr>
+<td>2020-10-08</td>
+<td></td>
+<td>DxGrid multiselect aktif et.</td>
+</tr>
+<tr>
+<td>2020-10-09</td>
+<td>✓</td>
+<td>appsettings.*.json dosyalarına gerekli nesne ve ayarların başlangıçta otomatik eklenmesi (dosya yedeklemesi yap)</td>
+</tr>
+<tr>
+<td>2020-10-12</td>
+<td>✓</td>
+<td>mention fields <a href="https://blog.campvanilla.com/reactjs-input-trigger-github-twitter-mentions-8ad1d878110d">https://blog.campvanilla.com/reactjs-input-trigger-github-twitter-mentions-8ad1d878110d</a> (Popup ile hallettim)</td>
+</tr>
+<tr>
+<td>2020-12-02</td>
+<td>✓</td>
+<td>Https konfigurasyonu</td>
+</tr>
+<tr>
+<td>2020-12-02</td>
+<td></td>
+<td>Ayarlardan Test E-posta gönderimi</td>
+</tr>
+<tr>
+<td>2020-12-02</td>
+<td>✓</td>
+<td>Test/Canlı parametresi</td>
+</tr>
+<tr>
+<td>2020-12-02</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+
+</body>
+</html>

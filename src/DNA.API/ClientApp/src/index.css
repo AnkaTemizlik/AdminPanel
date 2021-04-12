@@ -1,0 +1,192 @@
+body {
+	margin: 0;
+	font-family: "Quicksand", -apple-system, BlinkMacSystemFont, "Roboto",
+		"Open Sans", "Lato", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+		"Helvetica Neue", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+		monospace;
+}
+
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+.dx-menu-base {
+	font-size: 13px;
+}
+.dx-menu-item {
+	color: rgba(0, 0, 0, 0.66);
+}
+.dx-button-mode-contained .dx-icon {
+	color: rgba(0, 0, 0, 0.66);
+}
+.dx-dropdowneditor-icon {
+	color: rgba(0, 0, 0, 0.66);
+}
+/* ::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 4px #323545;
+} */
+
+::-webkit-scrollbar-thumb {
+	background-color: #32354598;
+}
+* {
+	outline: none;
+}
+
+#warning-message {
+	right: 72px;
+	bottom: 8px;
+	z-index: 1;
+	position: fixed;
+	/* position: fixed;
+		bottom: 0px;
+		width: 100%;
+		opacity: 0.8;
+		display: flex;
+		justify-content: center;
+		z-index: 1;
+		overflow: hidden;
+		padding-bottom: 4px; */
+}
+
+.dx-datagrid-focus-overlay {
+	border: 0px;
+}
+
+.bg-1 {
+	background-image: url("https://default.turhost.com/v2/images/bg/1.jpg");
+}
+
+.bg-2 {
+	background-image: url("https://default.turhost.com/v2/images/bg/2.jpg");
+}
+
+.bg-3 {
+	background-image: url("https://default.turhost.com/v2/images/bg/3.jpg");
+}
+
+.bg-4 {
+	background-image: url("https://default.turhost.com/v2/images/bg/4.jpg");
+}
+
+.bg-5 {
+	background-image: url("https://default.turhost.com/v2/images/bg/5.jpg");
+}
+
+.bg-6 {
+	background-image: url("https://default.turhost.com/v2/images/bg/6.jpg");
+}
+
+.bg-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	/* z-index: -1; */
+	background: rgba(0, 0, 0, 0.1);
+	background: -moz-radial-gradient(
+		center,
+		ellipse cover,
+		rgba(0, 0, 0, 0.1) 0%,
+		rgba(0, 0, 0, 0.1) 10%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	background: -webkit-gradient(
+		radial,
+		center center,
+		0px,
+		center center,
+		100%,
+		color-stop(0%, rgba(0, 0, 0, 0.1)),
+		color-stop(10%, rgba(0, 0, 0, 0.1)),
+		color-stop(100%, rgba(0, 0, 0, 0.83))
+	);
+	background: -webkit-radial-gradient(
+		center,
+		ellipse cover,
+		rgba(0, 0, 0, 0.1) 0%,
+		rgba(0, 0, 0, 0.1) 10%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	background: -o-radial-gradient(
+		center,
+		ellipse cover,
+		rgba(0, 0, 0, 0.1) 0%,
+		rgba(0, 0, 0, 0.1) 10%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	background: -ms-radial-gradient(
+		center,
+		ellipse cover,
+		rgba(0, 0, 0, 0.1) 0%,
+		rgba(0, 0, 0, 0.1) 10%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	background: radial-gradient(
+		ellipse at center,
+		rgba(0, 0, 0, 0.1) 0%,
+		rgba(0, 0, 0, 0.1) 10%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=1 );
+}
+
+.footer-overlay {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 300px;
+	z-index: -1;
+	background: rgba(0, 0, 0, 0);
+	background: -moz-linear-gradient(
+		top,
+		rgba(0, 0, 0, 0) 0%,
+		rgba(0, 0, 0, 0) 11%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	background: -webkit-gradient(
+		left top,
+		left bottom,
+		color-stop(0%, rgba(0, 0, 0, 0)),
+		color-stop(11%, rgba(0, 0, 0, 0)),
+		color-stop(100%, rgba(0, 0, 0, 0.83))
+	);
+	background: -webkit-linear-gradient(
+		top,
+		rgba(0, 0, 0, 0) 0%,
+		rgba(0, 0, 0, 0) 11%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	background: -o-linear-gradient(
+		top,
+		rgba(0, 0, 0, 0) 0%,
+		rgba(0, 0, 0, 0) 11%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	background: -ms-linear-gradient(
+		top,
+		rgba(0, 0, 0, 0) 0%,
+		rgba(0, 0, 0, 0) 11%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0) 0%,
+		rgba(0, 0, 0, 0) 11%,
+		rgba(0, 0, 0, 0.83) 100%
+	);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000', GradientType=0 );
+}
+
+mark.blue {
+	background-color: #a3daff;
+}

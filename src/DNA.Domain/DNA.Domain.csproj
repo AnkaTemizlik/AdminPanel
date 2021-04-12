@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>%24/DNA.API/DNA.Domain</SccProjectName>
+    <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
+    <SccAuxPath>https://dnaproje.visualstudio.com</SccAuxPath>
+    <SccLocalPath>.</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp3.1\DNA.Domain.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
+    <OutputPath>bin\Debug\netcoreapp3.1\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin\Release\netcoreapp3.1\</OutputPath>
+    <DocumentationFile>bin\Release\netcoreapp3.1\DNA.Domain.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\Diyalogo\**" />
+    <Compile Remove="Models\GIB\**" />
+    <Compile Remove="Models\NoX\**" />
+    <Compile Remove="Resources\NoX\**" />
+    <EmbeddedResource Remove="Models\Diyalogo\**" />
+    <EmbeddedResource Remove="Models\GIB\**" />
+    <EmbeddedResource Remove="Models\NoX\**" />
+    <EmbeddedResource Remove="Resources\NoX\**" />
+    <None Remove="Models\Diyalogo\**" />
+    <None Remove="Models\GIB\**" />
+    <None Remove="Models\NoX\**" />
+    <None Remove="Resources\NoX\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Resources\CurrentAccountQueryResource.cs" />
+    <Compile Remove="Resources\ProductQueryResource.cs" />
+    <Compile Remove="Services\IDiyalogoService.cs" />
+    <Compile Remove="Services\IGIBService.cs" />
+    <Compile Remove="Services\INoXService.cs" />
+    <Compile Remove="Services\IPluginServiceManager.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.78" />
+    <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.11" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.11" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog" Version="4.7.9" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+  </ItemGroup>
+
+</Project>

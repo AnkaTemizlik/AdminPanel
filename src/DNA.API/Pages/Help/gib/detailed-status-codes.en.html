@@ -1,0 +1,559 @@
+﻿<table>
+  <colgroup>
+    <col style="width: 8.5%;" />
+    <col style="width:11.4%;" />
+    <col style="width:28.8%;" />
+    <col style="width:12.4%;" />
+    <col style="width:11.3%;" />
+    <col style="width:27.4%;" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>NO
+      </th>
+      <th>CODE
+      </th>
+      <th>COMMENT
+      </th>
+      <th>REASON
+      </th>
+      <th>SOLUTION
+      </th>
+      <th>WHAT TO DO
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>
+        <span>*
+        </span>1000
+      </th>
+      <td>ZARF KUYRUĞA EKLENDİ
+      </td>
+      <td>Gönderici birim, içerisinde FATURA belgesi olan zarfı oluşturur ve Merkez Birime (GİB' e) gönderir. Bu zarf Merkez Birimde kuyruğa alınır. Zarfın durumu “ZARF KUYRUĞA EKLENDİ” olur.
+      </td>
+      <td>GİB’teki yoğunluk
+      </td>
+      <td>
+      </td>
+      <td>The status code should be expected to update.
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <span>*
+        </span>1100
+      </th>
+      <td>ZARF İŞLENİYOR
+      </td>
+      <td>Merkez Birimde kuyruğa alınan zarf,  kuyrukta sırası geldiğinde işlenmeye başlar. Burada zarfın durumu “ZARF İŞLENİYOR” olmaktadır. &quot;1000&quot; ve &quot;1100&quot; statülerinde zarf GİB' e iletilmiştir. Bu aşamalarda Gönderici Birim Merkez’de durum sorgular ve bu iki durum kodundan biri cevap  olarak   dönerse faturanın ERP statüsü “GİB’e gönderildi” olur.
+      </td>
+      <td>GİB’teki yoğunluk
+      </td>
+      <td>
+      </td>
+      <td>The status code should be expected to update.
+      </td>
+    </tr>
+    <tr>
+      <th>1110
+      </th>
+      <td>ZIP DOSYASI DEĞİL
+      </td>
+      <td rowspan="15">
+        <strong>NOT:
+        </strong>
+        Zarf gönderim  aşamalarında  çeşitli  işlemlerden, şema ve schematron kontrolünden geçer. Gönderilen zarfın GİB’in belirlediği standartlara uygun olmamasından dolayı hata alınırsa ilgili durum kodları alınır. Faturanın bulunduğu zarfa GİB’de işlenmesi sırasında ilgili hata kodlarından birini  alırsa  faturanın  statüsü  “GİB’de işlenemedi” olarak güncellenir. Bu aşamadan sonra süreç sonlanır, işlem alıcıya iletilemeden bu aşamada kalır.
+      </td>
+      <td>Zarf  formatı “.ZIP” formatında değilse ilgili hata alınır.
+      </td>
+      <td>Gönderilen zarf formatı &quot;.ZIP&quot; olmalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1111
+      </th>
+      <td>ZARF ID UZUNLUĞU GEÇERSİZ
+      </td>
+      <td>ZARF ID uzunluğu 32 karakterden farklıysa hata alınır.
+      </td>
+      <td>ZARF ID uzunluğu 32 karakter olmalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1120
+      </th>
+      <td>ZARF ARŞİVDEN KOPYALANAMADI
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1130
+      </th>
+      <td>ZIP AÇILAMADI
+      </td>
+      <td>Zarf okunamadığı durumlarda ilgili hata alınır.
+      </td>
+      <td>GIB   sisteminde   geçici   bir   durum olabilir ve ya zarfın dosyasında hata da olabilir. Dosyada hata var ise, yeniden
+        zarflanıp gönderilmesi gerekmektedir.
+        Aksi halde faturalar yeniden gönderilmeli
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1131
+      </th>
+      <td>ZIP BİR DOSYA İÇERMELİ
+      </td>
+      <td>Zarf içerisinde ilgili dosya bulunamadığında hata alınır.
+      </td>
+      <td>Zarf içerisinde dosya (Fatura, uygulama yanıtı, sistem yanıtı) olmalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1132
+      </th>
+      <td>XML DOSYASI DEĞİL
+      </td>
+      <td>Dosyalar (Fatura, U&amp;S Yanıtı) XML formatında olmadığında ilgili hata alınır.
+      </td>
+      <td>Dosyalar (Fatura, U&amp;S Yanıtı) .XML formatında olmalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1133
+      </th>
+      <td>ZARF ID VE XML DOSYASININ ADI AYNI OLMALI
+      </td>
+      <td>ZARF ID (&lt;sh:DocumentIdentification&gt;)  ile XML ID (xxxxxxxx.xml) aynı karakterleri içermez ise ilgili hata alınır.
+      </td>
+      <td>ZARF ID (&lt;sh:DocumentIdentification&gt;)
+        ile XML ID(xxxxxxxx.xml) aynı
+        karakterleri içermelidir.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1140
+      </th>
+      <td>DOKUMAN AYRIŞTIRILAMADI
+      </td>
+      <td>Zarftaki faturalar doğru şekilde çıkarılamadığı için ilgili hata alınır.
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1141
+      </th>
+      <td>ZARF ID YOK
+      </td>
+      <td>Zarf ID alanı boş ise ilgili hata alınır.
+      </td>
+      <td>Zarf ID alanı boş olmamalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1142
+      </th>
+      <td>ZARF ID VE ZIP DOSYASI ADI AYNI OLMALI
+      </td>
+      <td>Zarftaki faturalar doğru şekilde çıkarılamadığı için ilgili hata alınır.
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1143
+      </th>
+      <td>GEÇERSİZ VERSİYON
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1150
+      </th>
+      <td>SCHEMATRON KONTROL SONUCU HATALI
+      </td>
+      <td>GIB’in belirlediği standartlarda olması gereken bilgiler yanlış girilmiştir.
+      </td>
+      <td>Bilgiler kontrol edilip GIB’in belirlediği standartlara uygun hale getirilmelidir.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1160
+      </th>
+      <td>XML SEMA KONTROLÜNDEN GEÇEMEDİ
+      </td>
+      <td>GİB şema kontrollerinden geçebilen bir faturanın alıcının sisteminde de XML kontrollerinden geçebilmesi gerekir. Alıcıyı uyarınız.
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1161
+      </th>
+      <td>İMZA SAHİBİ TCKN VKN ALINAMADI
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1162
+      </th>
+      <td>İMZA KAYDEDİLEMEDİ
+      </td>
+      <td>
+      </td>
+      <td>Hatasız gönderim  için gönderimden önce “imza
+        doğrulama” kontrolü yapılmalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <br />
+        1163
+      </th>
+      <td>
+        <br />
+        GÖNDERİLEN ZARF SİSTEMDE DAHA ÖNCE KAYITLI OLAN BİR FATURAYI İÇERMEKTEDİR
+      </td>
+      <td>Merkez birim zarfı posta kutusuna gönderir. Eğer gönderim başarılı olmuşsa öncelikle zarfın merkezdeki durum kodu posta  kutusundan  sistem  yanıtı  gelene  kadar  1220
+        “HEDEFTEN  SİSTEM  YANITI  GELMEDİ”  şeklinde olur. Bu zarftaki faturaların herhangi birinin yeni bir zarf ile tekrar gönderilmesi durumunda yeni gönderilen zarf 1163 “GÖNDERİLEN   ZARF   SİSTEMDE   DAHA   ÖNCE KAYITLI  OLAN  BİR  FATURAYI İÇERMEKTEDİR” durum kodunu içeren sistem yanıtını alacaktır.
+        <strong>NOT:
+        </strong>1300 durum kodu almış zarflar da tekrar gönderilirse aynı hata alınır.
+      </td>
+      <td>Merkez birim zarfı posta kutusuna gönderir.  Eğer gönderim başarılı olmuşsa öncelikle zarfın merkezdeki durum kodu posta kutusundan sistem yanıtı gelene kadar 1220 “HEDEFTEN SISTEM YANITI GELMEDI”   şeklinde olur.Bu zarftaki faturaların herhangi  birinin  yeni  bir  zarf  ile tekrar gönderilmesi durumunda yeni gönderilen zarf 1163 “GONDERILEN ZARF SISTEMDE DAHA ONCE KAYITLI OLAN BIR FATURAYI ICERMEKTEDIR” durum kodunu içeren sistem yanıtını alacaktır.
+      </td>
+      <td>1163 “GONDERILEN ZARF SISTEMDE DAHA ONCE KAYITLI OLAN BIR FATURAYI ICERMEKTEDIR” durumu aynı fatura numarası  ya  da  ETTN  numarası  ile daha önce gönderim (yükleme) yapıldığı durumlarda oluşur (farkında olmadan  aynı  fatura  ya  da  ETTN numarası ile ikinci kez gönderim yapmaya çalışıyor olabilirsiniz.
+      </td>
+      <td>Faturalar yeniden
+        <strong>gönderilmemeli
+        </strong>
+      </td>
+    </tr>
+    <tr>
+      <th>1170
+      </th>
+      <td>YETKİ KONTROL EDİLEMEDİ
+      </td>
+      <td rowspan="12">
+        <strong>NOT:
+        </strong>Zarf gönderim aşamalarında çeşitli işlemlerden, şema ve schematron kontrolünden geçer. Gönderilen zarfın GİB’in belirlediği standartlara uygun olmamasından dolayı hata alınırsa ilgili durum kodları alınır.
+        Faturanın bulunduğu zarfa GİB’de işlenmesi sırasında ilgili hata kodlarından birini alırsa faturanın statüsü “GİB’de işlenemedi” olarak güncellenir. Bu hata kodlarını içeren Sistem Yanıtı doğrudan merkez tarafından Gönderici Birim’e iletilir ve bu aşamadan sonra süreç sonlanır, işlem alıcıya iletilemeden bu aşamada kalır.
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1171
+      </th>
+      <td>GÖNDERİCİ BİRİM YETKİSİ YOK
+      </td>
+      <td>Gönderici  birim etiketinde  &quot;GB&quot; yerine &quot;PK&quot; tanımlanmış olabilir.
+      </td>
+      <td>Gönderici birim etiketinde &quot;GB&quot; tanımlı olmalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1172
+      </th>
+      <td>POSTA KUTUSU YETKİSİ YOK
+      </td>
+      <td>Posta kutusu etiketinde “PK” yerinde “GB” tanımlanmış olabilir.
+      </td>
+      <td>Posta kutusu etiketinde  “PK” tanımlı olmalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <br />
+        1175
+      </th>
+      <td>
+        <br />
+        İMZA YETKİSİ KONTROL EDİLEMEDİ
+      </td>
+      <td>İmza  yetkisi  kontrol  edilemedi yanıtı imzanın yetersiz olduğu
+        anlamına
+        <strong>gelmemektedir
+        </strong>. Müşterinin  ekstra  kontrol  istediği durumlarda ilgili hata alınır.
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1176
+      </th>
+      <td>İMZA SAHİBİ YETKİSİZ
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <br />
+        <br />
+        1177
+      </th>
+      <td>
+        <br />
+        <br />
+        GEÇERSİZ İMZA
+      </td>
+      <td>İmza doğrulama geçersizdir.
+      </td>
+      <td>Hatasız gönderim için gönderimden önce “imza doğrulama” kontrolü yapılmalıdır.
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1180
+      </th>
+      <td>ADRES KONTROL EDİLEMEDİ
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1181
+      </th>
+      <td>ADRES BULUNAMADI
+      </td>
+      <td>Etiket bilgisi ve VKN eşleşmesi yapılamıyor.
+      </td>
+      <td>Alıcının VKN/TCKN ve etiket bilgisinin güncel olduğundan emin olunuz. (Etiket ya da yöntem değiştirmiş olabilir.)Göndericinin VKN/TCKN ve etiket bilgisinin
+        güncel olduğundan  emin olunuz. (Etiket ya  da  yöntem değiştirmiş olabilir.)
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1182
+      </th>
+      <td>KULLANICI EKLENEMEDİ
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1183
+      </th>
+      <td>KULLANICI SİLİNEMEDİ
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1190
+      </th>
+      <td>SİSTEM YANITI HAZIRLANAMADI
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1195
+      </th>
+      <td>SİSTEM HATASI
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>1200
+      </th>
+      <td>ZARF BAŞARIYLA İŞLENDİ
+      </td>
+      <td>Zarf işlenmiş, kontrollerden geçmiş ve merkez sistemde bir hata  almamışsa  zarfın  durumu  “ZARF  BAŞARIYLA İŞLENDİ” olmaktadır. Bu aşamada zarfın durumu sistem yanıtı ile Gönderici Birime gönderilir. GİB’den 1200 durum kodu  “Zarf  Başarıyla  İşlendi”  metni  ile  sistem  yanıtı gönderildiğinde ERP statüsü &quot;GİB’de  işlendi-  Alıcıya gönderilecek&quot; olarak güncellenir. Aynı statü kodu Alıcı tarafından  gönderildiğinde  ise; bu zarfın alıcı tarafında işlendiği anlamına gelecektir.
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <span>*
+        </span>1210
+      </th>
+      <td>DOKUMAN BULUNAN ADRESE GÖNDERİLEMEDİ
+      </td>
+      <td>Zarf merkezde işlendikten sonra alıcıya gönderilir. Alıcıya gönderme sırasında herhangi bir sorun yaşanır ve zarfın gönderimi başarısız olur ise; göndericiye 1210 durum kodu döner. (Merkez birim zarfı dört defa göndermeyi dener, ilki göndericinin  gönderip  GİB'den  geçerek  alıcıya  iletildiği saattir. 1210 durumu alınırsa GİB aynı zarfı 3 kere daha göndermeyi dener. 3 deneme saat 06.00 ve 18.00 saatleri arasında sırayla yapılmaktadır.)
+      </td>
+      <td>
+      </td>
+      <td>GIB’in tekrar gönderim denemesi başarılı olur  ise, 1300  BAŞARIYLA TAMAMLANDI durum  kodu alınır. Eğer bu süre sonlandıktan sonra gönderim  hala  başarısız  ise, 1215
+        DOKÜMAN
+        GÖNDERİMİ
+        BAŞARISIZ, TEKRAR GÖNDERME
+        SONLANDI durum kodu alınır.
+      </td>
+      <td>1210 durumunun 1215, 1220, 1230 ya da 1300 durumuna dönmesi
+        <strong>beklenmelidir.
+        </strong>
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <br />
+        1215
+      </th>
+      <td>DOKÜMAN GÖNDERİMİ BAŞARISIZ. TEKRAR GÖNDERME SONLANDI
+      </td>
+      <td>Gönderim sırasında bir hata oluşması halinde zarf 1210 durum kodunun alındığı andan itibaren Merkez birim aynı zarfı dört defa ikişer saat arayla toplam sekiz saat içerisinde tekrar  göndermeyi  dener.  Son  denemede  (dördüncü deneme) zarf hala karşı tarafa başarıyla iletilememiş ise zarfın   durumu   1215 “DOKÜMAN
+        GÖNDERİMİ BAŞARISIZ.   TEKRAR
+        GÖNDERME SONLANDI” durum  kodunu  alır.  1215  durum  kodunun  alınmasının ardından ilgili zarftaki faturalar aynı Fatura ID’ si ile tekrar gönderilebilecektir.
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <br />
+        <span>*
+        </span>1220
+      </th>
+      <td>
+        <br />
+        HEDEFTEN SİSTEM YANITI GELMEDİ
+      </td>
+      <td>Zarf merkezde işlendikten sonra alıcıya gönderilir, eğer
+        <strong>gönderim  başarılı
+        </strong>olmuş ise;  alıcıdan merkeze sistem yanıtı  gelene  kadar  zarfın  merkezdeki durumu 1220 “HEDEFTEN SİSTEM YANITI GELMEDİ “ şeklinde olur ve buna göre faturanın ERP statüsü de “Alıcıya gönderildi” olmaktadır.
+      </td>
+      <td>1220“HEDEFTEN SISTEM YANITI GELMEDI” durum kodunda alıcı   zarfı sistemine aldığını GİB'e bildirmiş ancak zarfı sorunsuzca işleyip işleyemediğine dair  olumlu  ya  da  olumsuz  bir cevap dönmemiştir.
+      </td>
+      <td>Bu  durumda GİB  yanıt dönmeyen mükelleflere otomatik uyarı maili atar. Ancak alıcı ile iletişime geçilerek yanıt dönmeleri sağlanabilir. Bu durumdaki zarfların içerisindeki faturaların tekrar gönderilmesi mükerrer gönderim olacağından ikinci kez gönderilmemesi gerekmektedir.
+      </td>
+      <td>1220 durumunun 1230 ve ya 1300 durumuna dönmesi
+        <strong>beklenmelidir.
+        </strong>
+        <strong>NOT 1:
+        </strong>İki gün içerisinde durum kodu güncellenmez ise; bu konuda alıcı ile görüşülebilir.
+        <strong>NOT 2:
+        </strong>Gönderici ve alıcı taraf da ilgili faturayı muhasebe kayıtlarına geçirebilir.
+      </td>
+    </tr>
+    <tr>
+      <th>1230
+      </th>
+      <td>HEDEFTEN SİSTEM YANITI BAŞARISIZ GELDİ
+      </td>
+      <td>Zarfın başarısız işlendiğine dair bir kod dönülmesi halinde Merkezde 1220 durum  koduyla  bekleyen  zarfın  yeni durumu 1230 “HEDEFTEN SİSTEM YANITI BAŞARISIZ GELDİ”  olur. 1230   durum  kodunun alınmasının ardından ilgili zarftaki faturalar aynı Fatura ID’ si  ile tekrar gönderilebilecektir.  Bu nedenle  fatura  iptal süreçleri  başlatılmaz. Gönderici birim merkeze sorgu gönderdiğinde faturanın ERP statüsü   de   “Alıcıda işlenemedi” olur.
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>Invoices must be resent (resending of the invoice with the same ETTN is allowed.)
+      </td>
+    </tr>
+    <tr>
+      <th>
+        <span>*
+        </span>1300
+      </th>
+      <td>BAŞARIYLA TAMAMLANDI
+      </td>
+      <td>Hedeften  sistem  yanıtının  1200  “ZARF  BAŞARIYLA İŞLENDİ” durum kodu ile gelmesi halinde Merkezde 1220 durum  koduyla bekleyen zarfın yeni durumu 1300 “BAŞARIYLA  TAMAMLANDI”  olur.  Buna  göre  de gönderici birim,  merkeze  sorgu  gönderdiğinde  faturanın ERP statüsü “Alıcıda işlendi – Başarıyla işlendi” hale gelir.
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+    </tr>
+  </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="6">
+                Kodların başında "*" işareti <b>var</b> ise, lgili durum kodları alındığında, satış faturasının aynı ETTN ile gönderimine izin verilmez.
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6">
+                Kodların başında "*" işareti <b>yok</b> ise, ilgili durum kodları alındığında, satış faturasının aynı ETTN ile tekrar gönderimine izin verilir.
+            </td>
+        </tr>
+    </tfoot>
+</table>

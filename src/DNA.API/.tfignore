@@ -1,0 +1,4 @@
+﻿\packages
+!\packages\repositories.config
+\ClientApp\node_modules
+\ClientApp\build

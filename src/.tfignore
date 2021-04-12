@@ -1,0 +1,4 @@
+﻿\packages
+!\packages\repositories.config
+\DNA.API\ClientApp\node_modules
+\DNA.API\ClientApp\build
