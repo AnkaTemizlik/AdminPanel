@@ -4,7 +4,7 @@ const AppId = "QzN8M6JS"
 
 export { AppId }
 
-document.title = "DNA.API - " + (Plugin.Name || '') + " " + (Plugin.Program || '')
+document.title = "" + (Plugin.Name || '') + " " + (Plugin.Program || '')
 
 export default {
 	...(Plugin || {}),
