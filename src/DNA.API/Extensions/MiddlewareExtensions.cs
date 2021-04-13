@@ -34,6 +34,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using DNA.Domain.Extentions;
+using DNA.Domain.Models;
 
 namespace DNA.API.Extensions {
     public static class MiddlewareExtensions {

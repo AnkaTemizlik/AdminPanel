@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DNA.API.Infrastructure {
+namespace DNA.Domain.Models {
     public static class Roles {
         public const string User = "User";
         public const string Reader = "Reader";
         public const string Writer = "Writer";
         public const string Admin = "Admin";
-        public const string NoX = "NoX";
     }
 
     public static class Policies {

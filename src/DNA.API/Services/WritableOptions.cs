@@ -1025,6 +1025,7 @@ namespace DNA.API.Services {
                             .Add<LogLevelTypes>()
                             .Add<OperatorTypes>()
                             .Add("AlertSeverityTypes", GetAlertSeverityTypes())
+                            .Add("Roles", GetRoles())
                             .Add(autoCompleteListTypes)
                             .Generate()
                     },
@@ -1066,6 +1067,14 @@ namespace DNA.API.Services {
             list.Add("Warn", "warning");
             list.Add("Error", "error");
             list.Add("Success", "success");
+            return list;
+        }
+        Dictionary<string, string> GetRoles() {
+            var list = new Dictionary<string, string>();
+            list.Add("Admin", "Admin");
+            list.Add("Writer", "Writer");
+            list.Add("Reader", "Reader");
+            list.Add("User", "User");
             return list;
         }
 
