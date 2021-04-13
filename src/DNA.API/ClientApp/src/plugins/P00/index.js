@@ -1,8 +1,9 @@
-import '../../assets/dx.material.blue.css'
+﻿import '../../assets/dx.material.blue.css'
 
 const Plugin = {
 	Name: "Common",
-	Color: "blue"
+	Color: "blue",
+	AppId: "x"
 };
 
 export default Plugin;

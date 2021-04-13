@@ -1,6 +1,6 @@
 ﻿import Plugin from './P00'
 
-const AppId = "QzN8M6JS"
+const AppId = Plugin.AppId
 
 export { AppId }
 
