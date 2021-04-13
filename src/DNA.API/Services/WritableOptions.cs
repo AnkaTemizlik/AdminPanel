@@ -833,7 +833,7 @@ namespace DNA.API.Services {
                             }
 
                             if (editingFieldNames.Count == 0)
-                                throw new Exception("Column attributes not fount!");
+                                throw new Exception("Column attributes not found! Model: " + t.Name);
 
                             var screen = json["ScreenConfig"]["Queries"][t.Name];
 
