@@ -47,7 +47,7 @@ namespace DNA.Domain.Utils {
                 }
             }
 
-            File.WriteAllText(Path.Combine(path, "SqlQueries", "_CreateTableScripts.sql"), builder.ToString().Replace("{TablePrefix}", tablePrefix)); 
+            File.WriteAllText(Path.Combine(path, "SqlQueries", "_CreateTableScripts.sql"), builder.ToString().Replace("{TablePrefix}", tablePrefix));
         }
 
         public static string SetTablePrefix(string query, IConfiguration _configuration) {
@@ -73,7 +73,7 @@ namespace DNA.Domain.Utils {
 
             dataMapper = new Dictionary<Type, string>();
 
-            dataMapper.Add(typeof(string), "NVARCHAR(500)");
+            dataMapper.Add(typeof(string), "NVARCHAR({StringLength})");
 
             dataMapper.Add(typeof(short), "INT NOT NULL DEFAULT(0)");
             dataMapper.Add(typeof(byte), "INT NOT NULL DEFAULT(0)");
@@ -105,18 +105,21 @@ namespace DNA.Domain.Utils {
             System.Text.StringBuilder script = new StringBuilder();
             string keyFieldName = "";
 
-            //script.AppendLine("SET ANSI_NULLS ON");
-            //script.AppendLine("SET QUOTED_IDENTIFIER ON");
+            script.AppendLine("/* " + Table.TableName + " ****************************/");
+            script.AppendLine("SET ANSI_NULLS ON");
+            script.AppendLine("SET QUOTED_IDENTIFIER ON");
             script.AppendLine($"IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('{Table.TableName}' COLLATE SQL_Latin1_General_CP1_CI_AS) )");
             script.AppendLine($"CREATE TABLE [{Table.TableName}] ( ");
 
             List<string> columns = new List<string>();
             foreach (var field in Fields) {
                 var p = field.Value;
-                var attrs = p.GetCustomAttributes().ToList();
-                var key = attrs.Find(_ => _.GetType() == typeof(Dapper.Contrib.Extensions.KeyAttribute));
-                var jsonProperty = attrs.Find(_ => _.GetType() == typeof(JsonPropertyAttribute)) as JsonPropertyAttribute;
-                var required = attrs.Find(_ => _.GetType() == typeof(RequiredAttribute)) as RequiredAttribute;
+                var key = p.GetCustomAttribute<Dapper.Contrib.Extensions.KeyAttribute>();
+                var jsonProperty = p.GetCustomAttribute<JsonPropertyAttribute>();
+                var required = p.GetCustomAttribute<RequiredAttribute>();
+                var stringLengthAttr = p.GetCustomAttribute<StringLengthAttribute>();
+                var stringLengthValue = stringLengthAttr?.MaximumLength ?? 50;
+                var stringLength = stringLengthValue == int.MaxValue ? "MAX" : stringLengthValue == 0 ? "50" : stringLengthValue.ToString();
 
                 // if (p.PropertyType.IsClass) { }
                 // if (p.PropertyType.IsGenericType) { }
@@ -131,22 +134,24 @@ namespace DNA.Domain.Utils {
                 //    }
                 //}
                 //else {
+
                 if (key != null) {
                     keyFieldName = p.Name;
                     columns.Add($"\t [{p.Name}] INT NOT NULL {(Table.HasIdentityIncrement ? "IDENTITY(1, 1) " : "")}");
                 }
                 else if (dataMapper.ContainsKey(p.PropertyType)) {
+                    var propertyType = dataMapper[p.PropertyType].Replace("{StringLength}", stringLength.ToString());
                     if (jsonProperty != null && jsonProperty.Required == Required.Always) {
-                        columns.Add($"\t [{p.Name}] {dataMapper[p.PropertyType]}");
+                        columns.Add($"\t [{p.Name}] {propertyType}");
                     }
                     else if (required != null) {
-                        columns.Add($"\t [{p.Name}] {dataMapper[p.PropertyType]}");
+                        columns.Add($"\t [{p.Name}] {propertyType}");
                     }
                     else if (p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) {
-                        columns.Add($"\t [{p.Name}] {dataMapper[p.PropertyType]}");
+                        columns.Add($"\t [{p.Name}] {propertyType}");
                     }
                     else if (!p.PropertyType.IsGenericType)
-                        columns.Add($"\t [{p.Name}] {dataMapper[p.PropertyType]}");
+                        columns.Add($"\t [{p.Name}] {propertyType}");
                     else
                         throw new NotImplementedException($"{Table.TableName} {p.Name} {p.PropertyType}");
                 }
@@ -179,7 +184,8 @@ namespace DNA.Domain.Utils {
             }
             else
                 script.AppendLine(")");
-
+            script.AppendLine("SET ANSI_NULLS OFF");
+            script.AppendLine("SET QUOTED_IDENTIFIER OFF");
             script.AppendLine(";");
 
             return script.ToString();
