@@ -640,14 +640,17 @@ namespace DNA.API.Services {
 
                                     foreach (var item in props) {
 
+                                        var required = item.GetCustomAttribute<System.ComponentModel.DataAnnotations.RequiredAttribute>() != null;
+                                        var stringLength = item.GetCustomAttribute<System.ComponentModel.DataAnnotations.StringLengthAttribute>()?.MaximumLength ?? 0;
+
                                         var jsonIgnorAttr = item.GetCustomAttribute<JsonIgnoreAttribute>();
                                         if (jsonIgnorAttr != null)
                                             continue;
 
-                                        List<string> roles = null;
+                                        List<string> restrictedRoles = null;
                                         var restrictedRoleAttr = item.GetCustomAttribute<JsonRestrictedRoleAttribute>();
                                         if (restrictedRoleAttr != null)
-                                            roles = restrictedRoleAttr.Roles;
+                                            restrictedRoles = restrictedRoleAttr.Roles;
 
                                         bool isEnum = false;
                                         Type secondType = null;
@@ -752,16 +755,21 @@ namespace DNA.API.Services {
                                                 jsonWriter.WriteValue(widthValue);
                                             }
 
-                                            var rolesValue = getColumnFieldVal(column, "roles", roles);
+                                            var rolesValue = getColumnFieldVal(column, "roles", restrictedRoles);
                                             if (rolesValue != null) {
                                                 jsonWriter.WritePropertyName("roles");
                                                 jsonWriter.WriteValue(rolesValue);
                                             }
 
-                                            //if (!string.IsNullOrWhiteSpace(item.AutoCompleteRefFor)) {
-                                            //    jsonWriter.WritePropertyName("ref");
-                                            //    jsonWriter.WriteValue(item.AutoCompleteRefFor);
-                                            //}
+                                            if (required) {
+                                                jsonWriter.WritePropertyName("required");
+                                                jsonWriter.WriteValue(getColumnFieldVal(column, "required", required));
+                                            }
+
+                                            if (stringLength > 0 && stringLength < 4000) {
+                                                jsonWriter.WritePropertyName("stringLength");
+                                                jsonWriter.WriteValue(getColumnFieldVal(column, "stringLength", stringLength));
+                                            }
                                         }
                                         jsonWriter.WriteEndObject();
                                     }
@@ -832,8 +840,8 @@ namespace DNA.API.Services {
                                     editingFieldNames.Add(item.Name);
                             }
 
-                            if (editingFieldNames.Count == 0)
-                                throw new Exception("Column attributes not found! Model: " + t.Name);
+                            //if (editingFieldNames.Count == 0)
+                            //    throw new Exception("Column attributes not found! Model: " + t.Name);
 
                             var screen = json["ScreenConfig"]["Queries"][t.Name];
 
@@ -898,7 +906,7 @@ namespace DNA.API.Services {
                             }
 
                             var deleteExists = screen == null ? false : screen["DeleteQuery"] != null;
-                            if (!deleteExists) {
+                            if (!deleteExists && editingFieldNames.Count > 0) {
                                 jsonWriter.WritePropertyName("DeleteQuery");
                                 {
                                     jsonWriter.WriteStartObject();
@@ -964,8 +972,10 @@ namespace DNA.API.Services {
                 var json = JObject.Parse(File.ReadAllText(fileFullName));
                 var values = new Dictionary<string, object>();
                 foreach (var t in classes) {
-                    if (!values.ContainsKey(t.Name))
+                    if (values.ContainsKey(t.Name))
                         continue;
+                    if (!t.Type.IsEnum)
+                        values.Add(t.Name + " Screen", t.Name + "s");
                     var fields = t.Type.IsEnum
                         ? t.Type.GetFields().Where(_ => !_.IsSpecialName).Select(_ => _.Name).ToDictionary(_ => _, _ => _.ToTitleCase())
                         : t.Type.GetProperties().Select(_ => _.Name).ToDictionary(_ => _, _ => _.ToTitleCase());
