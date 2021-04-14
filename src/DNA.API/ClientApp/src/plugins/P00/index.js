@@ -1,9 +1,9 @@
 ﻿import '../../assets/dx.material.blue.css'
 
 const Plugin = {
-	Name: "Common",
+	Name: "Anka Temizlik",
 	Color: "blue",
-	AppId: "x"
+	AppId: "DEpLhtjc"
 };
 
 export default Plugin;

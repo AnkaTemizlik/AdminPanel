@@ -141,6 +141,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\PointmentApp\PointmentApp.csproj" />
     <ProjectReference Include="..\DNA.Domain\DNA.Domain.csproj" />
     <ProjectReference Include="..\DNA.Persistence\DNA.Persistence.csproj" />
   </ItemGroup>

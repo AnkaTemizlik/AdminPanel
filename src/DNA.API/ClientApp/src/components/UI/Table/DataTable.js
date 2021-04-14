@@ -140,6 +140,10 @@ const DataTable = React.memo((props) => {
 
 	}
 
+	const imageCellRender = (data, c) => {
+		return <img src={data.value} alt="" />;
+	}
+
 	return <DataGrid
 		id={props.id || "grid"}
 		keyExpr={keyFieldName || "Id"}
@@ -180,7 +184,7 @@ const DataTable = React.memo((props) => {
 		// 		}
 		// 	}
 		// }}
-		columnAutoWidth={gridOptions.columnAutoWidth !== false}
+		//columnAutoWidth={gridOptions.columnAutoWidth !== false}
 		columnResizingMode={gridOptions.columnResizingMode || "widget"}
 		disabled={gridOptions.disabled == true}
 		noDataText={gridOptions.noDataText}
@@ -282,7 +286,10 @@ const DataTable = React.memo((props) => {
 				defaultSortOrder={defaultSortOrder}
 				allowFiltering={c.allowFiltering !== false}
 				allowHeaderFiltering={c.allowHeaderFiltering === true}
-				//cellRender={(cell) => cellRender(cell, c)}
+				cellRender={c.type == "image"
+					? (cell) => imageCellRender(cell, c)
+					: undefined
+				}
 				format={c.format}
 				setCellValue={c.setCellValue}
 				editCellComponent={

@@ -7,7 +7,7 @@ const development = (process.env && process.env.NODE_ENV === "development")
 const instance = axios.create({
 	baseURL: development
 		? (window.location.origin.indexOf(':30') > -1
-			? 'http://localhost:56811/'
+			? 'https://localhost:44389/'
 			: window.location.origin)
 		: `${window.location.origin}/`
 });
