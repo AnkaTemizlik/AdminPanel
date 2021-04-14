@@ -116,10 +116,10 @@ namespace DNA.Domain.Utils {
                 var p = field.Value;
                 var key = p.GetCustomAttribute<Dapper.Contrib.Extensions.KeyAttribute>();
                 var jsonProperty = p.GetCustomAttribute<JsonPropertyAttribute>();
-                var required = p.GetCustomAttribute<RequiredAttribute>();
+                var required = p.GetCustomAttribute<RequiredAttribute>() != null;
                 var stringLengthAttr = p.GetCustomAttribute<StringLengthAttribute>();
                 var stringLengthValue = stringLengthAttr?.MaximumLength ?? 50;
-                var stringLength = stringLengthValue == int.MaxValue ? "MAX" : stringLengthValue == 0 ? "50" : stringLengthValue.ToString();
+                var stringLength = stringLengthValue >= 4000 ? "MAX" : stringLengthValue == 0 ? "50" : stringLengthValue.ToString();
 
                 // if (p.PropertyType.IsClass) { }
                 // if (p.PropertyType.IsGenericType) { }
@@ -137,21 +137,18 @@ namespace DNA.Domain.Utils {
 
                 if (key != null) {
                     keyFieldName = p.Name;
-                    columns.Add($"\t [{p.Name}] INT NOT NULL {(Table.HasIdentityIncrement ? "IDENTITY(1, 1) " : "")}");
+                    columns.Add($"\t [{p.Name}] INT NOT NULL {(Table.HasIdentityIncrement ? "IDENTITY(1, 1)" : "")}");
                 }
                 else if (dataMapper.ContainsKey(p.PropertyType)) {
                     var propertyType = dataMapper[p.PropertyType].Replace("{StringLength}", stringLength.ToString());
                     if (jsonProperty != null && jsonProperty.Required == Required.Always) {
                         columns.Add($"\t [{p.Name}] {propertyType}");
                     }
-                    else if (required != null) {
-                        columns.Add($"\t [{p.Name}] {propertyType}");
-                    }
                     else if (p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) {
                         columns.Add($"\t [{p.Name}] {propertyType}");
                     }
                     else if (!p.PropertyType.IsGenericType)
-                        columns.Add($"\t [{p.Name}] {propertyType}");
+                        columns.Add($"\t [{p.Name}] {propertyType} {(required ? "NOT NULL" : "")}");
                     else
                         throw new NotImplementedException($"{Table.TableName} {p.Name} {p.PropertyType}");
                 }
