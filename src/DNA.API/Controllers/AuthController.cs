@@ -67,6 +67,7 @@ namespace DNA.API.Controllers {
         // POST api/auth/login
         [HttpPost("auth/login")]
         [ProducesResponseType(typeof(Response<ApplicationUser>), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
         public async Task<IActionResult> Post([FromBody] CredentialsResource credentials) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
