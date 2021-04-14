@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import { Box, Paper } from "@material-ui/core";
 import DataGrid, { Button, Column, ColumnChooser, Editing, Form, Export, FilterBuilderPopup, FilterPanel, FilterRow, LoadPanel, Popup, Pager, Paging, RequiredRule, SearchPanel, Selection, Position, Lookup, HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
 import { Item } from 'devextreme-react/form';
 import { Template } from 'devextreme-react/core/template';
 import DropDownBoxComponent from "./DropDownBoxComponent";
 import createCustomStore from "./createCustomStore";
-import { isNotEmpty, supplant } from "../../../store/utils";
+import { supplant } from "../../../store/utils";
 
 const DataTable = React.memo((props) => {
 	const {
