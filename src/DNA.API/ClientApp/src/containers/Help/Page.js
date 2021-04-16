@@ -36,20 +36,28 @@ function Page(props) {
 	let { to } = useParams();
 	let history = useHistory();
 	const [data, setData] = useState("");
+	const [error, setError] = useState(null);
 	const [currentMenu, setCurrentMenu] = useState({});
 	const [loading, setLoading] = useState(false);
 
 	const getData = useCallback(() => {
 		setLoading(true);
 		api.actions.run("GET", "api" + url).then((status) => {
-			setLoading(false);
+			console.purple("getData", status)
 			if (status.Success) {
 				setData(status.Resource.Value);
+				setError(null)
 			} else {
-				snack.show(status);
+				setError(status)
 			}
+			setLoading(false);
 		});
-	}, [snack, url]);
+	}, [url]);
+
+	useEffect(() => {
+		if (error)
+			snack.show(error);
+	}, [error, snack]);
 
 	useEffect(() => {
 		getData();

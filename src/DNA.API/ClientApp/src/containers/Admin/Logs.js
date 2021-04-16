@@ -134,92 +134,81 @@ const Logs = ({ snack }) => {
 	}
 
 	return (
-		<Container>
-			<Grid container spacing={2} >
-				<Grid item xs={12}>
-					<Toolbar>
-						<Tooltip title={t("Back")}>
-							<span>
-								<IconButton edge="start" onClick={() => history.goBack()} >
-									<ArrowBack />
-								</IconButton>
-							</span>
-						</Tooltip>
-						<Box pt={1} pl={1}>
-							<Typography variant="h4" gutterBottom>
-								<Trans>Logs</Trans>
-							</Typography>
-						</Box>
-					</Toolbar>
-				</Grid>
-
-				{/* <Grid item xs={12}>
-					<Toolbar component={Paper}>
-						<Tooltip title={t("Refresh")}>
-							<span>
-								<IconButton onClick={refresh}>
-									<RefreshIcon />
-								</IconButton>
-							</span>
-						</Tooltip>
-						<Box flexGrow="1"></Box>
-					</Toolbar>
-				</Grid> */}
-
-				<Grid item xs={12}  >
-					{columns.length > 0 &&
-						<DataTable
-							id={"idForLogs"}
-							instance={setGrid}
-							onFocusedRowChanged={focusedRowChanged}
-							onError={setError}
-							keyFieldName="Id"
-							columns={columns}
-							dataSource={dataSource}
-							columnResizingMode="nextColumn"
-						/>
-					}
-				</Grid>
-
-				{log && (
-					<Grid item xs={12}>
-						<Card>
-							<CardHeader
-								avatar={renderAvatar()}
-								title={<Tr>{log.Message}</Tr>}
-								subheader={log.Logged}
-								action={
-									<Box mt={1} mr={1}>
-										<Tooltip title={t("Logger")}>
-											<Chip style={{ padding: 8, margin: 4 }} icon={<ComputerIcon />} label={log.MachineName} />
-										</Tooltip>
-									</Box>
-								}
-							/>
-							{log.Exception && (
-								<CardContent>
-									<Box pl={1}>
-										<TextArea style={{ fontFamily: 'monospace' }} readOnly={true} value={log.Exception} autoResizeEnabled={true} />
-									</Box>
-								</CardContent>
-							)}
-							<CardActions>
-								<Box pl={2}>
-									<Tooltip title="Logger">
-										<pre>{log.Logger}</pre>
-									</Tooltip>
-								</Box>
-								<Box>
-									<Tooltip title="Call Site">
-										<pre>{log.Callsite}</pre>
-									</Tooltip>
-								</Box>
-							</CardActions>
-						</Card>
-					</Grid>
-				)}
+		<Grid container spacing={2} alignItems="stretch">
+			<Grid item xs={12}>
+				<Toolbar>
+					<Tooltip title={t("Back")}>
+						<span>
+							<IconButton edge="start" onClick={() => history.goBack()} >
+								<ArrowBack />
+							</IconButton>
+						</span>
+					</Tooltip>
+					<Box pt={1} pl={1}>
+						<Typography variant="h4" gutterBottom>
+							<Trans>Logs</Trans>
+						</Typography>
+					</Box>
+				</Toolbar>
 			</Grid>
-		</Container>
+
+			<Grid item xs={12}  >
+				<Paper id="gridPaper" style={{ minHeight: '260px' }}>
+					<Box p={1}>
+						{columns.length > 0 &&
+							<DataTable
+								id={"idForLogs"}
+								instance={setGrid}
+								onFocusedRowChanged={focusedRowChanged}
+								onError={setError}
+								keyFieldName="Id"
+								columns={columns}
+								dataSource={dataSource}
+								columnResizingMode="nextColumn"
+							/>
+						}
+					</Box>
+				</Paper>
+			</Grid>
+
+			{log && (
+				<Grid item xs={12}>
+					<Card>
+						<CardHeader
+							avatar={renderAvatar()}
+							title={<Tr>{log.Message}</Tr>}
+							subheader={log.Logged}
+							action={
+								<Box mt={1} mr={1}>
+									<Tooltip title={t("Logger")}>
+										<Chip style={{ padding: 8, margin: 4 }} icon={<ComputerIcon />} label={log.MachineName} />
+									</Tooltip>
+								</Box>
+							}
+						/>
+						{log.Exception && (
+							<CardContent>
+								<Box pl={1}>
+									<TextArea style={{ fontFamily: 'monospace' }} readOnly={true} value={log.Exception} autoResizeEnabled={true} />
+								</Box>
+							</CardContent>
+						)}
+						<CardActions>
+							<Box pl={2}>
+								<Tooltip title="Logger">
+									<pre>{log.Logger}</pre>
+								</Tooltip>
+							</Box>
+							<Box>
+								<Tooltip title="Call Site">
+									<pre>{log.Callsite}</pre>
+								</Tooltip>
+							</Box>
+						</CardActions>
+					</Card>
+				</Grid>
+			)}
+		</Grid>
 	);
 };
 

@@ -48,9 +48,12 @@ namespace DNA.API.Controllers {
         private readonly JwtIssuerOptions _jwtOptions;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IWritableOptions _writableConfig;
+        private readonly IMenuService _menuService;
+
         public AuthController(IUserService userService, IEmailService emailService, IValuerService valuerService, IEntityService entityService, IMapper mapper, ILogger<AuthController> logger, IConfiguration configuration, IJwtFactory jwtFactory, IOptions<JwtIssuerOptions> jwtOptions,
             IWebHostEnvironment hostingEnvironment,
-            IWritableOptions writableConfig) {
+            IWritableOptions writableConfig,
+            IMenuService menuService) {
             _userService = userService;
             _emailService = emailService;
             _valuerService = valuerService;
@@ -62,6 +65,7 @@ namespace DNA.API.Controllers {
             _jwtOptions = jwtOptions.Value;
             _hostingEnvironment = hostingEnvironment;
             _writableConfig = writableConfig;
+            this._menuService = menuService;
         }
 
         // POST api/auth/login
@@ -216,15 +220,16 @@ namespace DNA.API.Controllers {
         }
 
         [HttpGet("auth/settings")]
-        [Authorize(Policy = Policies.ReadOnly)]
         [ProducesResponseType(typeof(Response<object>), 200)]
         public async Task<IActionResult> GetSettings() {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
             try {
+                var isAuthenticated = User.Identity.IsAuthenticated;
 
-                var configs = await _writableConfig.Get();
+                var configs = await _writableConfig.Get(isAuthenticated);
+
                 var screenConfig = await _writableConfig.GetScreenConfig();
 
                 if (screenConfig["Preloading"] != null) {
@@ -252,14 +257,35 @@ namespace DNA.API.Controllers {
             }
         }
 
-        [HttpGet("locales/{lng}/{ns?}")]
+        [HttpGet("settings")]
         [ProducesResponseType(typeof(Response<object>), 200)]
-        public async Task<IActionResult> GetLocalesAsync(string lng, string ns = "common") {
+        public async Task<IActionResult> GetGlobalSettings() {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
             try {
-                var locales = await _writableConfig.GetLocalesConfigAsync(lng, ns);
+                var isAuthenticated = User.Identity.IsAuthenticated;
+
+                var configs = await _writableConfig.Get(isAuthenticated);
+
+                var result = new {
+                    configs
+                };
+                return Ok(new Response(result));
+            }
+            catch (Exception ex) {
+                return BadRequest(Errors.AddErrorToModelState(ex, ModelState));
+            }
+        }
+
+        [HttpGet("locales")]
+        [ProducesResponseType(typeof(Response<object>), 200)]
+        public async Task<IActionResult> GetLocalesAsync() {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+            try {
+                var locales = await _writableConfig.GetLocalesConfigAsync();
                 var response = new Response((object)locales);
                 return Ok(response);
             }
@@ -279,31 +305,20 @@ namespace DNA.API.Controllers {
             return Ok(new Response(result));
         }
 
-        //[HttpGet("auth/init")]
-        //public async Task<IActionResult> Init(string id) {
-        //    if (!ModelState.IsValid) {
-        //        return BadRequest(ModelState);
-        //    }
-        //    try {
-        //        List<string> roles = new List<string>();
-        //        var identity = HttpContext.User.Identity as ClaimsIdentity;
-        //        if (identity != null) {
-        //            IEnumerable<Claim> claims = identity.Claims;
-        //            var roleClaims = identity.FindAll(ClaimTypes.Role);
-        //            foreach (var item in roleClaims) {
-        //                roles.Add(item.Value);
-        //            }
-        //        }
-
-        //        //var menus = await _userService.GetMenusAsync(id, roles, User.Identity.IsAuthenticated);
-        //        var ok = await Task.FromResult(true);
-
-        //        return Ok(ok);
-        //    }
-        //    catch (Exception ex) {
-        //        return BadRequest(Errors.AddErrorToModelState("get_menus_failure", ex.Message, ModelState));
-        //    }
-        //}
+        [HttpGet("menus")]
+        public async Task<IActionResult> Init(string id) {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+            try {
+                var response = new Response(_menuService.Root);
+                await Task.CompletedTask;
+                return Ok(response);
+            }
+            catch (Exception ex) {
+                return BadRequest(new Response(ex));
+            }
+        }
 
         [HttpGet("auth/test")]
         [ProducesResponseType(typeof(Response<dynamic>), StatusCodes.Status200OK)]

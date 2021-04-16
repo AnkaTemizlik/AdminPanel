@@ -54,7 +54,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell.exe $(ProjectDir)Setup.ps1 -pluginIndex $(SolutionDir)DNA.API\ClientApp\src\plugins -appsettings $(SolutionDir)DNA.API\appsettings.json -projectName $(ProjectName)&#xD;&#xA;" />
+    <Exec Command="powershell.exe $(ProjectDir)Setup.ps1 -clientApp $(SolutionDir)DNA.API\ClientApp  -projectName $(ProjectName)" />
   </Target>
 
 

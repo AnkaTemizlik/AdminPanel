@@ -1,5 +1,4 @@
 import * as actionTypes from '../actions/actionTypes';
-import menus from '../../constants/menus';
 
 const updateObject = (oldObject, updatedProperties) => {
 	return {
@@ -15,8 +14,6 @@ const initialState = {
 	loading: false,
 	authRedirectPath: '/auth/login',
 	registered: {},
-	menus: menus,
-	defaultMenus: menus,
 	settings: {
 		configs: null,
 		screenConfig: null,
@@ -55,17 +52,14 @@ const authFail = (state, action) => {
 		error: action.error,
 		loading: false,
 		token: null,
-		user: null,
-		menus: state.defaultMenus
+		user: null
 	});
 };
 
 const authLogout = (state, action) => {
 	return updateObject(state, {
 		token: null,
-		user: null,
-		menus: menus,
-		defaultMenus: menus
+		user: null
 	});
 };
 
@@ -157,17 +151,14 @@ const initStart = (state, action) => {
 const initSuccess = (state, action) => {
 	return updateObject(state, {
 		error: null,
-		loading: false,
-		menus: action.menus,
-		defaultMenus: action.defaultMenus
+		loading: false
 	});
 };
 
 const initFail = (state, action) => {
 	return updateObject(state, {
 		error: action.error,
-		loading: false,
-		menus: state.defaultMenus
+		loading: false
 	});
 };
 /* get settings ********************* */
@@ -219,9 +210,9 @@ const reducer = (state = initialState, action) => {
 	switch (action.type) {
 		case actionTypes.RESET: return reset(state, action);
 
-		case actionTypes.SETTINGS_INIT_START: return initStart(state) // { ...state, loading: true, error: null };
-		case actionTypes.SETTINGS_INIT_SUCCESS: return initSuccess(state, action) // { ...state, menus: action.menus || initialState.menus, loading: false, error: null };
-		case actionTypes.SETTINGS_INIT_FAIL: return initFail(state, action) //{ ...state, menus: {}, loading: false, error: action.message };
+		case actionTypes.SETTINGS_INIT_START: return initStart(state)
+		case actionTypes.SETTINGS_INIT_SUCCESS: return initSuccess(state, action)
+		case actionTypes.SETTINGS_INIT_FAIL: return initFail(state, action)
 
 		case actionTypes.AUTH_GET_SETTINGS_START: return getSettingsStart(state, action);
 		case actionTypes.AUTH_GET_SETTINGS_SUCCESS: return getSettingsSuccess(state, action);

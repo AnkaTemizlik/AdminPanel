@@ -1,11 +1,10 @@
 import React, { useEffect, useCallback } from "react";
-import { useTranslation, Trans } from "react-i18next";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import SvgIcon from "@material-ui/core/SvgIcon";
-import { Avatar, Button, IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@material-ui/core";
-import { Drafts, Send } from "@material-ui/icons";
-import Plugin from "../../plugins";
+import { Avatar, IconButton, ListItemIcon, ListItemText, Menu, MenuItem } from "@material-ui/core";
 import axios from "../../store/axios";
 
 const TrIcon = (props) => {
@@ -83,6 +82,7 @@ const LanguageChanger = () => {
 	const { i18n } = useTranslation();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const classes = useStyles();
+	const { Plugin } = useSelector((state) => state.settings)
 
 	const changeLanguage = useCallback(
 		(lng) => {
@@ -103,13 +103,14 @@ const LanguageChanger = () => {
 	};
 
 	useEffect(() => {
-		let lng = i18n.language;
+		let lng = i18n.language || 'tr';
 		// tr-TR şeklinde gelirse değiştir.
-		if (i18n.language.indexOf("-") > -1) lng = i18n.language.split("-")[0];
+		if (lng.indexOf("-") > -1)
+			lng = i18n.language.split("-")[0];
 		changeLanguage(lng);
 	}, [changeLanguage, i18n.language]);
 
-	return Plugin.Languages.length > 1 ? (
+	return Plugin.Languages && Plugin.Languages.length > 1 ? (
 		<>
 			<IconButton edge="end" onClick={handleClick}>
 				<Avatar alt="Language" className={classes.small}>

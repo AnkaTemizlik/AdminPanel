@@ -29,8 +29,6 @@ const Settings = (props) => {
 	const { changeCount, restartWarn } = useSelector((state) => state.appsettings)
 	const { error, snack } = props;
 	const [loading] = useState(null);
-
-	console.info("Settings", sectionNames, currentSection, appsetting)
 	const [open, setOpen] = useState(true);
 	const [selectedSection, setSelectedSection] = useState(null);
 
@@ -117,7 +115,6 @@ const Settings = (props) => {
 												selectedItems={[selectedSection]}
 												itemRender={(i) => t(i)}
 												onSelectionChanged={(i) => {
-													console.info("onSelectionChanged", i.addedItems[0])
 													setSelectedSection(i.addedItems[0])
 												}}
 											/>

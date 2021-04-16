@@ -5,62 +5,68 @@ import { ArrowBack } from "@material-ui/icons";
 import { Trans, useTranslation } from "../../store/i18next";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import Container from "../../components/Container";
-import withSnack from "../../store/snack";
 import api from "../../store/api";
+import notify from 'devextreme/ui/notify';
 
 function AlertCodes(props) {
-	const { menu, snack } = props;
+	const { menu } = props;
 	let { t } = useTranslation();
 	let history = useHistory();
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState([]);
-	const [filtered, setFiltered] = useState([]);
-	const [search] = useState("");
+	const [error, setError] = useState(null);
 
 	const getData = useCallback(() => {
 		let url = "/api/help/alert-codes";
 		setLoading(true);
+		console.success("getData")
 		api.actions.run("GET", url).then((status) => {
-			setLoading(false);
 			if (status.Success) {
 				setData(status.Resource);
-				setFiltered(status.Resource);
+				//setFiltered(status.Resource);
+				setError(null)
 			} else {
-				snack.show(status);
+				setError(status)
 			}
+			setLoading(false);
 		});
-	}, [snack]);
+	}, []);
+
+	useEffect(() => {
+		if (error && error.Success == false)
+			notify(error.Message, "error", 3000);
+	}, [error]);
 
 	useEffect(() => {
 		getData();
 	}, [getData]);
 
-	useEffect(() => {
-		setFiltered(() => {
-			if (search == "") return data;
-			else if (data)
-				return data.map((g) => {
-					//group
-					if (g && g.Data && g.Data.length > 0) {
-						// row
-						const newRows = g.Data.map((r) => {
-							if (r.Key && `${r.Key}`.indexOf(search)) return r;
-							if (r.Value && r.Value.indexOf(search)) return r;
-							if (r.Comment && r.Comment.indexOf(search)) return r;
-							return null;
-						});
+	// useEffect(() => {
+	// 	setFiltered(() => {
+	// 		if (search == "") return data;
+	// 		else if (data)
+	// 			return data.map((g) => {
+	// 				//group
+	// 				if (g && g.Data && g.Data.length > 0) {
+	// 					// row
+	// 					const newRows = g.Data.map((r) => {
+	// 						if (r.Key && `${r.Key}`.indexOf(search)) return r;
+	// 						if (r.Value && r.Value.indexOf(search)) return r;
+	// 						if (r.Comment && r.Comment.indexOf(search)) return r;
+	// 						return null;
+	// 					});
 
-						if (newRows && newRows.length > 0) {
-							g.Data = newRows;
-							return g;
-						}
-						return null;
-					}
-					return null;
-				});
-			else return [];
-		});
-	}, [search, data]);
+	// 					if (newRows && newRows.length > 0) {
+	// 						g.Data = newRows;
+	// 						return g;
+	// 					}
+	// 					return null;
+	// 				}
+	// 				return null;
+	// 			});
+	// 		else return [];
+	// 	});
+	// }, [search, data]);
 
 	return (
 		<Container loading={loading}>
@@ -96,14 +102,14 @@ function AlertCodes(props) {
 				</Grid>
 
 				<Grid item xs={12}>
-					{filtered &&
-						filtered.map((g, i) => {
+					{data &&
+						data.map((g, i) => {
 							if (!g) return null;
 							if (!g.Data) return null;
 							if (g.Data.length == 0) return null;
 
 							return (
-								<Box p={2} key={i}>
+								<Box p={2} key={`alertCode${i}`}>
 									<Box pt={2}>
 										<Typography variant="h5" gutterBottom>
 											{t(g.GroupName)}
@@ -112,7 +118,7 @@ function AlertCodes(props) {
 									<Divider />
 									{g.Data.map((r, j) => {
 										return (
-											<Box p={1} key={`${i}-${j}`}>
+											<Box p={1} key={`alertCodeSub${j}`}>
 												<Box display="flex" alignItems="center">
 													<Typography variant="h6" component="span" style={{ width: 56 }}>
 														{r.Key > 0 ? r.Key : ""}
@@ -141,4 +147,4 @@ function AlertCodes(props) {
 	);
 }
 
-export default withSnack(AlertCodes);
+export default AlertCodes;

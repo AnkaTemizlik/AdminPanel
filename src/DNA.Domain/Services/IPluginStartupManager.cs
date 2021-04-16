@@ -17,5 +17,6 @@ namespace DNA.Domain.Services {
         Dictionary<string, System.Collections.IEnumerable> GenerateScreenLists();
         NotificationTypes GetNotificationTypes();
         JObject GetScreenDefaults();
+        void ApplyPluginMenus();
     }
 }

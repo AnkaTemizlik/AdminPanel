@@ -35,8 +35,6 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 
 				params["page"] = params.skip > 0 ? params.skip / params.take : 0
 
-				console.info("createCustomStore", loadOptions, params)
-
 				if (defaultFilter) {
 					params.filter = addQueryFilter(params.filter, defaultFilter)
 				}

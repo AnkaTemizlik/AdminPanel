@@ -33,7 +33,7 @@ const BrandLogo = (props, ref) => {
 	const { dark } = props
 	const classes = useStyles(props);
 	const icon = <BrandImage dark={dark} size={{ width: props.width || 160 }} />
-	const text = props.showText ? <Typography className={classes.brand} noWrap>DNA</Typography> : null
+	const text = null
 
 	if (props.hideIcon) {
 		return <Button className={classes.title} component={Link} to="/" color="inherit" >

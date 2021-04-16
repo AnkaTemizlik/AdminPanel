@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { Switch, Link, useRouteMatch, Route, useHistory, useParams } from "react-router-dom";
 import { CssBaseline, Box, Button, IconButton, Toolbar, Typography, Tooltip } from "@material-ui/core";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBeforeTwoTone";
@@ -9,15 +9,19 @@ import * as Treasury from "@mui-treasury/layout";
 import { useTranslation } from '../../store/i18next'
 import Footer from "../../components/Navigation/Footer";
 import Dashboard from "./Dashboard";
-import AlertCodes from "./AlertCodes";
 import Layout from "../../components/Layout";
 import { HomeSidebar, SidebarTrigger } from "../../components/Navigation/Sidebars";
 import Container from "../../components/Container";
 import SidebarMenu from "../../components/UI/Menu/SidebarMenu";
-import LanguageChanger from "../../components/UI/LanguageChanger";
 import withSnack from "../../store/snack";
 import api from "../../store/api";
 import Page from "./Page";
+import Loadable from 'react-loadable'
+
+const LoadableAlertCodes = Loadable({
+	loader: () => import('./AlertCodes'),
+	loading() { return null },
+})
 
 const config = {
 	xs: Treasury.getDefaultScreenConfig({
@@ -53,46 +57,55 @@ const config = {
 const Help = (props) => {
 	let { path, url } = useRouteMatch();
 	const { snack } = props;
-	let helpMenu = props.menus ? props.menus.help || {} : {};
+	const menus = useSelector((state) => state.menus)
+	let helpMenu = menus ? menus.help || {} : {};
 	let history = useHistory();
 	let { t } = useTranslation();
 	const [data, setData] = useState({ ...helpMenu });
+	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
 
-	const getData = useCallback(() => {
-		let url = "/api/help";
-		setLoading(true);
+	// const getData = useCallback(() => {
+	// 	let url = "/api/help";
+	// 	setLoading(true);
 
-		api.actions.run("GET", url).then((status) => {
-			setLoading(false);
-			if (status.Success) {
-				setData((m) => {
-					m.menus = [...helpMenu.menus, ...status.Resource.menus];
-					return { ...m };
-				});
-			} else {
-				snack.show(status);
-			}
-		});
-	}, [helpMenu, snack]);
+	// 	api.actions.run("GET", url).then((status) => {
+	// 		if (status.Success) {
+	// 			setData((m) => {
+	// 				m.menus = [...helpMenu.menus, ...status.Resource.menus];
+	// 				return { ...m };
+	// 			});
+	// 			setError(null)
+	// 		} else {
+	// 			setError(status)
+	// 		}
+	// 		setLoading(false);
+	// 	});
+	// }, [helpMenu]);
 
 	useEffect(() => {
-		getData();
-	}, [getData]);
+		if (error)
+			snack.show(error);
+	}, [error, snack]);
 
-	let components = {
-		alertCodes: AlertCodes,
-	};
+	// useEffect(() => {
+	// 	if (!loading)
+	// 		getData();
+	// }, [getData, loading]);
 
-	const renderRoutes = () => {
+	const renderRoutes = useCallback(() => {
 		var routes = [];
-
+		const components = {
+			alertCodes: LoadableAlertCodes,
+		};
+		console.success("renderRoutes", data.menus)
 		data.menus && data.menus.map((menu, i) => {
 			let SpecificPage = components[menu.name];
-			if (SpecificPage)
+			if (SpecificPage) {
 				routes.push(<Route key={i} path={`${url}${menu.to}`} exact>
 					<SpecificPage key={i} menu={menu} />
 				</Route>)
+			}
 			else {
 				routes.push(
 					<Route key={i} path={`${url}${menu.to}`} exact>
@@ -109,8 +122,8 @@ const Help = (props) => {
 			}
 		})
 
-		return routes
-	}
+		return routes.map(m => m)
+	}, [data.menus, url])
 
 	return (
 		<Layout config={config}>
@@ -152,19 +165,19 @@ const Help = (props) => {
 						</Toolbar>
 					</Treasury.Header>
 
-					{props.menus ? (
+					{menus ? (
 						<Treasury.Sidebar>
 							<SidebarMenu setOpened={setOpened} menu={data} />
 						</Treasury.Sidebar>
 					) : null}
 
-					{props.menus ? <HomeSidebar menus={props.menus} setOpened={setSecondaryOpened} user={props.user} /> : null}
+					{menus ? <HomeSidebar menus={menus} setOpened={setSecondaryOpened} user={props.user} /> : null}
 
 					<Treasury.Content>
-						<Container loading={loading}>
+						<Container>
 							<Switch>
 
-								{renderRoutes().map(m => m)}
+								{renderRoutes()}
 
 								<Route path={`${url}`}>
 									<Dashboard menu={data} />
@@ -175,7 +188,7 @@ const Help = (props) => {
 					</Treasury.Content>
 
 					<Treasury.Footer>
-						<Footer menus={props.menus} />
+						<Footer menus={menus} />
 					</Treasury.Footer>
 				</>
 			)
@@ -186,8 +199,7 @@ const Help = (props) => {
 
 const mapStateToProps = (state) => ({
 	user: state.auth.user,
-	isAuthenticated: state.auth.token != null,
-	menus: state.auth.menus,
+	isAuthenticated: state.auth.token != null
 });
 
 export default connect(mapStateToProps)(withSnack(Help));

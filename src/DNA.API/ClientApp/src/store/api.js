@@ -1,5 +1,5 @@
 import axios from "./axios";
-import Plugin, { AppId } from "../plugins";
+import Plugin from "../plugins";
 import i18n from "i18next";
 
 const check = (response, errorMessage) => {
@@ -128,9 +128,9 @@ const getUser = (id) => {
 	let url = `/api/auth/users/${id}`;
 	return execute(axios.get(url));
 };
-const saveUser = (user) => {
+const saveUser = (user, key) => {
 	let url = "/api/auth/users";
-	return execute(axios.post(url, { ...user, key: AppId }));
+	return execute(axios.post(url, { ...user, key: key }));
 };
 const auth = {
 	init,

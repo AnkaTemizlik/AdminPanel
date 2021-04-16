@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Root as TreasuryRoot } from "@mui-treasury/layout";
 import createTheme from '../theme'
@@ -17,9 +18,9 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Layout = (props) => {
-	const theme = createTheme()
+	const { Plugin } = useSelector((state) => state.settings)
+	const theme = createTheme(Plugin)
 	const classes = useStyles({ ...props, theme });
-
 	return <TreasuryRoot theme={theme} config={props.config}>
 
 		{(args) => {

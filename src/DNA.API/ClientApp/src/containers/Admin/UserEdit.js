@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Toolbar, Box, IconButton, Paper, Typography, FormControl, InputLabel, OutlinedInput, Select, MenuItem } from "@material-ui/core";
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserEdit = (props) => {
+	const { AppId } = useSelector((state) => state.settings)
 	const { snack, me } = props;
 	const { t } = useTranslation();
 	const classes = useStyles();
@@ -102,7 +104,7 @@ const UserEdit = (props) => {
 
 	const save = () => {
 		setLoading(true);
-		api.auth.saveUser(user).then((status) => {
+		api.auth.saveUser(user, AppId).then((status) => {
 			setLoading(false);
 			if (status.Success) {
 				snack.success(t("Saved successfully"));

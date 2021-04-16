@@ -157,5 +157,9 @@ namespace DNA.API.Services {
         public JObject GetScreenDefaults() {
             return null;
         }
+
+        public void ApplyPluginMenus() {
+            
+        }
     }
 }

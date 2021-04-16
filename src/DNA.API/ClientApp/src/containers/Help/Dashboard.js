@@ -22,14 +22,13 @@ import {
 	CardContent,
 	CardActions,
 	Button,
-	Divider,
 	CardHeader,
 	Avatar,
 } from "@material-ui/core";
 import { ArrowBack } from "@material-ui/icons";
-import { Trans, Tr, useTranslation } from "../../store/i18next";
+import { Trans, useTranslation } from "../../store/i18next";
 import Container from "../../components/Container";
-import { deepOrange, deepPurple } from "@material-ui/core/colors";
+//import { deepOrange, deepPurple } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
 	avatar: {
@@ -38,21 +37,21 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-function AlertCodes(props) {
+function Dashboard(props) {
 	const { menu } = props;
 	const classes = useStyles();
 	let { t } = useTranslation();
 	let history = useHistory();
-	let { url } = useRouteMatch();
+	//let { url } = useRouteMatch();
 
 	function render(menu, to, breadcrumb) {
 		if (menu.menus.length > 0) {
 			return menu.menus.map((m, i) => {
 				return (
-					<>
-						{renderCard(m, m.noLink ? to : `${to}${m.to}`, m.label, breadcrumb)}
+					<React.Fragment key={i}>
+						{m.noLink ? null : renderCard(m, `${to}${m.to}`, m.label, breadcrumb)}
 						{render(m, `${to}${m.to}`, `${breadcrumb} > ${m.label}`)}
-					</>
+					</React.Fragment>
 				);
 			});
 		}
@@ -144,4 +143,4 @@ function AlertCodes(props) {
 	);
 }
 
-export default AlertCodes;
+export default Dashboard;

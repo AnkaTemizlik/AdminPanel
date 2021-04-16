@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 import Help from './Help'
@@ -14,9 +14,7 @@ import { Alert, AlertTitle } from "@material-ui/lab";
 
 const Root = (props) => {
 	let dispatch = useDispatch();
-
 	const { onTryAutoSignup } = props
-
 	const settings = useSelector((state) => state.settings)
 	const alerts = useSelector((state) => state.alerts)
 

@@ -131,11 +131,11 @@ namespace DNA.API.Controllers {
                 //        }
                 //    }
                 //}
-                data.Add(new {
-                    GroupId = "10",
-                    GroupName = "Messages returned from the GIB",
-                    Data = dictionary
-                });
+                //data.Add(new {
+                //    GroupId = "10",
+                //    GroupName = "Messages returned from the GIB",
+                //    Data = dictionary
+                //});
 
                 await Task.CompletedTask;
                 return Ok(new Response(data));
