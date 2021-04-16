@@ -1,13 +1,11 @@
-
 import React from 'react';
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Box, Typography, Toolbar, Grid, Container } from '@material-ui/core';
-import { Tr, useTranslation } from '../../store/i18next'
+import { Tr } from '../../store/i18next'
 import { HomeMenu } from '../../components/Navigation/Menus';
 import logo from '../../assets/logo6432.png'
 import logo256 from '../../assets/logo.png'
-import Plugin from '../../plugins'
 
 const rnd = Math.floor((Math.random() * 6) + 1);
 
@@ -30,14 +28,14 @@ const useStyles = makeStyles(theme => {
 	}
 });
 
-
 const Welcome = (props) => {
 
 	var classes = useStyles();
-	const { t } = useTranslation()
 	const isAuthenticated = useSelector((state) => state.auth.token !== null)
 	const homeMenu = useSelector((state) => state.menus.home)
-	const { version } = useSelector((state) => state.settings)
+	const settings = useSelector((state) => state.settings)
+
+	const { version, Plugin, Logo } = settings
 
 	return <Box className={`bg-${rnd}`} style={{
 		backgroundRepeat: "no-repeat !important",
@@ -59,8 +57,8 @@ const Welcome = (props) => {
 				<Box pt={18}></Box>
 				<Grid item>
 					<Toolbar>
-						<img className={classes.logo} src={logo256} alt="" />
-						<Typography variant="h2" style={{ color: "lightgray", paddingTop: 1 }}>{Plugin.Program || 'API'}</Typography>
+						<img className={classes.logo} src={Plugin.CompanyLogo || logo256} alt="" style={{ marginRight: 16 }} />
+						<Typography variant="h2" style={{ color: "lightgray", paddingTop: 1 }}>{Plugin.ProgramName || 'API'}</Typography>
 						<Typography variant="body2" style={{ color: "lightgray", padding: "28px 0 0 16px" }}>{version}</Typography>
 					</Toolbar>
 				</Grid>
@@ -80,7 +78,7 @@ const Welcome = (props) => {
 					<Toolbar>
 						<Box flexGrow="1"></Box>
 						<Typography variant="caption" style={{ color: "lightgray" }}>
-							Powered by &nbsp;<img style={{ margin: -2 }} src={logo} alt="" />
+							Powered by &nbsp;<img style={{ marginBottom: -8, marginLeft: 8 }} src={Logo || logo} alt="" />
 						</Typography>
 					</Toolbar>
 				</Grid>
