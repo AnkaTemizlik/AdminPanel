@@ -6,7 +6,6 @@ import BusinessCenter from "@material-ui/icons/BusinessCenter";
 import { getSettings } from '../../store/slices/settingsSlice'
 import AdminRoute from "../../components/Route/AdminRoute";
 import Footer from "../../components/Navigation/Footer";
-import Plugin from '../../plugins';
 import Management from './Management/Management';
 import Dashboard from './Dashboard';
 import Layout from "../../components/Layout";
@@ -61,7 +60,6 @@ const Admin = (props) => {
 	let history = useHistory();
 	const components = {
 		Management: Management,
-		Definitions: Plugin.Definitions,
 		Statistics: Statistics,
 		Dashboard: Dashboard,
 		"user-management": Users,
@@ -172,7 +170,6 @@ const Admin = (props) => {
 const mapStateToProps = (state) => ({
 	user: state.auth.user,
 	isAuthenticated: state.auth.token != null,
-	//menus: state.auth.menus,
 });
 
 export default connect(mapStateToProps)(Admin);

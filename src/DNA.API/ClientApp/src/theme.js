@@ -1,14 +1,13 @@
 
 import * as styles from '@material-ui/core/styles';
-import Plugin from './plugins'
 
-const createTheme = (pri, sec) => {
+const createTheme = (Plugin) => {
 	const pluginPrimary = Plugin && Plugin.Theme && Plugin.Theme.colors && Plugin.Theme.colors.primary;
 	const pluginSecondary = Plugin && Plugin.Theme && Plugin.Theme.colors && Plugin.Theme.colors.secondary;
 	//const white = '#fff'
-	const primary = pri || pluginPrimary || '#1e88e5'
-	const secondary = sec || pluginSecondary || '#f50057'
 
+	const primary = pluginPrimary || '#318CE7'
+	const secondary = pluginSecondary || '#ED872D'
 	//const dark = '#323545'
 	//const dark2 = '#272a3a'
 	const theme = styles.createMuiTheme({
@@ -199,7 +198,5 @@ const createTheme = (pri, sec) => {
 	}
 	return theme
 };
-
-console.info("[theme]", createTheme())
 
 export default createTheme

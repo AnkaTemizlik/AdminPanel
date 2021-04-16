@@ -127,16 +127,20 @@ const Users = (props) => {
 					</Toolbar>
 				</Grid>
 				<Grid item xs={12}>
-					<DataTable
-						id={"idForUsers"}
-						remoteOperations={false}
-						dataSource={users || []}
-						columns={columns}
-						keyFieldName="Id"
-						allowFilter={false}
-						allowPaging={false}
-						onFocusedRowChanged={focusedRowChanged}
-					/>
+					<Paper>
+						<Box p={1}>
+							<DataTable
+								id={"idForUsers"}
+								remoteOperations={false}
+								dataSource={users || []}
+								columns={columns}
+								keyFieldName="Id"
+								allowFilter={false}
+								allowPaging={false}
+								onFocusedRowChanged={focusedRowChanged}
+							/>
+						</Box>
+					</Paper>
 				</Grid>
 			</Grid>
 		</Container>

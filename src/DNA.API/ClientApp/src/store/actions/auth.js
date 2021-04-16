@@ -2,8 +2,6 @@ import axios from '../axios';
 import api from '../api';
 import * as actionTypes from './actionTypes';
 import find from 'lodash/find'
-import { AppId } from '../../plugins'
-import { configureSettings } from '../slices/settingsSlice'
 
 export const reset = () => {
 	return dispatch => {
@@ -53,14 +51,14 @@ export const checkAuthTimeout = (expirationTime) => {
 	};
 };
 
-export const auth = (email, password) => {
+export const auth = (email, password, key) => {
 	return dispatch => {
 		dispatch(authStart());
 
 		const authData = {
 			username: email,
 			password: password,
-			key: AppId
+			key: key
 		};
 
 		delete axios.defaults.headers.common["Authorization"]
@@ -217,7 +215,7 @@ export const register = (data) => {
 	return dispatch => {
 		dispatch(registerStart());
 
-		return api.auth.register({ ...data, key: AppId })
+		return api.auth.register({ ...data })
 			.then((status) => {
 				status.Success
 					? dispatch(registerSuccess(status))

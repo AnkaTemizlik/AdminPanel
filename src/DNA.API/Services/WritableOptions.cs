@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DNA.Domain.Extentions;
 using Microsoft.Extensions.DependencyInjection;
+using DNA.Domain.Models.Pages;
 
 namespace DNA.API.Services {
 
@@ -26,6 +27,7 @@ namespace DNA.API.Services {
         //private readonly IWebHostEnvironment _environment;
         private readonly IConfigurationRoot _configuration;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IMenuService _menuService;
         private readonly JsonMergeSettings _jsonMergeSettings = new JsonMergeSettings {
             MergeArrayHandling = MergeArrayHandling.Union,
             MergeNullValueHandling = MergeNullValueHandling.Merge
@@ -33,10 +35,11 @@ namespace DNA.API.Services {
 
         public ConfigTemplate GetConfigTemplate() => new ConfigTemplate();
 
-        public WritableOptions(IConfigurationRoot configuration, IServiceProvider serviceProvider) {
+        public WritableOptions(IConfigurationRoot configuration, IServiceProvider serviceProvider, IMenuService menuService) {
             //_environment = environment;
             _configuration = configuration;
             _serviceProvider = serviceProvider;
+            this._menuService = menuService;
         }
 
         public async Task<JObject> GetScreenConfig() {
@@ -69,46 +72,40 @@ namespace DNA.API.Services {
             }
         }
 
-        public async Task<dynamic> GetLocalesConfigAsync(string culture, string ns) {
+        public async Task<dynamic> GetLocalesConfigAsync() {
 
             var section = _configuration.GetSection("MultiLanguage");
-            var enabled = section.GetValue<bool?>("Enabled") ?? false;
-            if (enabled) {
-                culture = string.IsNullOrWhiteSpace(culture) ? string.Empty : culture;
-                if (culture.Contains('-'))
-                    culture = culture.Split('-')[0];
-            }
-            else {
-                culture = section.GetValue<string>("Default") ?? "tr";
-            }
+            var enabled = section.GetValue<bool>("Enabled");
+            var languages = enabled
+                ? section.GetSection("Languages").Get<List<string>>()
+                : new List<string> { "tr" };
 
-            ns = ns == "common" ? string.Empty : $"{ns}.";
-            var file = $"appsettings.locales.{ns}{(culture == "tr" ? string.Empty : $"{culture}.")}json";
-            file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
+            var root = JObject.FromObject(new { });
 
-            if (File.Exists(file)) {
+            foreach (var item in languages) {
+                var culture = (item == "tr" ? string.Empty : $"{item}.");
+                var file = $"appsettings.locales.{culture}json";
                 file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, file);
-                var json = await File.ReadAllTextAsync(file);
-                var jObject = Newtonsoft.Json.Linq.JObject.Parse(json);
-                return jObject["Translations"][culture];
+                if (File.Exists(file)) {
+                    var json = Newtonsoft.Json.Linq.JObject.Parse(await File.ReadAllTextAsync(file));
+                    var filePlugin = $"appsettings.locales.plugin.{culture}json";
+                    filePlugin = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePlugin);
+                    if (File.Exists(filePlugin)) {
+                        var jsonPlugin = Newtonsoft.Json.Linq.JObject.Parse(await File.ReadAllTextAsync(filePlugin));
+                        json.Merge(jsonPlugin);
+                    }
+                    root.Merge(json);
+                }
             }
-
-            return new { };
+            return root;
         }
 
-        public async Task<dynamic> Get() {
+        public async Task<dynamic> Get(bool isAuthenticated) {
             var names = _configuration.GetSection("EditableConfigFiles:Names").Get<List<string>>();
             var s = _configuration.GetSection($"EditableConfigFiles:Files:0");
-            //var list = new dynamic[names.Count];
-            //for (int i = 0; i < names.Count; i++) {
-            //    var s = _configuration.GetSection($"EditableConfigFiles:Files:{i}");
-            //    var c = await GetConfig(i, s.GetValue<string>("Title"), s.GetValue<string>("Icon"), s.GetValue<string>("ConfigFile"));
-            //    list[i] = c;
-            //}
-            return await GetConfig(0, s.GetValue<string>("Title"), s.GetValue<string>("Icon"), s.GetValue<string>("ConfigFile"));
-        }
-
-        async Task<dynamic> GetConfig(int id, string title, string icon, string fileName) {
+            var title = s.GetValue<string>("Title");
+            var fileName = s.GetValue<string>("ConfigFile");
+            var icon = s.GetValue<string>("Icon");
 
             string file = null;
             if (string.IsNullOrWhiteSpace(Path.GetDirectoryName(fileName)))
@@ -117,17 +114,31 @@ namespace DNA.API.Services {
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
             if (string.IsNullOrWhiteSpace(file))
-                return new {
-                    id,
-                    title,
-                    icon,
-                    values = new JObject(),
-                    config = new JObject(),
-                    version
-                };
+                throw new Exception("FATAL: Config file not found.");
 
             var json = await File.ReadAllTextAsync(file);
             var jObject = Newtonsoft.Json.Linq.JObject.Parse(json);
+            var MultiLanguage = jObject.SelectToken("MultiLanguage") ?? new JObject();
+            var Plugin = jObject.SelectToken("Config.Company") ?? new JObject();
+            var AppId = jObject.SelectToken("AppId.WEB");
+            var Logo = jObject.SelectToken("Worker.Logo") ?? "";
+
+            if (!isAuthenticated) {
+                return new {
+                    id = 0,
+                    title,
+                    icon,
+                    values = new JObject(),
+                    config = new {
+                        WarningMessage = jObject.SelectToken("Config.WarningMessage")
+                    },
+                    version,
+                    MultiLanguage,
+                    Plugin,
+                    AppId,
+                    Logo
+                };
+            }
 
             foreach (var item in jObject.SelectToken("ConfigEditing.Fields").Children()) {
 
@@ -152,21 +163,17 @@ namespace DNA.API.Services {
                 }
             }
 
-            //if (forMergeConfig != null)
-            //    forMergeConfig.Merge(jObject, new JsonMergeSettings {
-            //        MergeArrayHandling = MergeArrayHandling.Merge,
-            //        MergeNullValueHandling = MergeNullValueHandling.Merge
-            //    });
-            //else
-            //    forMergeConfig = jObject;
-
             return new {
-                id,
+                id = 0,
                 title,
                 icon,
                 values = jObject["Config"],
                 config = jObject["ConfigEditing"],
-                version
+                version,
+                MultiLanguage,
+                Plugin,
+                AppId,
+                Logo
             };
         }
 
@@ -199,7 +206,7 @@ namespace DNA.API.Services {
             }
             File.WriteAllText(file, JsonConvert.SerializeObject(jObject, Formatting.Indented), System.Text.Encoding.UTF8);
             _configuration.Reload();
-            return await Get();
+            return await Get(true);
         }
 
         public void GenerateConfigs() {
@@ -215,6 +222,7 @@ namespace DNA.API.Services {
                 string pluginSourcePath = null;
                 var pluginConfigTemplate = JObject.Parse("{}");
                 var moduleScreenDefaults = JObject.Parse("{}");
+                var menus = LoadMenus();
                 var extraScreenLists = new Dictionary<string, IEnumerable>();
                 var pluginNotifyTypes = new NotificationTypes();
                 pluginNotifyTypes.AddDefaults();
@@ -223,10 +231,13 @@ namespace DNA.API.Services {
 
                 var provider = _serviceProvider.CreateScope().ServiceProvider;
                 foreach (var manager in provider.GetServices<IPluginStartupManager>().OrderBy(_ => !_.IsModule)) {
+
                     // load models
                     models.TryAddRange(manager.LoadModels());
+
                     // add notify types
                     pluginNotifyTypes.AddRange(manager.GetNotificationTypes());
+
                     // add extra list to screen config
                     var pluginExtraLists = manager.GenerateScreenLists();
                     if (pluginExtraLists != null) {
@@ -237,6 +248,10 @@ namespace DNA.API.Services {
                         }
                     }
 
+                    // change menus
+                    manager.ApplyPluginMenus();
+                    
+                    // config
                     if (manager.IsModule) {
                         pluginConfigTemplate.Merge(manager.GetDefaultConfig(new ConfigTemplate()), _jsonMergeSettings);
                         moduleScreenDefaults.Merge(manager.GetScreenDefaults(), _jsonMergeSettings);
@@ -260,47 +275,32 @@ namespace DNA.API.Services {
                 }
 
                 _configuration.Reload();
+
+                _menuService.Configure(_configuration);
+
+                //WriteMenus(menus);
+
             }
             catch (Exception ex) {
                 throw ex;
             }
         }
 
-        /*
-        [Obsolete]
-        void GenerateConfigX(IPluginStartupManager manager) {
-            if (manager.IsModule)
-                return;
-            if (!manager.PluginSourcePath.Contains(":"))
-                throw new Exception("PluginSourcePath tam yolu belirtmeli.");
-
-            var pluginSourcePath = manager.IsModule ? null : manager.PluginSourcePath;
-            var models = manager.LoadModels();
-            var pluginConfigTemplate = manager.GetDefaultConfig(new ConfigTemplate());
-            var pluginExtraLists = manager.GenerateLists();
-            var pluginNotifyTypes = manager.GetNotificationTypes() ?? new NotificationTypes();
-            pluginNotifyTypes.AddDefaults();
-
-            if (!models.Any(_ => _.Name == typeof(Notification).Name))
-                models.Add(new ScreenModel(null, typeof(Notification), true, true, false));
-            if (!models.Any(_ => _.Name == typeof(Models.User).Name))
-                models.Add(new ScreenModel(null, typeof(Models.User), false, true, false));
-            if (!models.Any(_ => _.Name == typeof(LogLevelTypes).Name))
-                models.Add(new ScreenModel(typeof(LogLevelTypes)));
-            if (!models.Any(_ => _.Name == typeof(OperatorTypes).Name))
-                models.Add(new ScreenModel(typeof(OperatorTypes)));
-
-            var extraScreenLists = new Dictionary<string, IEnumerable>();
-            if (pluginExtraLists != null) {
-                foreach (var item in pluginExtraLists) {
-                    if (!extraScreenLists.ContainsKey(item.Key)) {
-                        extraScreenLists[item.Key] = item.Value;
-                    }
-                }
-            }
-            extraScreenLists.Add("NotificationTypes", pluginNotifyTypes);
+        JObject LoadMenus() {
+            var fileFullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.menus.json");
+            if (!File.Exists(fileFullName))
+                throw new Exception("Menu not found");
+            var json = JObject.Parse(File.ReadAllText(fileFullName));
+            string result = json.ToString();
+            _menuService.Load(json);            
+            return json;
         }
-        */
+
+        //void WriteMenus(JObject json) {
+        //    var fileFullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.menus.json");
+        //    string result = json.ToString();
+        //    // File.WriteAllText(fileFullName, result, System.Text.Encoding.UTF8);
+        //}
 
         void AddModelsToPluginScreenConfig(string pluginSourcePath, ScreenModelCollection list, Dictionary<string, IEnumerable> extraLists, JObject moduleScreenDefaults) {
 
@@ -944,11 +944,11 @@ namespace DNA.API.Services {
             generated.Merge(json, _jsonMergeSettings);
 
             string result = generated.ToString();
-            File.WriteAllText(fileFullName, result);
+            File.WriteAllText(fileFullName, result, System.Text.Encoding.UTF8);
 #if DEBUG
             if (!string.IsNullOrWhiteSpace(pluginSourcePath)) {
                 var devFullName = Path.Combine(pluginSourcePath, fileName);
-                File.WriteAllText(devFullName, result);
+                File.WriteAllText(devFullName, result, System.Text.Encoding.UTF8);
             }
 #endif
         }
@@ -995,11 +995,11 @@ namespace DNA.API.Services {
 #if DEBUG
                 if (!string.IsNullOrWhiteSpace(_pluginSourcePath)) {
                     var devFullName = Path.Combine(_pluginSourcePath, fileName);
-                    File.WriteAllText(devFullName, result);
+                    File.WriteAllText(devFullName, result, System.Text.Encoding.UTF8);
                 }
 #endif
 
-                File.WriteAllText(fileFullName, result);
+                File.WriteAllText(fileFullName, result, System.Text.Encoding.UTF8);
             }
         }
 
@@ -1024,10 +1024,11 @@ namespace DNA.API.Services {
                     Worker = new {
                         Enabled = false,
                         Assembly = ".dll",
-                        Controllers = GetControllers(template)
+                        Controllers = GetControllers(template),
+                        Logo = ""
                     },
                     Modules = new { },
-                    MultiLanguage = new { Enabled = false, Languages = new string[] { "tr" }, Default = "tr" },
+                    MultiLanguage = new { Enabled = false, Languages = new string[] { "tr" }, Default = "tr", Debug = false },
                     ConfigEditing = new {
                         Enabled = true,
                         Fields = template.GetFieldTemplates(""),
@@ -1048,17 +1049,16 @@ namespace DNA.API.Services {
 
             string result = templateObj.ToString();
             var fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-            File.WriteAllText(fullName, result);
+            File.WriteAllText(fullName, result, System.Text.Encoding.UTF8);
 
 #if DEBUG
             if (!string.IsNullOrWhiteSpace(pluginSourcePath)) {
                 var devFullName = Path.Combine(pluginSourcePath, fileName);
-                File.WriteAllText(devFullName, result);
+                File.WriteAllText(devFullName, result, System.Text.Encoding.UTF8);
             }
 #endif
             DeletePluginConfigFile(pluginSourcePath);
         }
-
 
         Dictionary<string, object> GetControllers(ConfigTemplate configTemplate) {
             var controllers = new Type[] {
@@ -1079,6 +1079,7 @@ namespace DNA.API.Services {
             list.Add("Success", "success");
             return list;
         }
+
         Dictionary<string, string> GetRoles() {
             var list = new Dictionary<string, string>();
             list.Add("Admin", "Admin");
@@ -1103,12 +1104,12 @@ namespace DNA.API.Services {
 
             string result = template.ToString();
             var fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-            File.WriteAllText(fullName, result);
+            File.WriteAllText(fullName, result, System.Text.Encoding.UTF8);
 
 #if DEBUG
             if (!string.IsNullOrWhiteSpace(pluginSourcePath)) {
                 var devFullName = Path.Combine(pluginSourcePath, fileName);
-                File.WriteAllText(devFullName, result);
+                File.WriteAllText(devFullName, result, System.Text.Encoding.UTF8);
             }
 #endif
         }
@@ -1126,5 +1127,6 @@ namespace DNA.API.Services {
             }
 #endif
         }
+
     }
 }

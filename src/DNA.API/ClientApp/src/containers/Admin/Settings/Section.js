@@ -56,7 +56,6 @@ const Section = (props) => {
 			})}
 
 			{_.objects.map((f, i) => {
-				console.warning("Section objects", f)
 				return (
 					<Grid item xs={12} sm={6} md={6} lg={4} key={i}>
 						<ObjectCard

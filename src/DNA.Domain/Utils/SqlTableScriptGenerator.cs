@@ -47,7 +47,7 @@ namespace DNA.Domain.Utils {
                 }
             }
 
-            File.WriteAllText(Path.Combine(path, "SqlQueries", "_CreateTableScripts.sql"), builder.ToString().Replace("{TablePrefix}", tablePrefix));
+            File.WriteAllText(Path.Combine(path, "SqlQueries", "_CreateTableScripts.sql"), builder.ToString().Replace("{TablePrefix}", tablePrefix), System.Text.Encoding.UTF8);
         }
 
         public static string SetTablePrefix(string query, IConfiguration _configuration) {

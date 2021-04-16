@@ -9,6 +9,22 @@ import i18next from 'i18next'
 import CustomStore from 'devextreme/data/custom_store';
 import { isNotEmpty, rolesAllowed, toQueryString } from '../utils';
 
+export const applyGlobalSettings = createAsyncThunk(
+	'panel/settings/applyGlobalSettings',
+	async (params, { dispatch, getState }) => {
+		console.purple("applyGlobalSettings", params)
+		let status = params;
+		dispatch(setSettings(status))
+		if (status.Success) {
+			let resource = { ...status.Resource }
+			dispatch(applyAppSettings(resource.configs))
+		}
+		else
+			dispatch(showMessage(status))
+		return status
+	}
+)
+
 export const getSettings = createAsyncThunk(
 	'panel/settings/getSettings',
 	async (params, { dispatch, getState }) => {
@@ -52,15 +68,17 @@ const settingsSlice = createSlice({
 				if (appConfig)
 					Object.keys(appConfig).map((s) => state[s] = appConfig[s])
 				state.version = payload.Resource.configs.version
+				state.Plugin = payload.Resource.configs.Plugin
+				state.AppId = payload.Resource.configs.AppId
+				state.MultiLanguage = payload.Resource.configs.MultiLanguage
+				state.Logo = payload.Resource.configs.Logo
 			}
 			else
 				state.error = payload
 		}
 	},
 	extraReducers: {
-		[getSettings.fulfilled]: (state, action) => {
-
-		}
+		//[getSettings.fulfilled]: (state, action) => {	}
 	}
 })
 

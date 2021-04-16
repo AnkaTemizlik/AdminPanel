@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { Link as RouteLink, useHistory, useLocation } from "react-router-dom";
 import { Grid, Button, Link, Box, FormControlLabel, Switch } from "@material-ui/core";
 // import ReCAPTCHA from "react-google-recaptcha";
@@ -18,7 +18,7 @@ function useQuery() {
 const Login = (props) => {
 	const { loading, isAuthenticated, error } = props
 	const { snack } = props
-
+	const { AppId } = useSelector((state) => state.settings)
 	let history = useHistory();
 	let location = useLocation();
 	let query = useQuery();
@@ -56,7 +56,7 @@ const Login = (props) => {
 
 	const loginHandler = (event) => {
 		event.preventDefault();
-		props.onAuth(values.email, values.password).then((response) => {
+		props.onAuth(values.email, values.password, AppId).then((response) => {
 			if (response.Success) {
 				if (response.Resource.IsInitialPassword) {
 					history.replace("/auth/changePassword/" + response.Resource.PasswordConfirmationCode);
@@ -153,7 +153,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onAuth: (email, password) => dispatch(actions.auth(email, password)),
+		onAuth: (email, password, key) => dispatch(actions.auth(email, password, key)),
 		onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
 	};
 };

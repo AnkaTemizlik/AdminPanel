@@ -243,10 +243,10 @@ namespace DNA.API.Extensions {
         public static void ConfigureWritable(this IServiceCollection services, IConfiguration configuration) {
             services.AddSingleton<IWritableOptions>(provider => {
                 var configuration = (IConfigurationRoot)provider.GetService<IConfiguration>();
+                var menuService = (IMenuService)provider.GetService<IMenuService>();
                 var serviceProvider  = provider.GetService<IServiceProvider>();
-                //var iPluginStartupManagers = provider.GetServices<IPluginStartupManager>();
                 //var environment = provider.GetService<IWebHostEnvironment>();
-                var writableOptions = new WritableOptions(configuration, serviceProvider);
+                var writableOptions = new WritableOptions(configuration, serviceProvider, menuService);
                 writableOptions.GenerateConfigs();
                 return writableOptions;
             });

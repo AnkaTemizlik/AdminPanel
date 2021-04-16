@@ -1,13 +1,17 @@
-import { createSlice, current } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import _ from 'lodash'
-import menus from '../../constants/menus'
 
 const menusSlice = createSlice({
 	name: 'menus',
-	initialState: { ...menus },
+	initialState: {},
 	reducers: {
 		resetPanelMenu: (state, action) => {
-			state.panel = { ...menus.panel }
+			state.panel = { ...state.default.panel }
+		},
+		loadMenu: (state, action) => {
+			const menus = action.payload.Resource
+			Object.keys(menus).map((s) => state[s] = menus[s])
+			state.default = { ...action.payload.Resource }
 		},
 		addTokenToHangfireMenu: (state, action) => {
 			const { token } = action.payload
@@ -137,7 +141,8 @@ export const {
 	appendMenusFromConfig,
 	appendMenusFromScreens,
 	addTokenToHangfireMenu,
-	resetPanelMenu
+	resetPanelMenu,
+	loadMenu
 } = menusSlice.actions;
 
 export default menusSlice.reducer;

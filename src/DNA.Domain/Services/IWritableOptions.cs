@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace DNA.Domain.Services {
     public interface IWritableOptions {
         Task<dynamic> Update(int fileId, Dictionary<string, dynamic> changes);
-        Task<dynamic> Get();
+        Task<dynamic> Get(bool isAuthenticated);
         Task<JObject> GetScreenConfig();
-        Task<dynamic> GetLocalesConfigAsync(string culture, string ns);
+        Task<dynamic> GetLocalesConfigAsync();
 
         void GenerateConfigs();
         ConfigTemplate GetConfigTemplate();

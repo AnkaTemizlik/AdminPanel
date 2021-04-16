@@ -1,4 +1,4 @@
-﻿import Plugin from './P00'
+﻿import Plugin from './P05'
 
 const AppId = Plugin.AppId
 
@@ -6,8 +6,8 @@ export { AppId }
 
 document.title = "" + (Plugin.Name || '') + " " + (Plugin.Program || '')
 
-export default {
-	...(Plugin || {}),
-	Color: Plugin.Color || "blue",
-	Languages: Plugin.Languages ?? ["tr"]
+export const changeDxTheme = (color) => {
+	require('../assets/dx.material.' + (color || Plugin.color || "blue") + '.css')
 }
+
+export default Plugin

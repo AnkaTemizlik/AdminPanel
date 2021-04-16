@@ -4,6 +4,7 @@ using DNA.API.PluginTemplate.Models;
 using DNA.Domain.Exceptions;
 using DNA.Domain.Extentions;
 using DNA.Domain.Models;
+using DNA.Domain.Models.Pages;
 using DNA.Domain.Services;
 using DNA.Domain.Utils;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,17 +50,25 @@ namespace DNA.API.PluginTemplate {
 
             ConfigProperty Config = template
                 .RecurringJobsProperty(true, nameof(Services.PluginProcessJob))
-                .Set("NoX", template.Property()
-                    .Set("Document", template.Property())
-                    )
+                //.Set("NoX", template.Property()
+                //    .Set("Document", template.Property())
+                //    )
                 //.Set("EMails", template.Property()
                 //    .SetEmail("Invoice", template.Property())
                 //    )
-                .Set("ELogoService", template.Property()
-                    .Add("Enabled", true)
-                    )
-                .Set("EAdaptor", template.Property()
-                    .Add("Enabled", true)
+                //.Set("ELogoService", template.Property()
+                //    .Add("Enabled", true)
+                //    )
+                //.Set("EAdaptor", template.Property()
+                //    .Add("Enabled", true)
+                //    )
+                .Set("SocialMediaLinks", false, template.Property()
+                    .AddTextArea("Twitter", "#")
+                    .AddTextArea("YouTube", "#")
+                    .AddTextArea("Facebook", "#")
+                    .AddTextArea("Instagram", "#")
+                    .AddTextArea("LinkedIn", "#")
+                    .AddTextArea("Email", "mailto:#")
                     )
                 ;
 
@@ -69,7 +78,7 @@ namespace DNA.API.PluginTemplate {
                 Worker = new {
                     Controllers = new {
                         Names = new string[] {
-                            "Invoice",
+                            //"Invoice",
                         },
                         //Invoice = new {
                         //    Hidden = false,
@@ -107,6 +116,10 @@ namespace DNA.API.PluginTemplate {
 
         public JObject GetScreenDefaults() {
             return null;
+        }
+
+        public void ApplyPluginMenus() {
+            
         }
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { Switch, Route, Link } from 'react-router-dom'
 import { CssBaseline, Hidden, Box, IconButton } from '@material-ui/core'
 import * as Treasury from "@mui-treasury/layout";
@@ -33,6 +33,8 @@ const config = {
 
 const Auth = (props) => {
 
+	const menus = useSelector((state) => state.menus)
+
 	return <Layout config={config}>
 		{({ setSecondaryOpened }) => {
 			return (<>
@@ -44,7 +46,7 @@ const Auth = (props) => {
 					</IconButton>
 
 					<Hidden xsDown>
-						<HomeMenu menu={props.menus.home} isAuthenticated={props.isAuthenticated} />
+						<HomeMenu menu={menus.home} isAuthenticated={props.isAuthenticated} />
 					</Hidden>
 
 					<Box flexGrow="1" />
@@ -63,8 +65,8 @@ const Auth = (props) => {
 
 				</Header>
 
-				{props.menus
-					? <HomeSidebar setOpened={setSecondaryOpened} menus={props.menus} user={props.user} />
+				{menus
+					? <HomeSidebar setOpened={setSecondaryOpened} menus={menus} user={props.user} />
 					: null}
 
 				<Treasury.Content>
@@ -85,7 +87,7 @@ const Auth = (props) => {
 				</Treasury.Content>
 
 				<Treasury.Footer>
-					<Footer menus={props.menus} />
+					<Footer menus={menus} />
 				</Treasury.Footer>
 			</>)
 		}}
@@ -95,9 +97,8 @@ const Auth = (props) => {
 const mapStateToProps = state => {
 	return {
 		isAuthenticated: state.auth.token != null,
-		user: state.auth.user,
-		menus: state.auth.menus
+		user: state.auth.user
 	}
 }
 
-export default connect(mapStateToProps, null)(Auth)
+export default connect(mapStateToProps)(Auth)

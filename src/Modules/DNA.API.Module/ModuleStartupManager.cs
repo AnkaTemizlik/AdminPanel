@@ -93,5 +93,9 @@ namespace DNA.API.Module {
             }
             return null;
         }
+
+        public void ApplyPluginMenus() {
+            
+        }
     }
 }

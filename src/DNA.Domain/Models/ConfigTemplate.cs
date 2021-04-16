@@ -127,10 +127,22 @@ namespace DNA.Domain.Models {
                     .Add("Title", "Warning")
                     .AddTextArea("Message", "You are currently working in a test environment")
                     )
+                .Set("Company", false, Property()
+                    .Add("CompanyName", "DNA")
+                    .Add("CompanyLogo", "")
+                    .Add("ProgramName", "DNA.API")
+                    .Add("Description", "Access points to the background workers")
+                    .Set("Theme", Property()
+                        .Set("colors", Property()
+                            .Add("primary", "#43A047")
+                            .Add("secondary", "#D81B60")
+                        )
+                    )
+                    .Add("Color", "blue")
+                )
                 ;
         }
     }
-
 
     public class ConfigProperty : Dictionary<string, object> {
 
@@ -263,15 +275,14 @@ namespace DNA.Domain.Models {
             return this;
         }
 
-        public ConfigProperty AddKeyValue(string name, string keyCaption_, string valueCaption_, string caption_ = null, params KeyValue<string>[] defaultKeyValues) {
+        public ConfigProperty AddKeyValue(string name, string keyCaption_, string valueCaption_, string caption_, params KeyValue<string>[] defaultKeyValues) {
             FieldTemplates.Add(name, _config.Editing.KeyValue(keyCaption_, valueCaption_, caption_));
             base.Add(name, defaultKeyValues.ToArray());
             return this;
         }
-        public ConfigProperty AddKeyValue(string name, string keyCaption_, string valueCaption_, string caption_ = null, params KeyValue<string,ConfigProperty>[] defaultKeyValues) {
+
+        public ConfigProperty AddKeyProperty(string name, string keyCaption_, string valueCaption_, string caption_, params KeyValue<string, ConfigProperty>[] defaultKeyValues) {
             FieldTemplates.Add(name, _config.Editing.KeyValue(keyCaption_, valueCaption_, caption_));
-            //foreach (var item in defaultKeyValues) {
-            //}
             base.Add(name, defaultKeyValues.ToArray());
             return this;
         }
