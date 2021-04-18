@@ -334,3 +334,5 @@ ASALocalRun/
 .localhistory/
 
 src/DNA.API/DNA.API.csproj
+src/DNA.API/ClientApp/src/store/axios.js
+src/DNA.API/ClientApp/src/plugins/index.js

@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell.exe $(ProjectDir)Setup.ps1  -pluginIndex D:\Develop\Anka\AnkaPanel\src\DNA.API\ClientApp\src\plugins  -projectName $(ProjectName)&#xD;&#xA;&#xD;&#xA;" />
+    <Exec Command="powershell.exe $(ProjectDir)Setup.ps1 -clientApp $(SolutionDir)src\DNA.API\ClientApp  -projectName $(ProjectName)&#xD;&#xA;" />
   </Target>
 
 

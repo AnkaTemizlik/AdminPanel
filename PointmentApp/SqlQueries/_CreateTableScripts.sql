@@ -1,4 +1,4 @@
-/* PA_NOTIFICATION ****************************/
+﻿/* PA_NOTIFICATION ****************************/
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_NOTIFICATION' COLLATE SQL_Latin1_General_CP1_CI_AS) )

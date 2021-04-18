@@ -52,6 +52,14 @@ namespace PointmentApp {
 
             ConfigProperty Config = template
                 .RecurringJobsProperty(true, nameof(Services.AppProcessJob))
+                .Set("SocialMediaLinks", false, template.Property()
+                    .AddTextArea("Twitter", "https://twitter.com/")
+                    .AddTextArea("YouTube", "https://www.youtube.com/channel/")
+                    .AddTextArea("Facebook", "https://facebook.com/")
+                    .AddTextArea("Instagram", "https://www.instagram.com/")
+                    .AddTextArea("LinkedIn", "https://www.linkedin.com/company/")
+                    .AddTextArea("Email", "mailto:bilgi@?.com.tr")
+                    )
                 ;
 
             template.SetConfigGenerated(true);
@@ -101,6 +109,10 @@ namespace PointmentApp {
 
         public JObject GetScreenDefaults() {
             return null;
+        }
+
+        public void ApplyPluginMenus() {
+            
         }
     }
 }

@@ -18,6 +18,7 @@ namespace PointmentApp.Models {
        [Column] [StringLength(16)] public string UNCode { get; set; }
        [Column] [StringLength(8)] public string CallingCode { get; set; }
        [Column] [Required] [StringLength(50)] public string Name { get; set; }
-       [Computed] [StringLength(1000)] public string Image { get { return $"https://www.countryflags.io/{Alpha2.ToLower()}/shiny/48.png"; } }
+       //[Computed] [StringLength(1000)] public string Image { get { return $"https://www.countryflags.io/{Alpha2.ToLower()}/shiny/32.png"; } }
+       [Computed] [StringLength(1000)] public string Image { get { return $"https://flagcdn.com/h20/{Alpha2.ToLower()}.png"; } }
     }
 }
