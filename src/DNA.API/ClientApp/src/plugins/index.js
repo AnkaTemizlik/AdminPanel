@@ -1,4 +1,4 @@
-﻿import Plugin from './P05'
+﻿import Plugin from './P00'
 
 const AppId = Plugin.AppId
 

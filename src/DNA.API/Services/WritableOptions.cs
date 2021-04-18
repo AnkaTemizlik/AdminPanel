@@ -250,7 +250,7 @@ namespace DNA.API.Services {
 
                     // change menus
                     manager.ApplyPluginMenus();
-                    
+
                     // config
                     if (manager.IsModule) {
                         pluginConfigTemplate.Merge(manager.GetDefaultConfig(new ConfigTemplate()), _jsonMergeSettings);
@@ -292,7 +292,7 @@ namespace DNA.API.Services {
                 throw new Exception("Menu not found");
             var json = JObject.Parse(File.ReadAllText(fileFullName));
             string result = json.ToString();
-            _menuService.Load(json);            
+            _menuService.Load(json);
             return json;
         }
 
@@ -638,6 +638,8 @@ namespace DNA.API.Services {
                                     //for (int i = 0; i <= props.Length; i++)
                                     //    columnIndexes.Add(i);
 
+                                    var subModels = new List<object>();
+
                                     foreach (var item in props) {
 
                                         var required = item.GetCustomAttribute<System.ComponentModel.DataAnnotations.RequiredAttribute>() != null;
@@ -654,10 +656,11 @@ namespace DNA.API.Services {
 
                                         bool isEnum = false;
                                         Type secondType = null;
+                                        
                                         if (!item.PropertyType.IsPublic)
                                             continue;
+                                        
                                         var column = getColumn(item.Name);
-
                                         if (column != null)
                                             continue;
 
@@ -673,6 +676,37 @@ namespace DNA.API.Services {
                                         else if (item.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))) {
                                             var argumentType = item.PropertyType.GetGenericArguments().FirstOrDefault();
                                             //TODO: subModel, List<PosModel> Poses
+                                            /*
+                                            {
+                                                "name": "LicenseModule",
+                                                "title": "License Modules",
+                                                "type": "list",
+                                                "showIn": [
+                                                    "tab"
+                                                ],
+                                                "route": "/module",
+                                                "icon": "view_module",
+                                                "relationFieldNames": [
+                                                    [
+                                                    "Id",
+                                                    "LicenseId"
+                                                    ],
+                                                    [
+                                                    "ProgramId",
+                                                    "ProgramId"
+                                                    ]
+                                                ]
+                                            } */
+                                            var subModel = classes.Find(_ => _.Name == argumentType.Name);
+                                            subModels.Add(new {
+                                                name = subModel.Name,
+                                                title = $"{subModel.Name} Screen",
+                                                type = "list",
+                                                icon = subModel.Icon,
+                                                showIn = new string[] { "tab" },
+                                                route = Regex.Replace(subModel.Name, @"[A-Z]", (m) => $"-{m.Value}").Trim('-').ToLower(),
+                                                relationFieldNames = new string[] { "?", keyFieldName }
+                                            });
                                             continue;
                                         }
                                         else if (item.PropertyType.IsClass) {
@@ -781,34 +815,21 @@ namespace DNA.API.Services {
 
                                     #region Sub Screens
                                     // TODO: Screen Grid altına detay tab'ları ekleyecek
-                                    /*
-                                    if (t.SubModels.Count > 0) {
-                                        jsonWriter.WriteStartArray();
 
-                                        var subscreen = json["ScreenConfig"]["Screens"][t.Name]["subScreens"];
-                                        var subscreenExists = screen != null;
+                                    //object getSubVal(string name, string newVal) {
+                                    //    if (screenExists)
+                                    //        if (screen[name] != null)
+                                    //            return screen[name];
+                                    //    return newVal;
+                                    //}
 
-                                        object getSubVal(string name, string newVal) {
-                                            if (screenExists)
-                                                if (screen[name] != null)
-                                                    return screen[name];
-                                            return newVal;
-                                        }
-
-                                        foreach (var sub in t.SubModels) {
-                                            jsonWriter.WriteStartObject();
-                                            {
-                                                jsonWriter.WritePropertyName("name");
-                                                jsonWriter.WriteValue(sub.Name);
-                                                jsonWriter.WritePropertyName("title");
-                                                jsonWriter.WriteValue(getVal("title", t.Name + " Screen"));
-                                            }
-                                            jsonWriter.WriteEndObject();
-                                        }
-
-                                        jsonWriter.WriteEndArray();
+                                    if (subModels.Count > 0) {
+                                        jsonWriter.WritePropertyName("subModels");
+                                        //var subscreen = json["ScreenConfig"]["Screens"][t.Name]["subModels"];
+                                        //var subscreenExists = screen != null;
+                                        jsonWriter.WriteToken(JArray.FromObject(subModels).CreateReader());
                                     }
-                                    */
+
                                     #endregion
 
                                     jsonWriter.WritePropertyName("assembly");
