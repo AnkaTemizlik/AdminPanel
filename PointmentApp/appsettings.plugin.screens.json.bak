@@ -255,7 +255,6 @@
           {
             "name": "CustomerId",
             "type": "numeric",
-            "colSpan": 2,
             "required": true,
             "allowEditing": true,
             "data": {
@@ -264,7 +263,6 @@
               "valueExpr": "Id",
               "displayExpr": [
                 "Name",
-                " - ",
                 "Title"
               ]
             }
@@ -272,7 +270,6 @@
           {
             "name": "ServiceId",
             "type": "numeric",
-            "colSpan": 2,
             "required": true,
             "allowEditing": true,
             "data": {
@@ -288,7 +285,6 @@
             "name": "StartDate",
             "type": "datetime",
             "format": "LLL",
-            "withTimeEdit": true,
             "required": true,
             "allowEditing": true
           },
@@ -296,14 +292,6 @@
             "name": "EndDate",
             "type": "datetime",
             "format": "LLL",
-            "withTimeEdit": true,
-            "required": true,
-            "allowEditing": true
-          },
-          {
-            "name": "Priority",
-            "type": "numeric",
-            "autoComplete": "PriorityType",
             "required": true,
             "allowEditing": true
           },
@@ -315,6 +303,13 @@
             "allowEditing": true
           },
           {
+            "name": "Priority",
+            "type": "numeric",
+            "autoComplete": "PriorityType",
+            "required": true,
+            "allowEditing": true
+          },
+          {
             "name": "Note",
             "type": "textArea",
             "colSpan": 2,
@@ -322,8 +317,7 @@
           },
           {
             "name": "CreatedBy",
-            "type": "numeric",
-            "hidden": true
+            "type": "numeric"
           },
           {
             "name": "UpdatedBy",
@@ -586,11 +580,9 @@
             "allowEditing": true
           },
           {
-            "name": "Email",
-            "type": "text",
-            "colSpan": 2,
+            "name": "Corporate",
+            "type": "check",
             "required": true,
-            "stringLength": 50,
             "allowEditing": true
           },
           {
@@ -603,16 +595,17 @@
               "name": "City",
               "valueExpr": "Id",
               "displayExpr": [
-                "Name",
-                " - ",
-                "Code"
+                "Code",
+                "Name"
               ]
             }
           },
           {
-            "name": "Corporate",
-            "type": "check",
-            "required": false,
+            "name": "Email",
+            "type": "text",
+            "colSpan": 2,
+            "required": true,
+            "stringLength": 50,
             "allowEditing": true
           },
           {
@@ -626,7 +619,6 @@
             "name": "LandlinePhoneNumber",
             "title": "Landline Phone",
             "type": "text",
-            "hidden": true,
             "stringLength": 16,
             "allowEditing": true
           },
@@ -634,7 +626,6 @@
             "name": "MobilePhoneNumber",
             "title": "Mobile Phone",
             "type": "text",
-            "hidden": true,
             "stringLength": 16,
             "allowEditing": true
           },
@@ -642,7 +633,6 @@
             "name": "Address",
             "type": "textArea",
             "colSpan": 2,
-            "hidden": true,
             "stringLength": 500,
             "allowEditing": true
           },
@@ -650,21 +640,18 @@
             "name": "BillingAddress",
             "type": "textArea",
             "colSpan": 2,
-            "hidden": true,
             "stringLength": 500,
             "allowEditing": true
           },
           {
             "name": "TaxNumber",
             "type": "text",
-            "hidden": true,
             "stringLength": 11,
             "allowEditing": true
           },
           {
             "name": "TaxAdministration",
             "type": "text",
-            "hidden": true,
             "stringLength": 50,
             "allowEditing": true
           },
@@ -672,7 +659,6 @@
             "name": "Note",
             "type": "textArea",
             "colSpan": 2,
-            "hidden": true,
             "allowEditing": true
           },
           {
@@ -1081,7 +1067,7 @@
             "SELECT *",
             "FROM {TablePrefix}City"
           ],
-          "OrderBy": "[Name] ASC"
+          "OrderBy": "Code ASC"
         },
         "SelectById": {
           "Lines": [

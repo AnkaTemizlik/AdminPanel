@@ -41,6 +41,13 @@ BEGIN
 	SET QUOTED_IDENTIFIER OFF
 END
 
+/* PA_Appointment UpdatedBy ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Appointment' AND c.name = 'UpdatedBy')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD UpdatedBy INT NOT NULL DEFAULT(0);
+END
+
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}AppointmentEmployee]') AND type in (N'U'))
 BEGIN
 	/* PA_AppointmentEmployee ****************************/

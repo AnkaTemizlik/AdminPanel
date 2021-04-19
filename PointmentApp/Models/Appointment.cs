@@ -10,8 +10,15 @@ namespace PointmentApp.Models {
 
     [Table("{TablePrefix}Appointment")]
     public class Appointment : Model, IChangeTrackable {
-        [Column] [Required] public int CustomerId { get; set; }
-        [Column] [Required] public int ServiceId { get; set; }
+
+        [Column(LookupType = typeof(Customer))] 
+        [Required] 
+        public int CustomerId { get; set; }
+
+        [Column(LookupType = typeof(Service))] 
+        [Required] 
+        public int ServiceId { get; set; }
+
         [Column] [Required] public DateTime StartDate { get; set; }
         [Column] [Required] public DateTime EndDate { get; set; }
         [Column] [Required] public AppointmentState State { get; set; }
