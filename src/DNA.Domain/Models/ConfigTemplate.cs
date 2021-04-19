@@ -133,12 +133,8 @@ namespace DNA.Domain.Models {
                     .Add("ProgramName", "DNA.API")
                     .Add("Description", "Access points to the background workers")
                     .Set("Theme", Property()
-                        .Set("colors", Property()
-                            .Add("primary", "#43A047")
-                            .Add("secondary", "#D81B60")
-                        )
+                        .Add("Name", "blue")
                     )
-                    .Add("Color", "blue")
                 )
                 ;
         }

@@ -12,6 +12,7 @@ using AutoMapper;
 using System.Reflection;
 using Newtonsoft.Json;
 using System.Dynamic;
+using Microsoft.AspNetCore.Http;
 
 namespace DNA.API.Services {
 
@@ -22,11 +23,16 @@ namespace DNA.API.Services {
         private readonly IProcessRepository _processRepository;
         private readonly IMapper _mapper;
         readonly IConfiguration _configuration;
-        public EntityService(IConfiguration configuration, IEntityRepository entityRepository, IProcessRepository processRepository, IMapper mapper) {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly int _userId;
+
+        public EntityService(IConfiguration configuration, IEntityRepository entityRepository, IProcessRepository processRepository, IMapper mapper, Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor) {
             _entityRepository = entityRepository;
             _processRepository = processRepository;
             _mapper = mapper;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
+            _userId = Convert.ToInt32(_httpContextAccessor.HttpContext.User?.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value ?? "0");
         }
 
         Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
@@ -115,7 +121,6 @@ namespace DNA.API.Services {
         }
 
         public async Task<int> InsertAsync(string name, dynamic model) {
-            var insertQuery = _configuration[$"ScreenConfig:Queries:{name}:InsertQuery"];
             var section = _configuration.GetSection($"ScreenConfig:Queries:{name}:InsertQuery");
             if (section.Exists()) {
                 var lines = section.GetSection("Lines").Get<string[]>();
@@ -127,6 +132,7 @@ namespace DNA.API.Services {
                     sql = sql.Replace("{Fields}", string.Join(",", data.Select(_ => $"[{_.Key}]")));
                     sql = sql.Replace("{Parameters}", string.Join(",", data.Select(_ => $"@{_.Key}")));
                 }
+                model.CurrentUserId = _userId;
                 return await _processRepository.ExecuteAsync(sql, model);
             }
             else {
@@ -156,6 +162,7 @@ namespace DNA.API.Services {
 
                 }
                 model.Id = id;
+                model.CurrentUserId = _userId;
                 return await _processRepository.ExecuteAsync(sql, model);
             }
             else {

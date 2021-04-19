@@ -472,7 +472,7 @@ namespace DNA.API.Services {
 
             /* to appsettings.plugin.screen.json **************/
             var enums = models.Where(_ => _.Type.IsEnum).ToList();
-            var classes = new List<ScreenModel>();
+            var classes = new ScreenModelCollection(_configuration["Config:Database:TablePrefix"]);
 
             var fileName = "appsettings.plugin.screens.json";
             var fileFullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
@@ -486,17 +486,18 @@ namespace DNA.API.Services {
                     var visible = screen["visible"];
                     if (visible != null) {
                         if ((bool)(visible as JValue).Value || t.Visible) {
-                            classes.Add(t);
+                            classes.TryAdd(t);
                         }
                     }
                     else
-                        classes.Add(t);
+                        classes.TryAdd(t);
                 }
                 else
-                    classes.Add(t);
+                    classes.TryAdd(t);
             }
 
             var jsonWriter = new JTokenWriter();
+            var jsonSetting = new JsonSerializer { NullValueHandling = NullValueHandling.Ignore };
 
             //ScreenConfig
             jsonWriter.WriteStartObject();
@@ -537,12 +538,12 @@ namespace DNA.API.Services {
                             jsonWriter.WritePropertyName(t.Name);
                             jsonWriter.WriteStartObject();
                             {
-                                var keyFieldName = "Id";
+                                t.KeyFieldName = "Id";
                                 var props = t.Type.GetProperties();
                                 foreach (var item in props) {
                                     var attr = item.GetCustomAttribute(typeof(Dapper.Contrib.Extensions.KeyAttribute));
                                     if (attr != null)
-                                        keyFieldName = item.Name;
+                                        t.KeyFieldName = item.Name;
                                 }
 
                                 var screen = json["ScreenConfig"]["Screens"][t.Name];
@@ -556,19 +557,25 @@ namespace DNA.API.Services {
                                 }
 
                                 jsonWriter.WritePropertyName("title");
-                                jsonWriter.WriteValue(getVal("title", t.Name + " Screen"));
+                                jsonWriter.WriteValue(getVal("title", t.Title));
 
                                 jsonWriter.WritePropertyName("visible");
                                 var visible = getVal("visible", new JValue(t.Visible)) as JValue;
-                                jsonWriter.WriteValue(getVal("visible", (bool)visible.Value));
+                                t.Visible = (bool)visible.Value;
+                                jsonWriter.WriteValue(t.Visible);
+
+                                if (!string.IsNullOrWhiteSpace(t.ViewType)) {
+                                    jsonWriter.WritePropertyName("viewType");
+                                    jsonWriter.WriteValue(getVal("viewType", t.ViewType));
+                                }
 
                                 if ((bool)visible.Value) {
 
                                     jsonWriter.WritePropertyName("route");
-                                    jsonWriter.WriteValue(getVal("route", Regex.Replace(t.Name, @"[A-Z]", (m) => $"-{m.Value}").Trim('-').ToLower()));
+                                    jsonWriter.WriteValue(getVal("route", t.Route));
 
                                     jsonWriter.WritePropertyName("keyFieldName");
-                                    jsonWriter.WriteValue(getVal("keyFieldName", keyFieldName));
+                                    jsonWriter.WriteValue(getVal("keyFieldName", t.KeyFieldName));
 
                                     jsonWriter.WritePropertyName("icon");
                                     jsonWriter.WriteValue(getVal("icon", t.Icon));
@@ -579,266 +586,37 @@ namespace DNA.API.Services {
                                     jsonWriter.WritePropertyName("isDefinitionModel");
                                     jsonWriter.WriteValue(getVal("isDefinitionModel", t.IsDefinitionModel));
 
-                                    if (t.Editable) {
-                                        var editing = screenExists ? json["ScreenConfig"]["Screens"][t.Name]["editing"] : null;
-                                        if (editing == null) {
-                                            jsonWriter.WritePropertyName("editing");
-                                            jsonWriter.WriteStartObject();
-                                            {
-                                                jsonWriter.WritePropertyName("enabled");
-                                                jsonWriter.WriteValue(true);
-                                                jsonWriter.WritePropertyName("mode");
-                                                jsonWriter.WriteValue("popup");
-                                                jsonWriter.WritePropertyName("allowUpdating");
-                                                jsonWriter.WriteValue(true);
-                                                jsonWriter.WritePropertyName("allowAdding");
-                                                jsonWriter.WriteValue(true);
-                                                jsonWriter.WritePropertyName("allowDeleting");
-                                                jsonWriter.WriteValue(true);
-                                            }
-                                            jsonWriter.WriteEndObject();
-                                        }
-
-                                        /* "editing": {
-                                              "enabled": true,
-                                              "mode": "popup",
-                                              "allowUpdating": true,
-                                              "allowAdding": true,
-                                              "allowDeleting": true
-                                            },
-                                         */
+                                    // editing
+                                    var editing = json["ScreenConfig"]["Screens"][t.Name]["editing"]?.ToObject<ScreenEditing>();
+                                    if (t.AllowEditing || editing != null) {
+                                        t.GenerateEditing(editing);
+                                        json["ScreenConfig"]["Screens"][t.Name]["editing"] = JObject.FromObject(t.Editing, jsonSetting);
                                     }
 
-                                    #region Columns
-
-                                    var columns = screenExists ? json["ScreenConfig"]["Screens"][t.Name]["columns"] : null;
-
-                                    jsonWriter.WritePropertyName("columns");
-
-                                    jsonWriter.WriteStartArray();
-
-                                    JToken getColumn(string colName) {
-                                        if (columns != null) {
-                                            if (columns is JArray) {
-                                                var objects = (columns as JArray).Children();
-                                                var c = objects.FirstOrDefault(_ => _.Value<string>("name") == colName);
-                                                return c;
-                                            }
-                                        }
-                                        return null;
+                                    // calendar
+                                    var calendar = json["ScreenConfig"]["Screens"][t.Name]["calendar"]?.ToObject<ScreenCalendar>();
+                                    if (t.IsCalendarActive || calendar != null) {
+                                        t.GenerateCalendar(calendar);
+                                        json["ScreenConfig"]["Screens"][t.Name]["calendar"] = JObject.FromObject(t.Calendar, jsonSetting);
                                     }
 
-                                    object getColumnFieldVal(JToken col, string field, object newVal) {
-                                        if (col != null)
-                                            return col[field] ?? newVal;
-                                        return newVal;
-                                    }
+                                    // subModels
+                                    var existingSubModels = json["ScreenConfig"]["Screens"][t.Name]["subModels"]?.ToObject<List<ScreenSubModel>>();
+                                    t.GenerateSubModels(existingSubModels, classes);
+                                    json["ScreenConfig"]["Screens"][t.Name]["subModels"] = JArray.FromObject(t.SubModels, jsonSetting);
 
-                                    //var columnIndexes = new List<int>();
-                                    //for (int i = 0; i <= props.Length; i++)
-                                    //    columnIndexes.Add(i);
-
-                                    var subModels = new List<object>();
-
-                                    foreach (var item in props) {
-
-                                        var required = item.GetCustomAttribute<System.ComponentModel.DataAnnotations.RequiredAttribute>() != null;
-                                        var stringLength = item.GetCustomAttribute<System.ComponentModel.DataAnnotations.StringLengthAttribute>()?.MaximumLength ?? 0;
-
-                                        var jsonIgnorAttr = item.GetCustomAttribute<JsonIgnoreAttribute>();
-                                        if (jsonIgnorAttr != null)
-                                            continue;
-
-                                        List<string> restrictedRoles = null;
-                                        var restrictedRoleAttr = item.GetCustomAttribute<JsonRestrictedRoleAttribute>();
-                                        if (restrictedRoleAttr != null)
-                                            restrictedRoles = restrictedRoleAttr.Roles;
-
-                                        bool isEnum = false;
-                                        Type secondType = null;
-                                        
-                                        if (!item.PropertyType.IsPublic)
-                                            continue;
-                                        
-                                        var column = getColumn(item.Name);
-                                        if (column != null)
-                                            continue;
-
-                                        if (item.PropertyType.IsValueType) {
-                                            if (item.PropertyType.IsGenericType && item.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)) {
-                                                var argumentType = item.PropertyType.GetGenericArguments().FirstOrDefault();
-                                                secondType = argumentType;
-                                                isEnum = secondType.IsEnum;
-                                            }
-                                        }
-                                        else if (item.PropertyType == typeof(string)) {
-                                        }
-                                        else if (item.PropertyType.GetInterfaces().Contains(typeof(System.Collections.IEnumerable))) {
-                                            var argumentType = item.PropertyType.GetGenericArguments().FirstOrDefault();
-                                            //TODO: subModel, List<PosModel> Poses
-                                            /*
-                                            {
-                                                "name": "LicenseModule",
-                                                "title": "License Modules",
-                                                "type": "list",
-                                                "showIn": [
-                                                    "tab"
-                                                ],
-                                                "route": "/module",
-                                                "icon": "view_module",
-                                                "relationFieldNames": [
-                                                    [
-                                                    "Id",
-                                                    "LicenseId"
-                                                    ],
-                                                    [
-                                                    "ProgramId",
-                                                    "ProgramId"
-                                                    ]
-                                                ]
-                                            } */
-                                            var subModel = classes.Find(_ => _.Name == argumentType.Name);
-                                            subModels.Add(new {
-                                                name = subModel.Name,
-                                                title = $"{subModel.Name} Screen",
-                                                type = "list",
-                                                icon = subModel.Icon,
-                                                showIn = new string[] { "tab" },
-                                                route = Regex.Replace(subModel.Name, @"[A-Z]", (m) => $"-{m.Value}").Trim('-').ToLower(),
-                                                relationFieldNames = new string[] { "?", keyFieldName }
-                                            });
-                                            continue;
-                                        }
-                                        else if (item.PropertyType.IsClass) {
-                                            //TODO: subModel, CustomerViewModel
-                                            continue;
-                                        }
-
-                                        jsonWriter.WriteStartObject();
-                                        {
-                                            //name
-                                            jsonWriter.WritePropertyName("name");
-                                            jsonWriter.WriteValue(item.Name);
-
-                                            //{
-                                            //    jsonWriter.WritePropertyName("index");
-                                            //    var indexColumnValue = (long)(getColumnFieldVal(column, "index", new JValue((long)-1)) as JValue).Value;
-                                            //    if (indexColumnValue > -1) {
-                                            //        if (columnIndexes.Any(_ => _ == indexColumnValue))
-                                            //            columnIndexes.Remove((int)indexColumnValue);
-                                            //        else {
-                                            //            indexColumnValue = columnIndexes[0];
-                                            //            columnIndexes.Remove((int)indexColumnValue);
-                                            //        }
-                                            //    }
-                                            //    else {
-                                            //        indexColumnValue = columnIndexes[0];
-                                            //        columnIndexes.Remove((int)indexColumnValue);
-                                            //    }
-                                            //    jsonWriter.WriteValue(indexColumnValue);
-                                            //}
-
-                                            if (item.PropertyType == typeof(Boolean) || item.PropertyType == typeof(Boolean?)) {
-                                                //type
-                                                jsonWriter.WritePropertyName("type");
-                                                jsonWriter.WriteValue(getColumnFieldVal(column, "type", "check"));
-                                            }
-                                            else if (item.PropertyType == typeof(DateTime) || item.PropertyType == typeof(DateTime?)) {
-                                                // type: datetime, format: LLL
-                                                jsonWriter.WritePropertyName("type");
-                                                jsonWriter.WriteValue(getColumnFieldVal(column, "type", "datetime"));
-                                                jsonWriter.WritePropertyName("format");
-                                                jsonWriter.WriteValue(getColumnFieldVal(column, "format", "LLL"));
-                                            }
-                                            else if (item.PropertyType.IsEnum || isEnum) {
-                                                // autoComplete
-                                                if (models.Any(_ => _.Type == item.PropertyType)) {
-                                                    jsonWriter.WritePropertyName("autoComplete");
-                                                    jsonWriter.WriteValue(getColumnFieldVal(column, "autoComplete", item.PropertyType.Name));
-                                                }
-                                                jsonWriter.WritePropertyName("type");
-                                                jsonWriter.WriteValue(getColumnFieldVal(column, "type", "numeric"));
-                                            }
-                                            else if (item.PropertyType.IsNumeric() || (secondType != null && secondType.IsNumeric())) {
-                                                // type: numeric
-                                                jsonWriter.WritePropertyName("type");
-                                                jsonWriter.WriteValue(getColumnFieldVal(column, "type", "numeric"));
-                                            }
-                                            else //if (item.PropertyType == typeof(string)) 
-                                            {
-                                                // type: string
-                                                jsonWriter.WritePropertyName("type");
-                                                jsonWriter.WriteValue(getColumnFieldVal(column, "type", "text"));
-                                            }
-
-                                            var hidenValue = getColumnFieldVal(column, "hidden", (bool?)null);
-                                            if (hidenValue != null) {
-                                                jsonWriter.WritePropertyName("hidden");
-                                                jsonWriter.WriteValue(hidenValue);
-                                            }
-
-                                            var translateValue = getColumnFieldVal(column, "translate", (bool?)null);
-                                            if (translateValue != null) {
-                                                jsonWriter.WritePropertyName("translate");
-                                                jsonWriter.WriteValue(translateValue);
-                                            }
-
-                                            var widthValue = getColumnFieldVal(column, "width", (int?)null);
-                                            if (widthValue != null) {
-                                                jsonWriter.WritePropertyName("width");
-                                                jsonWriter.WriteValue(widthValue);
-                                            }
-
-                                            var rolesValue = getColumnFieldVal(column, "roles", restrictedRoles);
-                                            if (rolesValue != null) {
-                                                jsonWriter.WritePropertyName("roles");
-                                                jsonWriter.WriteValue(rolesValue);
-                                            }
-
-                                            if (required) {
-                                                jsonWriter.WritePropertyName("required");
-                                                jsonWriter.WriteValue(getColumnFieldVal(column, "required", required));
-                                            }
-
-                                            if (stringLength > 0 && stringLength < 4000) {
-                                                jsonWriter.WritePropertyName("stringLength");
-                                                jsonWriter.WriteValue(getColumnFieldVal(column, "stringLength", stringLength));
-                                            }
-                                        }
-                                        jsonWriter.WriteEndObject();
-                                    }
-
-                                    jsonWriter.WriteEndArray();
-
-
-                                    #endregion
-
-                                    #region Sub Screens
-                                    // TODO: Screen Grid altına detay tab'ları ekleyecek
-
-                                    //object getSubVal(string name, string newVal) {
-                                    //    if (screenExists)
-                                    //        if (screen[name] != null)
-                                    //            return screen[name];
-                                    //    return newVal;
-                                    //}
-
-                                    if (subModels.Count > 0) {
-                                        jsonWriter.WritePropertyName("subModels");
-                                        //var subscreen = json["ScreenConfig"]["Screens"][t.Name]["subModels"];
-                                        //var subscreenExists = screen != null;
-                                        jsonWriter.WriteToken(JArray.FromObject(subModels).CreateReader());
-                                    }
-
-                                    #endregion
+                                    // columns
+                                    var existingColumns = json["ScreenConfig"]["Screens"][t.Name]["columns"]?.ToObject<List<ScreenColumn>>();
+                                    t.GenerateColumns(existingColumns, classes);
+                                    json["ScreenConfig"]["Screens"][t.Name]["columns"] = JArray.FromObject(t.Columns, jsonSetting);
 
                                     jsonWriter.WritePropertyName("assembly");
-                                    jsonWriter.WriteValue(t.Type.FullName);
+                                    jsonWriter.WriteValue(t.Assembly);
                                 }
                             }
-                            jsonWriter.WriteEndObject();  // }
+                            jsonWriter.WriteEndObject();
                         }
-                        jsonWriter.WriteEndObject();  // }
+                        jsonWriter.WriteEndObject();
                     }
 
                     jsonWriter.WritePropertyName("Queries");
