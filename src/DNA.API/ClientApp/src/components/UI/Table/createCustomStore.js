@@ -42,7 +42,6 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 				return options.load(toQueryString(params))
 					.then((status) => {
 						if (status.Success) {
-							console.success("DataTable", status.Resource)
 							return {
 								data: status.Resource.Items,
 								totalCount: status.Resource.TotalItems,

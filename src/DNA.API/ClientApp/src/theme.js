@@ -1,16 +1,51 @@
 
 import * as styles from '@material-ui/core/styles';
 
-const createTheme = (Plugin) => {
-	const pluginPrimary = Plugin && Plugin.Theme && Plugin.Theme.colors && Plugin.Theme.colors.primary;
-	const pluginSecondary = Plugin && Plugin.Theme && Plugin.Theme.colors && Plugin.Theme.colors.secondary;
-	//const white = '#fff'
+var Theme;
 
-	const primary = pluginPrimary || '#318CE7'
-	const secondary = pluginSecondary || '#ED872D'
+const changeDxTheme = (theme) => {
+
+	if (theme == "dark-blue")
+		require('./assets/dx.material.dark-blue.css')
+	else if (theme == "red")
+		require('./assets/dx.material.red.css')
+	else if (theme == "green")
+		require('./assets/dx.material.green.css')
+	else
+		require('./assets/dx.material.blue.css')
+}
+
+const createTheme = (Plugin) => {
+
+	if (Theme)
+		return Theme;
+
+	let themeName = (Plugin && Plugin.Theme && Plugin.Theme.Name) || "blue";
+
+	changeDxTheme(themeName)
+
+	let primary = '#318CE7'
+	let secondary = '#ED872D'
+
+	if (themeName == "dark-blue") {
+		primary = '#005376'
+		secondary = '#ED872D'
+	}
+	else if (themeName == "red") {
+		primary = '#8b0000'
+		secondary = '#ED872D'
+	}
+	else if (themeName == "green") {
+		primary = '#43a047'
+		secondary = '#ED872D'
+	}
+	else {
+
+	}
+
 	//const dark = '#323545'
 	//const dark2 = '#272a3a'
-	const theme = styles.createMuiTheme({
+	Theme = styles.createMuiTheme({
 		typography: {
 			fontFamily: ["Quicksand", "sans-serif"],
 			fontSize: 12,
@@ -75,7 +110,7 @@ const createTheme = (Plugin) => {
 	//     props.color === "success" && props.variant === "contained" ? style : {};
 
 
-	theme.overrides = {
+	Theme.overrides = {
 		//     MuiListItem: {
 		//         root: {
 		//             '&.Mui-selected': {
@@ -194,9 +229,14 @@ const createTheme = (Plugin) => {
 				marginTop: 8,
 				marginBottom: 8
 			}
+		},
+		MuiOutlinedInput: {
+			inputMarginDense: {
+
+			}
 		}
 	}
-	return theme
+	return Theme
 };
 
 export default createTheme

@@ -332,6 +332,7 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+src/DNA.API/ClientApp/public/favicon.ico
 
 src/DNA.API/DNA.API.csproj
 src/DNA.API/ClientApp/src/store/axios.js

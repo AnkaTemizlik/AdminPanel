@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace DNA.API {
+namespace DNA.Domain.Extentions {
     public static class Extentions {
 
         public static bool IsNumeric(this Type type) {

@@ -14,9 +14,8 @@ import { applyGlobalSettings } from './store/slices/settingsSlice'
 import Loadable from 'react-loadable';
 import Fallback from './components/UI/Fallback'
 import { loadMessages } from "devextreme/localization";
-import { changeDxTheme } from "./plugins";
 import dxMessages from 'devextreme/localization/messages/tr.json'
-//import menus from './constants/menus'
+import createTheme from './theme'
 
 require('devextreme/dist/css/dx.common.css')
 require('./index.css')
@@ -26,29 +25,38 @@ const LoadableApp = Loadable.Map({
 	loader: {
 		Root: () => import('./containers/Root'),
 		i18n: () => import('./store/i18n'),
-		createTheme: () => import('./theme'),
 		momentLocale: () => import('moment/locale/tr'),
-		locales: () => api.actions.run("GET", `/api/locales`).then((status) => { if (status.Success) return status.Resource; else throw status.Message }),
-		settingsStatus: () => api.actions.run("GET", `/api/settings`).then((status) => { if (status.Success) return status; else throw status.Message }),
-		menusStatus: () => api.actions.run("GET", `/api/menus`).then((status) => { if (status.Success) return status; else throw status.Message }),
+		locales: () => api.actions.run("GET", `/api/locales`)
+			.then((status) => {
+				if (status.Success) return status.Resource; else throw status.Message
+			}),
+		settingsStatus: () => api.actions.run("GET", `/api/settings`)
+			.then((status) => {
+				if (status.Success) {
+					const { Plugin } = status.Resource.configs
+					return { ...status, Theme: createTheme(Plugin) };
+				}
+				else throw status.Message
+			}),
+		menusStatus: () => api.actions.run("GET", `/api/menus`)
+			.then((status) => {
+				if (status.Success) return status; else throw status.Message
+			}),
 	},
 	loading: Fallback,
 	//timeout: 10000,
 	render(loaded, props) {
 		const notistackRef = React.createRef();
-		const Root = loaded.Root.default
 		const i18n = loaded.i18n.default
+		const Root = loaded.Root.default
 		const locales = loaded.locales
-		const createTheme = loaded.createTheme.default
 		const menusStatus = loaded.menusStatus
 		const settingsStatus = loaded.settingsStatus
 		const { Plugin, MultiLanguage } = settingsStatus.Resource.configs
 
 		props.dispatch(loadMenu(menusStatus))
 
-		console.warning("menus", menusStatus)
-
-		changeDxTheme(Plugin.Color)
+		document.title = `${Plugin.ProgramName ? Plugin.ProgramName + ' - ' : ''} ${Plugin.CompanyName}`
 
 		loadMessages(dxMessages);
 
@@ -65,10 +73,11 @@ const LoadableApp = Loadable.Map({
 			notistackRef.current.closeSnackbar(key);
 		};
 
+		//const theme = createTheme(Plugin)
 
 		props.dispatch(applyGlobalSettings(settingsStatus))
 
-		return <ThemeProvider theme={createTheme(Plugin)}>
+		return <ThemeProvider theme={settingsStatus.Theme}>
 			<SnackbarProvider
 				ref={notistackRef}
 				maxSnack={3}

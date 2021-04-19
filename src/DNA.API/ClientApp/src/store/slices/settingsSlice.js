@@ -130,27 +130,41 @@ const configureColumns = (name, columns, config) => {
 			if (formatData)
 				col.format = formatData.format[i18next.language] ?? formatData.format.tr
 			col.dataType = "date"
+			if (col.withTimeEdit)
+				col.editorOptions = {
+					type: "datetime"
+				}
 			col.editorType = "dxDateBox"
+			console.info("Column", col)
 		}
-		else if (col.type == "check") {
+		else if (col.type == "check" || col.type == "boolean" || col.type == "bool") {
 			col.dataType = "boolean"
 			col.editorType = "dxCheckBox"
 		}
 		else if (col.type == "numeric" || col.type == "number") {
 			col.dataType = "number"
 			col.editorType = "dxNumberBox"
-			if (col.currency)
+			if (col.currency) {
+				col.dataType = "currency"
 				col.format = {
 					style: "currency",
 					currency: col.currency
 				}
+			}
 		}
-		else if (col.type == "currency") {
+		else if (col.currency || col.type == "currency") {
 			col.dataType = "currency"
+			col.format = {
+				style: "currency",
+				currency: col.currency
+			}
 		}
 		else if (col.type == "textArea") {
 			col.editorType = "dxTextArea"
 			col.dataType = "string"
+			col.editorOptions = {
+				autoResizeEnabled: true
+			}
 		}
 		else
 			col.dataType = "string"
@@ -167,6 +181,8 @@ const configureColumns = (name, columns, config) => {
 			}
 		}
 		else if (col.data) {
+			col.data.valueExpr = col.data.valueExpr || "Id"
+			col.data.displayExpr = col.data.displayExpr || "Name"
 
 			// ön tanımlı listeler ile doldur
 			if (col.data.type == "simpleArray") {
@@ -206,7 +222,7 @@ const configureColumns = (name, columns, config) => {
 			// api'den kolon verisi yükler (henüz örneği yok, simpleArray ile çözüldü)
 			else if (col.data.type == "customStore") {
 				col.editorType = "dxSelectBox"
-
+				col.data.url = col.data.url || '/api/entity?name=' + col.data.name
 				if (col.data.filter) {
 					col.customStore = (o) => createColumnCustomStore(col, col.data.url, o)
 					// diğer kolon değeri değiştiğinde bu kolon değerini boşalt
