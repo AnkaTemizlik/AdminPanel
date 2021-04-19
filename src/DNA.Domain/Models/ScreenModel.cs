@@ -334,16 +334,22 @@ namespace DNA.Domain.Utils {
         public bool? allowUpdating { get; set; }
         public bool? allowAdding { get; set; }
         public bool? allowDeleting { get; set; }
+        public string[] roles { get; set; }
     }
 
     public class ScreenSubModel {
         public string name { get; set; }
         public string title { get; set; }
+
+        /// <summary>
+        /// list, property
+        /// </summary>
         public string type { get; set; }
         public string icon { get; set; }
         public object showIn { get; set; }
         public string route { get; set; }
         public object[] relationFieldNames { get; set; }
+        public string[] roles { get; set; }
     }
 
     public class ScreenColumn {
