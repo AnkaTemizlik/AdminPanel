@@ -52,11 +52,10 @@ const TextArrayEditor = ({ field, onChange, h, loading }) => {
 				{state.list &&
 					state.list.map((a, i) => {
 						return (
-							<FormControl fullWidth size="small" margin="normal" variant="outlined">
+							<FormControl key={i} fullWidth size="small" margin="normal" variant="outlined">
 								<TextField
 									variant="outlined"
 									id={`${fullname}${i}`}
-									key={i}
 									multiline={multiline == true}
 									name={`${fullname}${i}`}
 									onChange={(e) => {

@@ -53,6 +53,11 @@ namespace DNA.Domain.Models {
         }
     }
 
+    public interface IChangeTrackable {
+        int CreatedBy { get; set; }
+        int UpdatedBy { get; set; }
+    }
+
     public interface IModel : IBaseModel {
         int Id { get; set; }
         DateTime CreationTime { get; set; }
@@ -62,16 +67,16 @@ namespace DNA.Domain.Models {
     public abstract class Model : BaseModel, IModel {
 
         [Key]
-        [System.ComponentModel.DataAnnotations.Schema.Column]
+        [Column(Hidden = true)]
         public virtual int Id { get; set; }
 
         [Write(false)]
         [Computed]
-        [System.ComponentModel.DataAnnotations.Schema.Column]
+        [Column(Hidden = true)]
         public virtual DateTime CreationTime { get; set; } = DateTime.Now;
 
-        [System.ComponentModel.DataAnnotations.Schema.Column]
+        [Column(Hidden = true)]
         public virtual DateTime UpdateTime { get; set; } = DateTime.Now;
-       
+
     }
 }

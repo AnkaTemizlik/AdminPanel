@@ -83,9 +83,9 @@ const Field = ({ field, handleChange, loading }) => {
 
 	const renderText = () => {
 		//let multiline = typeof value == "string";
-		return <FormControl fullWidth size="small" margin="normal" variant="outlined">
+		return <FormControl fullWidth size="small" variant="outlined" margin="normal">
 			<InputLabel htmlFor={fullname}>{t(caption)}</InputLabel>
-			<OutlinedInput variant="outlined"
+			<OutlinedInput
 				type={options.inputType || "text"}
 				id={fullname}
 				key={fullname}
