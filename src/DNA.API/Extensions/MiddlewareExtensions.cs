@@ -244,13 +244,19 @@ namespace DNA.API.Extensions {
             services.AddSingleton<IWritableOptions>(provider => {
                 var configuration = (IConfigurationRoot)provider.GetService<IConfiguration>();
                 var menuService = (IMenuService)provider.GetService<IMenuService>();
-                var serviceProvider  = provider.GetService<IServiceProvider>();
-                //var environment = provider.GetService<IWebHostEnvironment>();
+                var serviceProvider = provider.GetService<IServiceProvider>();
+                var logger = provider.GetService<ILogger<IWritableOptions>>();
                 var writableOptions = new WritableOptions(configuration, serviceProvider, menuService);
-                writableOptions.GenerateConfigs();
+                try {
+                    writableOptions.GenerateConfigs();
+                    logger.LogInformation("GenerateConfigs successfuly.");
+                }
+                catch (Exception ex) {
+                    logger.LogError("GenerateConfigs failed. " + ex.Message);
+                    logger.LogError("GenerateConfigs failed. " + ex.StackTrace);
+                }
                 return writableOptions;
             });
         }
-
     }
 }
