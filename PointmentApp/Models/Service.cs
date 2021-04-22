@@ -11,6 +11,7 @@ namespace PointmentApp.Models {
     [Table("{TablePrefix}Service")]
     public class Service : Model {
         [Column(DisplayExpr = true)] [Required] [StringLength(500)] public string Name { get; set; }
+        [Column(Color = true)] [StringLength(50)] public string Color { get; set; }
         [Column] [StringLength(int.MaxValue)] public string Description { get; set; }
     }
 }

@@ -1,24 +1,6 @@
-﻿/*
-IF (1 = 0)
-BEGIN
-	-- ADD COLUMN SAMPLE ***********************
-	IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-		WHERE t.name = 'DNA_CENTER' AND c.name = 'Id')
-	BEGIN
-		ALTER TABLE [dbo].[DNA_TITAN_CENTER] ADD Id INT IDENTITY(1,1) NOT NULL;
-	END
-
-	-- INSERT TOW TABLE ***********************
-	IF NOT EXISTS(SELECT * FROM [dbo].DNA_CENTER WHERE [CenterNumber] = 9382)
-	BEGIN
-		INSERT [dbo].DNA_CENTER ([CenterNumber], [CenterName], [LegalEntity], [SunBussinesUnitCode], [Sequence], [SupplierId]) VALUES (9382, N'OPS Centre Turkey - TRY', N'Regus Yonetim ve Danismanlik Ltd Sti', N'V89', 4, 3)
-	END
-END
-*/
-
+﻿/* PA_Appointment ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Appointment]') AND type in (N'U'))
 BEGIN
-	/* PA_Appointment ****************************/
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
 	IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_Appointment' COLLATE SQL_Latin1_General_CP1_CI_AS) )
@@ -48,9 +30,23 @@ BEGIN
 	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD UpdatedBy INT NOT NULL DEFAULT(0);
 END
 
+/* PA_Appointment AllDay ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Appointment' AND c.name = 'AllDay')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD AllDay BIT NOT NULL DEFAULT(0);
+END
+
+/* PA_Appointment > Title ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Appointment' AND c.name = 'Title')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD Title NVARCHAR(500) NOT NULL DEFAULT('');
+END
+
+/* PA_AppointmentEmployee ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}AppointmentEmployee]') AND type in (N'U'))
 BEGIN
-	/* PA_AppointmentEmployee ****************************/
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
 	IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_AppointmentEmployee' COLLATE SQL_Latin1_General_CP1_CI_AS) )
@@ -67,9 +63,9 @@ BEGIN
 	SET QUOTED_IDENTIFIER OFF
 END
 
+/* PA_Document ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Document]') AND type in (N'U'))
 BEGIN
-	/* PA_Document ****************************/
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
 	IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_Document' COLLATE SQL_Latin1_General_CP1_CI_AS) )
@@ -87,9 +83,9 @@ BEGIN
 	SET QUOTED_IDENTIFIER OFF
 END
 
+/* PA_Service ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Service]') AND type in (N'U'))
 BEGIN
-	/* PA_Service ****************************/
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
 	IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_Service' COLLATE SQL_Latin1_General_CP1_CI_AS) )
@@ -114,9 +110,16 @@ BEGIN
 		(N'Ev Ve İşyeri Dezenfeksiyon')
 END
 
+/* PA_Service > Color ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Service' AND c.name = 'Color')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Service] ADD Color NVARCHAR(50) NULL ;
+END
+
+/* PA_Customer ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Customer]') AND type in (N'U'))
 BEGIN
-	/* PA_Customer ****************************/
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
 	IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_Customer' COLLATE SQL_Latin1_General_CP1_CI_AS) )
@@ -144,13 +147,9 @@ BEGIN
 	SET QUOTED_IDENTIFIER OFF
 END
 
-
-IF NOT EXISTS (
-	SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Country]') AND type in (N'U')
-)
+/* PA_Country ****************************/
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Country]') AND type in (N'U'))
 BEGIN
-
-	/* PA_Country ****************************/
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
 	IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_Country' COLLATE SQL_Latin1_General_CP1_CI_AS) )
@@ -174,12 +173,9 @@ BEGIN
 		(CAST(1 AS BIT), 'TR', 'TUR', '792', '90', N'Türkiye')
 END
 		
-IF NOT EXISTS (
-	SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}City]') AND type in (N'U')
-)
+/* PA_City ****************************/
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}City]') AND type in (N'U'))
 BEGIN
-
-	/* PA_City ****************************/
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
 	IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_City' COLLATE SQL_Latin1_General_CP1_CI_AS) )

@@ -86,9 +86,12 @@ namespace PointmentApp {
             return new List<ScreenModel> {
                 new ScreenModel(null, typeof(Appointment), true)
                     .Visibility(true)
-                    .CalendarView("StartDate", "EndDate")
-                    .Emblem("event_available")
-                    .Editable(true),
+                    .Editable(true)
+                    .CalendarView("Title","AllDay", "StartDate", "EndDate", "Note", 
+                        new ScreenCalendarResource(typeof(Service), "ServiceId") { useColorAsDefault = true }, 
+                        new ScreenCalendarResource(typeof(Customer), "CustomerId")
+                     )
+                    .Emblem("event_available"),
                 new ScreenModel(null, typeof(AppointmentEmployee), true)
                     .Visibility(true)
                     .Emblem("person_outline")
