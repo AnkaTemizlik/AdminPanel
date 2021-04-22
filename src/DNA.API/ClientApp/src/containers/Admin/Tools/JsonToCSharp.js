@@ -29,7 +29,6 @@ const JsonToCSharp = (props) => {
 		data = data.replace(/\]/mg, () => "}")
 		data = data.replace(/\{/mg, () => "new {")
 		data = data.replace(/\[/mg, "new object[] {")
-		console.warning("replace xx", data)
 		return 'dynamic json = ' + data + ';'
 	}
 

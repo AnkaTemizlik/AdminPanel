@@ -135,7 +135,6 @@ const configureColumns = (name, columns, config) => {
 					type: "datetime"
 				}
 			col.editorType = "dxDateBox"
-			console.info("Column", col)
 		}
 		else if (col.type == "check" || col.type == "boolean" || col.type == "bool") {
 			col.dataType = "boolean"
@@ -166,6 +165,12 @@ const configureColumns = (name, columns, config) => {
 				autoResizeEnabled: true
 			}
 		}
+		else if (col.type == "color") {
+			col.editorType = "dxColorBox"
+		}
+		// else if (col.type == "image") {
+		// 	col.editorType = "dxColorBox"
+		// }
 		else
 			col.dataType = "string"
 
@@ -254,6 +259,37 @@ const configureColumns = (name, columns, config) => {
 	})
 }
 
+const createFullDataSource = (ds, n) => {
+	return {
+		...ds,
+		load: (qs) => api.execute("GET", (ds.load ? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${qs}`) : `/api/entity?${qs}`)),
+		byKey: (key) => api.execute("GET", (ds.byKey ? (`${ds.byKey}/${key}`) : `/api/entity/${n}/${key}`)),
+		insert: (values) => api.execute("POST", (ds.insert ? `${ds.insert}` : `/api/entity/${n}`), values),
+		update: (key, values) => api.execute("PUT", (ds.update ? `${ds.update}/${key}` : `/api/entity/${n}/${key}`), values),
+		delete: (key) => api.execute("DELETE", (ds.delete ? `${ds.delete}/${key}` : `/api/entity/${n}/${key}`)),
+		params: {
+			name: n
+		},
+	}
+}
+
+const createSelectDataSource = (ds, n) => {
+	return {
+		...ds,
+		load: (qs) => {
+			let url = ds.load
+				? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${qs}`)
+				: `/api/entity?${qs || 'name=' + (ds.name || n)}`
+			console.purple("createSelectDataSource", url, ds, qs)
+			return api.execute("GET", url)
+		},
+		byKey: (id) => { return api.execute("GET", `/api/entity/${ds.name || n}/${id}`) },
+		params: {
+			name: ds.name || n
+		}
+	}
+}
+
 const screenConfigSlice = createSlice({
 	name: 'panel/settings/screenConfig',
 	initialState: {
@@ -290,16 +326,7 @@ const screenConfigSlice = createSlice({
 							delete s.editing
 					}
 
-					s.dataSource = {
-						...ds,
-						load: (qs) => api.execute("GET", (ds.load ? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${qs}`) : `/api/entity?${qs}`)),
-						insert: (values) => api.execute("POST", (ds.insert ? `${ds.insert}` : `/api/entity/${n}`), values),
-						update: (key, values) => api.execute("PUT", (ds.update ? `${ds.update}` : `/api/entity/${n}/${key}`), values),
-						delete: (key) => api.execute("DELETE", (ds.delete ? `${ds.delete}` : `/api/entity/${n}/${key}`)),
-						params: {
-							name: n
-						},
-					}
+					s.dataSource = createFullDataSource(ds, n)
 
 					// SUB MODELS
 					if (s.subModels && s.subModels.length > 0) {
@@ -312,6 +339,15 @@ const screenConfigSlice = createSlice({
 						})
 					}
 					else s.subModels = []
+
+					// Calendar Resources
+					if (s.calendar) {
+						s.calendar.dataSource = createFullDataSource(s.calendar.dataSource, n)
+						s.calendar.resources && s.calendar.resources.map(r => {
+							r.dataSource = createSelectDataSource(r.dataSource)
+						})
+						console.success("CalendarView resources", s.calendar.resources)
+					}
 
 					// columns order
 					s.columns = _
@@ -327,6 +363,7 @@ const screenConfigSlice = createSlice({
 							console.log("configureColumns", c.editWith.columns)
 						}
 					})
+
 				});
 			}
 

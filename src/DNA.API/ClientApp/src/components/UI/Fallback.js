@@ -5,7 +5,6 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 
 const Fallback = (props) => {
 	//const { status } = useBackendStatus();
-	console.warning("Fallback", props)
 	// if (props.error) {
 	// 	return <div>Error!
 	// 		<span>{JSON.stringify(props.error)}</span>
