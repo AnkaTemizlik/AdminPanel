@@ -11,8 +11,9 @@ namespace DNA.Domain.Services {
         Task<QueryResult<T>> ListAsync<T>(EntityQuery query);
         Task<int> InsertAsync(string name, dynamic model);
         Task<int> InsertAsync(string name, Model model);
-        Task<int> UpdateAsync(string name, string id, dynamic model);
-        Task<int> UpdateAsync(string name, string id, Model model);
+
+        //Task<int> UpdateAsync(string name, string id, dynamic model);
+        Task<bool> UpdateAsync(string name, object id, dynamic model);
         Task<int> DeleteAsync(string name, dynamic model);
         Task<int> DeleteAsync(string name, Model model);
         Task<dynamic> GetEntityModelAsync(EntityQuery entityQuery);

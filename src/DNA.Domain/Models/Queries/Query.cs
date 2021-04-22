@@ -82,7 +82,7 @@ namespace DNA.Domain.Models {
             SqlParameters = expando;
 
             if (Sort != null && Sort.Count > 0) {
-                SqlOrderBy = string.Join(",", Sort.Select(_ => $"[{_.Selector}]{(_.Desc ? " DESC" : "")} "));
+                SqlOrderBy = string.Join(",", Sort.Where(_ => _.Selector != null).Select(_ => $"[{_.Selector}]{(_.Desc ? " DESC" : "")} "));
             }
             else
                 SqlOrderBy ??= "1 DESC ";

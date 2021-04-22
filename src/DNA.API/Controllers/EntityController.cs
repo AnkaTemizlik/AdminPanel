@@ -92,7 +92,8 @@ namespace DNA.API.Controllers {
             }
 
             try {
-                var result = await _entityService.InsertAsync(name, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(entity)));
+                //JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(entity))
+                var result = await _entityService.InsertAsync(name, entity);
                 return Ok(new Response(result));
             }
             catch (Exception ex) {
@@ -109,7 +110,8 @@ namespace DNA.API.Controllers {
                 return BadRequest(ModelState);
             }
             try {
-                var result = await _entityService.UpdateAsync(name, id, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(entity)));
+                //JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(entity))
+                var result = await _entityService.UpdateAsync(name, id, entity);
                 return Ok(new Response(result));
             }
             catch (Exception ex) {

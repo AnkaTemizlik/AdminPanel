@@ -93,6 +93,61 @@ namespace DNA.Domain.Utils {
         [JsonProperty("assembly")]
         public string Assembly { get; set; }
 
+        [JsonProperty("dataSource")]
+        public ScreenDataSource DataSource { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <example>
+        /// "actions": [
+        ///   {
+        ///     "text": "Goto the License View",
+        ///     "icon": "security",
+        ///     "route": "/panel/screen/license/{Id}"
+        ///   },
+        ///   {
+        ///     "text": "Copy License Public Key",
+        ///     "dxIcon": "copy",
+        ///     "type": "dx",
+        ///     "eval": "copy('Muşteri: {CustomerId} | Program: {ProgramId} | Anahtar: {PublicKey}');",
+        ///     "dependsOnSelected": true,
+        ///     "onSuccess": {
+        ///       "text": "Kopyalandı."
+        ///     }
+        ///   },
+        ///   {
+        ///     "text": "Reset License to default",
+        ///     "dxIcon": "revert",
+        ///     "dependsOnSelected": true,
+        ///     "request": {
+        ///       "method": "POST",
+        ///       "url": "api/license/reset/{Id}",
+        ///       "refreshAfterSuccess": true,
+        ///       "onError": {
+        ///         "text": "İşlem başarısız."
+        ///       },
+        ///       "onSuccess": {
+        ///         "text": "İşlem Başarılı."
+        ///       }
+        ///     },
+        ///     "confirmation": {
+        ///       "message": "Are you sure you want to reset License.MachineKey to null?"
+        ///     },
+        ///     "executeWhen": {
+        ///       "condition": [
+        ///         "Id",
+        ///         ">",
+        ///         "0"
+        ///       ],
+        ///       "eval": "1==1"
+        ///     }
+        ///   }
+        /// ],
+        /// </example>
+        [JsonProperty("actions")]
+        public object Actions { get; set; }
+
         public ScreenModel(Type type) {
             Name = type.Name;
             Type = type;
@@ -128,32 +183,47 @@ namespace DNA.Domain.Utils {
             this.AllowEditing = editable;
             return this;
         }
+
         public ScreenModel Definition() {
             this.IsDefinitionModel = true;
             return this;
         }
+
         public ScreenModel HiddenInSidebar() {
             this.HasInSidebar = true;
             return this;
         }
+
         public ScreenModel Emblem(string icon) {
             this.Icon = icon;
             return this;
         }
-        public ScreenModel CalendarView(string startDateField, string endDateField) {
+
+        public ScreenModel CalendarView(string textExpr, string allDayExpr, string startDateExpr, string endDateExpr, string descriptionExpr, params ScreenCalendarResource[] resources) {
             this.ViewType = "calendar";
             IsCalendarActive = true;
             this.Calendar = new ScreenCalendar() {
-                dateRageFields = new string[] {
-                    startDateField,
-                    endDateField
-                }
+                startDateExpr = startDateExpr,
+                endDateExpr = endDateExpr,
+                allDayExpr = allDayExpr,
+                textExpr = textExpr,
+                descriptionExpr = descriptionExpr,
+                resources = resources.ToList()
             };
             return this;
         }
+
         public ScreenModel GalleryView() {
             this.ViewType = "gallery";
             return this;
+        }
+
+        public void GenerateDataSource(ScreenDataSource existing) {
+            DataSource = existing;
+        }
+
+        public void GenerateActions(object existing) {
+            Actions = existing;
         }
 
         public void GenerateEditing(ScreenEditing existingEditing) {
@@ -172,7 +242,23 @@ namespace DNA.Domain.Utils {
 
         public void GenerateCalendar(ScreenCalendar existingCalendar) {
             if (IsCalendarActive) {
-                Calendar.dateRageFields = existingCalendar?.dateRageFields ?? new string[] { "?" };
+                Calendar.startDateExpr = string.IsNullOrWhiteSpace(existingCalendar.startDateExpr) ? Calendar.startDateExpr : existingCalendar.startDateExpr;
+                Calendar.endDateExpr = string.IsNullOrWhiteSpace(existingCalendar.endDateExpr) ? Calendar.endDateExpr : existingCalendar.endDateExpr;
+                Calendar.textExpr = string.IsNullOrWhiteSpace(existingCalendar.textExpr) ? Calendar.textExpr : existingCalendar.textExpr;
+                Calendar.allDayExpr = string.IsNullOrWhiteSpace(existingCalendar.allDayExpr) ? Calendar.allDayExpr : existingCalendar.allDayExpr;
+                Calendar.descriptionExpr = string.IsNullOrWhiteSpace(existingCalendar.descriptionExpr) ? Calendar.descriptionExpr : existingCalendar.descriptionExpr;
+                Calendar.editing ??= Editing != null
+                    ? new ScreenCalendarEditing {
+                        enabled = Editing.enabled,
+                        allowAdding = Editing.allowAdding,
+                        allowDeleting = Editing.allowDeleting,
+                        allowDragging = Editing.allowUpdating,
+                        allowResizing = Editing.allowUpdating,
+                        allowUpdating = Editing.allowUpdating,
+                        roles = Editing.roles
+                    }
+                    : null;
+                Calendar.resources ??= existingCalendar.resources;
             }
             else {
                 Calendar = existingCalendar;
@@ -205,7 +291,7 @@ namespace DNA.Domain.Utils {
                     subModel.icon ??= refScreen.Icon;
                     subModel.showIn ??= new string[] { "tab" };
                     subModel.route ??= Regex.Replace(refScreen.Name, @"[A-Z]", (m) => $"-{m.Value}").Trim('-').ToLower();
-                    subModel.relationFieldNames ??= new object[2] { "?", KeyFieldName };
+                    subModel.relationFieldNames ??= new object[2] { KeyFieldName, "?" };
                 }
             }
         }
@@ -263,18 +349,18 @@ namespace DNA.Domain.Utils {
                     col.data.valueExpr ??= columnsAttr.LookupType.GetProperties().Where(_ => _.GetCustomAttribute<KeyAttribute>() != null).FirstOrDefault()?.Name;
                     col.data.displayExpr ??= columnsAttr.LookupType.GetProperties().Where(_ => (_.GetCustomAttribute<ColumnAttribute>()?.DisplayExpr).GetValueOrDefault(false)).Select(_ => _.Name).ToArray();
                 }
-
+                // hidden
                 if (col.hidden == null) {
                     if (columnsAttr?.Hidden == true)
                         col.hidden = true;
                 }
-
+                // roles
                 if (col.roles == null) {
                     var restrictedRoleAttr = item.GetCustomAttribute<JsonRestrictedRoleAttribute>();
                     if (restrictedRoleAttr != null)
                         col.roles = restrictedRoleAttr.Roles.ToArray();
                 }
-
+                // required
                 var required = item.GetCustomAttribute<System.ComponentModel.DataAnnotations.RequiredAttribute>() != null;
                 if (col.required == null) {
                     if (required)
@@ -298,6 +384,7 @@ namespace DNA.Domain.Utils {
                 }
             }
             string val;
+            var columnAttribute = item.GetCustomAttribute<ColumnAttribute>();
             if (item.PropertyType == typeof(bool) || item.PropertyType == typeof(bool?)) {
                 val = col.type ?? "check";
             }
@@ -312,7 +399,12 @@ namespace DNA.Domain.Utils {
             else if (item.PropertyType.IsNumeric() || (secondType != null && secondType.IsNumeric())) {
                 val = col.type ?? "numeric";
             }
-            //else if(item.GetCustomAttribute<ColumnAttribute>()?.) // TODO: image type
+            else if (columnAttribute?.Image == true) {
+                val = col.type ?? "image";
+            }
+            else if (columnAttribute?.Color == true) {
+                val = col.type ?? "color";
+            }
             else {
                 var stringLength = item.GetCustomAttribute<System.ComponentModel.DataAnnotations.StringLengthAttribute>()?.MaximumLength ?? 0;
                 val = col.type ?? (stringLength > 100 ? "textArea" : "text");
@@ -334,6 +426,36 @@ namespace DNA.Domain.Utils {
         public bool? allowUpdating { get; set; }
         public bool? allowAdding { get; set; }
         public bool? allowDeleting { get; set; }
+    }
+
+    public class ScreenDataSource {
+
+        public string name { get; set; }
+
+        /// <summary>
+        /// simpleArray, customStore
+        /// </summary>
+        public string type { get; set; }
+
+        /// <summary>
+        /// url
+        /// </summary>
+        public string load { get; set; }
+
+        /// <summary>
+        /// url
+        /// </summary>
+        public string insert { get; set; }
+
+        /// <summary>
+        /// `url/${key}`
+        /// </summary>
+        public string update { get; set; }
+
+        /// <summary>
+        /// `url/${key}`
+        /// </summary>
+        public string delete { get; set; }
     }
 
     public class ScreenSubModel {
@@ -402,5 +524,45 @@ namespace DNA.Domain.Utils {
 
     public class ScreenCalendar {
         public string[] dateRageFields { get; set; }
+        public ScreenCalendarEditing editing { get; set; }
+        public string startDateExpr { get; set; }
+        public string endDateExpr { get; set; }
+        public string allDayExpr { get; set; }
+        public string textExpr { get; set; }
+        public string descriptionExpr { get; set; }
+        public List<ScreenCalendarResource> resources { get; set; }
+    }
+
+
+    public class ScreenCalendarEditing {
+        public bool enabled { get; set; }
+        public bool? allowUpdating { get; set; }
+        public bool? allowAdding { get; set; }
+        public bool? allowDeleting { get; set; }
+        public bool? allowResizing { get; set; }
+        public bool? allowDragging { get; set; }
+        public string[] roles { get; set; }
+    }
+
+    public class ScreenCalendarResource {
+        public string fieldExpr { get; set; }
+        public string displayExpr { get; set; }
+        public string valueExpr { get; set; }
+        public string colorExpr { get; set; }
+        public bool? allowMultiple { get; set; }
+        public string label { get; set; }
+        public bool? useColorAsDefault { get; set; }
+        public ScreenDataSource dataSource { get; set; }
+        public ScreenCalendarResource() {
+
+        }
+        public ScreenCalendarResource(Type type, string fieldExpr, string valueExpr = "Id", string displayExpr = "Name",  string colorExpr= "Color") {
+            this.label = type.Name;
+            this.dataSource = new ScreenDataSource { type = "customStore", name = type.Name };
+            this.fieldExpr = fieldExpr;
+            this.displayExpr = displayExpr;
+            this.valueExpr = valueExpr;
+            this.colorExpr = colorExpr;
+        }
     }
 }

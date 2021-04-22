@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
+import { useHistory } from "react-router-dom";
 import DataGrid, { Button, Column, ColumnChooser, Editing, Form, Export, FilterBuilderPopup, FilterPanel, FilterRow, LoadPanel, Popup, Pager, Paging, RequiredRule, SearchPanel, Selection, Position, Lookup, HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
 import { Item } from 'devextreme-react/form';
 import { Template } from 'devextreme-react/core/template';
 import DropDownBoxComponent from "./DropDownBoxComponent";
 import createCustomStore from "./createCustomStore";
 import { supplant } from "../../../store/utils";
+import { ColorBox } from "devextreme-react";
 
 const DataTable = React.memo((props) => {
 	const {
@@ -35,6 +37,7 @@ const DataTable = React.memo((props) => {
 	const [focusedRowKey, setFocusedRowKey] = useState(null)
 	const { lists } = useSelector(s => s.screenConfig)
 	const defaultValue = props.defaultValue || {}
+	let history = useHistory();
 
 	// function selectionChanged(selection) {
 	// 	const { selectedRowsData } = selection
@@ -46,17 +49,17 @@ const DataTable = React.memo((props) => {
 
 	const focusedRowChanged = useCallback((e) => {
 		const dataRow = e.row && e.row.data
-		let dataRowWithTexts = {}
+		let dataRowWithLabels = {}
 		if (dataRow) {
 			Object.keys(dataRow).map(c => {
 				let cell = e.row.cells.find(l => l.column && l.column.dataField == c);
-				dataRowWithTexts[c] = cell ? cell.text : dataRow[c]
+				dataRowWithLabels[c] = cell ? cell.text : dataRow[c]
 			})
 		}
 		setRow(dataRow)
-		setTexts(dataRowWithTexts)
+		setTexts(dataRowWithLabels)
 		setFocusedRowKey(e.component.option('focusedRowKey'))
-		onFocusedRowChanged && onFocusedRowChanged(dataRow, dataRowWithTexts)
+		onFocusedRowChanged && onFocusedRowChanged(dataRow, dataRowWithLabels)
 	}, [onFocusedRowChanged])
 
 	useEffect(() => {
@@ -125,6 +128,9 @@ const DataTable = React.memo((props) => {
 							} catch (error) {
 								props.onError && props.onError({ Success: false, Message: error.toString() })
 							}
+						}
+						else if (a.route) {
+							history.push(supplant(a.route, texts, row))
 						}
 						else {
 							console.error("The 'dx' action only supports the 'eval' feature for now.")
@@ -286,9 +292,12 @@ const DataTable = React.memo((props) => {
 				defaultSortOrder={defaultSortOrder}
 				allowFiltering={c.allowFiltering !== false}
 				allowHeaderFiltering={c.allowHeaderFiltering === true}
-				cellRender={c.type == "image"
-					? (cell) => imageCellRender(cell, c)
-					: undefined
+				cellRender={
+					c.type == "image"
+						? (cell) => imageCellRender(cell, c)
+						: c.type == "color"
+							? (cell) => <div className="dx-colorbox-color-result-preview" style={{ backgroundColor: cell.value, margin: 'auto', position: "inherit" }} />
+							: undefined
 				}
 				format={c.format}
 				setCellValue={c.setCellValue}

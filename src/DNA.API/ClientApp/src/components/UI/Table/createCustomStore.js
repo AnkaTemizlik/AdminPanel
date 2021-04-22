@@ -16,6 +16,7 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 		: new CustomStore({
 			key: key || "Id",
 			load: (loadOptions) => {
+
 				let params = options.params ? { ...options.params } : {};
 				[
 					'skip',
@@ -39,9 +40,12 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 					params.filter = addQueryFilter(params.filter, defaultFilter)
 				}
 
+				console.warning("loadOptions", params, options, loadOptions)
+
 				return options.load(toQueryString(params))
 					.then((status) => {
 						if (status.Success) {
+							console.success("SUCCESS load ", status)
 							return {
 								data: status.Resource.Items,
 								totalCount: status.Resource.TotalItems,

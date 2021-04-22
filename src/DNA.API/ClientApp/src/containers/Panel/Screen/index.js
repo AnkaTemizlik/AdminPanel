@@ -13,6 +13,7 @@ import { setCurrentScreen, setRow, selectScreen, setLoading } from './store/scre
 import DataTable from "../../../components/UI/Table/DataTable";
 import ActionsView from "./components/ActionsView";
 import View from "./View";
+import Calendar from "./Calendar";
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -81,8 +82,8 @@ const Screen = React.memo((props) => {
 
 							<Box flexGrow={1} />
 
-							<Box pt={1} pl={1}>
-								<Icon style={{ fontSize: 48, opacity: "0.3" }}>{currentScreen.icon}</Icon>
+							<Box pt={1} pl={2}>
+								<Icon style={{ fontSize: 64, opacity: "0.20" }}>{currentScreen.icon}</Icon>
 							</Box>
 
 						</Toolbar>
@@ -90,12 +91,13 @@ const Screen = React.memo((props) => {
 
 					<Grid item xs={12}>
 
-						{/* <Link to={`${url}/2`}>{name} 2</Link>
-						&nbsp; &#128151; &nbsp;
-						<Link to={`${url}`}>{name}</Link>
-						<br /> */}
-
 						<Switch>
+
+							{currentScreen.calendar &&
+								<Route path={`/panel/screen/${name}/calendar`}>
+									<Calendar name={name} />
+								</Route>
+							}
 
 							<Route path={`${url}/:id`} exact>
 								<View name={name} />
