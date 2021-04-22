@@ -44,7 +44,7 @@ const Home = (props) => {
 
 					<Box flexGrow="1" />
 
-					<Typography>{Plugin.CompanyName}</Typography>
+					<Typography variant="body2">{Plugin.CompanyName}</Typography>
 
 					<Box pl={2}>
 						<LanguageChanger />

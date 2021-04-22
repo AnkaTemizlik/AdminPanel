@@ -63,7 +63,7 @@
   background-color: #fff;
   color: #333;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   font-family: Quicksand,"Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
   line-height: 1.35715;
 }
@@ -1630,7 +1630,7 @@
   position: relative;
   color: #333;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   font-family: Quicksand,"Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
   line-height: 1.35715;
   min-height: 36px;
@@ -2227,7 +2227,7 @@
   -ms-flex-direction: column;
   flex-direction: column;
   max-width: 100%;
-  font-size: 14px;
+  font-size: 13px;
 }
 .dx-button-disabled {
   cursor: default;
@@ -4132,7 +4132,7 @@
   z-index: 1000;
   color: #333;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   font-family: Quicksand,"Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
   line-height: 1.35715;
 }
@@ -6947,7 +6947,7 @@
   text-align: left;
   color: #333;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   font-family: Quicksand,"Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
   line-height: 1.35715;
 }
@@ -8164,7 +8164,7 @@
   -ms-flex-align: center;
   align-items: center;
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   line-height: 32px;
   padding: 10px;
@@ -9412,7 +9412,7 @@
 .dx-accordion-item-body {
   overflow: hidden;
   padding: 8px 12px 22px;
-  font-size: 14px;
+  font-size: 13px;
 }
 .dx-accordion-item-closed .dx-accordion-item-body {
   visibility: hidden;
@@ -11002,7 +11002,7 @@
   background-position: 0 0;
   background-size: 14px 14px;
   padding: 0;
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
   line-height: 14px;
 }
@@ -11445,7 +11445,7 @@
 .dx-datagrid-column-chooser {
   color: #333;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   font-family: Quicksand,"Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
   line-height: 1.35715;
 }
@@ -12021,7 +12021,7 @@
   padding-left: 0;
 }
 .dx-datagrid-group-panel {
-  font-size: 14px;
+  font-size: 13px;
   -ms-touch-action: pinch-zoom;
   touch-action: pinch-zoom;
 }
@@ -13083,7 +13083,7 @@ input.dx-hidden {
   background-position: 0 0;
   background-size: 14px 14px;
   padding: 0;
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
   line-height: 14px;
 }
@@ -13537,7 +13537,7 @@ input.dx-hidden {
 .dx-treelist-column-chooser {
   color: #333;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   font-family: Quicksand,"Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
   line-height: 1.35715;
 }
@@ -14516,7 +14516,7 @@ input.dx-hidden {
 }
 .dx-pivotgrid-fields-container .dx-sort {
   color: #959595;
-  font-size: 14px;
+  font-size: 13px;
   width: 14px;
 }
 .dx-pivotgrid-fields-container .dx-sort-up {
@@ -15083,7 +15083,7 @@ input.dx-hidden {
 .dx-pivotgrid .dx-ie .dx-pivotgrid-fields-area {
   color: #333;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   font-family: Quicksand,"Helvetica Neue","Segoe UI",helvetica,verdana,sans-serif;
   line-height: 1.35715;
 }
@@ -17027,7 +17027,7 @@ input.dx-hidden {
 }
 .dx-scheduler-small .dx-scheduler-time-panel {
   width: 50px;
-  font-size: 14px;
+  font-size: 13px;
 }
 .dx-scheduler-time-panel .dx-scheduler-time-panel-row:nth-child(1) td > div,
 .dx-scheduler-time-panel .dx-scheduler-virtual-row ~ .dx-scheduler-time-panel-row:nth-child(2) td > div {
@@ -17469,7 +17469,7 @@ input.dx-hidden {
 }
 .dx-scheduler-small .dx-scheduler-agenda .dx-scheduler-group-header {
   width: 40px;
-  font-size: 14px;
+  font-size: 13px;
 }
 .dx-scheduler-agenda .dx-scheduler-group-header-content div {
   white-space: normal;
@@ -17508,7 +17508,7 @@ input.dx-hidden {
   top: 45%;
   left: 0;
   right: 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 .dx-scheduler-work-space-horizontal-grouped.dx-scheduler-timeline.dx-scheduler-work-space[dx-group-row-count="1"].dx-scheduler-work-space .dx-scheduler-date-table-scrollable {
   padding-bottom: 90px;
@@ -18070,7 +18070,7 @@ input.dx-hidden {
 .dx-scheduler-all-day-title {
   height: 75px;
   line-height: 75px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   top: 56px;
 }
@@ -18426,7 +18426,7 @@ input.dx-hidden {
   border-radius: 4px 0 0 4px;
 }
 .dx-scheduler-view-switcher.dx-tabs {
-  font-size: 14px;
+  font-size: 13px;
 }
 .dx-scheduler-view-switcher.dx-tabs .dx-tab:not(.dx-tab-selected):not(.dx-state-hover) {
   background: 0 0;
@@ -18530,7 +18530,7 @@ input.dx-hidden {
 .dx-scheduler-group-header,
 .dx-scheduler-header-panel,
 .dx-scheduler-time-panel {
-  font-size: 14px;
+  font-size: 13px;
 }
 .dx-scheduler-work-space-grouped .dx-scheduler-group-row th,
 .dx-scheduler-work-space.dx-scheduler-work-space-grouped .dx-scheduler-last-group-cell {
@@ -18902,7 +18902,7 @@ input.dx-hidden {
   font-size: 13px;
 }
 .dx-scheduler-agenda .dx-scheduler-group-header {
-  font-size: 14px;
+  font-size: 13px;
   width: 80px;
 }
 .dx-scheduler-agenda.dx-scheduler-work-space .dx-scrollable.dx-scheduler-date-table-scrollable,
@@ -19387,7 +19387,7 @@ input.dx-hidden {
   background-position: 0 0;
   background-size: 14px 14px;
   padding: 0;
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
   line-height: 14px;
 }
@@ -20321,7 +20321,7 @@ input.dx-hidden {
 }
 .dx-fa-button.dx-fa-button-main .dx-overlay-content .dx-fa-button-label {
   padding: 0 16px 0 8px;
-  font-size: 14px;
+  font-size: 13px;
   margin-right: 0;
 }
 .dx-filemanager {

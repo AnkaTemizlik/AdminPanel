@@ -83,9 +83,9 @@ const Panel = (props) => {
 							<Toolbar>
 								<SidebarTrigger />
 
-								<IconButton onClick={() => history.goBack()} color="inherit">
+								{/* <IconButton onClick={() => history.goBack()} color="inherit">
 									<NavigateBeforeIcon />
-								</IconButton>
+								</IconButton> */}
 
 								<Tooltip title="Home">
 									<span>
@@ -96,7 +96,7 @@ const Panel = (props) => {
 								</Tooltip>
 
 								<Hidden xsDown>
-									<Tooltip title="Panel">
+									<Tooltip title="Dashboard">
 										<span>
 											<IconButton component={Link} to={path} color="inherit">
 												<DashboardIcon />
@@ -104,12 +104,14 @@ const Panel = (props) => {
 										</span>
 									</Tooltip>
 								</Hidden>
+								<Box flexGrow="1" />
 
 								<Hidden xsDown>
 									<Box pl={2}>
-										<Typography variant="h6">{t(menus.panel.label)}</Typography>
+										<Typography variant="h6">{t(settings.Plugin.ProgramName)}</Typography>
 									</Box>
 								</Hidden>
+
 								<Box flexGrow="1" />
 
 								{settings && settings.Notification && settings.Notification.Enabled &&
@@ -153,6 +155,13 @@ const Panel = (props) => {
 										} else {
 
 											const routes = [];
+											if (s.calendar) {
+												routes.push(
+													<PrivateRoute path={`${url}/screen/${s.route}/calendar`} exact key={s.route + '/calendar'}>
+														<Screen name={n} />
+													</PrivateRoute>
+												);
+											}
 
 											s.subMenus && s.subMenus.map((f, j) => {
 												routes.push(

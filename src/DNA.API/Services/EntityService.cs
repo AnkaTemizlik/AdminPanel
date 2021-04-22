@@ -96,7 +96,6 @@ namespace DNA.API.Services {
         }
 
         public async Task<int> InsertAsync(string name, Model model) {
-            var insertQuery = _configuration[$"ScreenConfig:Queries:{name}:InsertQuery"];
             var section = _configuration.GetSection($"ScreenConfig:Queries:{name}:InsertQuery");
             if (section.Exists()) {
                 var lines = section.GetSection("Lines").Get<string[]>();
@@ -121,6 +120,7 @@ namespace DNA.API.Services {
         }
 
         public async Task<int> InsertAsync(string name, dynamic model) {
+            var obj = JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(model));
             var section = _configuration.GetSection($"ScreenConfig:Queries:{name}:InsertQuery");
             if (section.Exists()) {
                 var lines = section.GetSection("Lines").Get<string[]>();
@@ -128,23 +128,27 @@ namespace DNA.API.Services {
                     throw new Exception("InsertQuery is not defined.");
                 var sql = string.Join(Environment.NewLine, lines);
                 if (sql.Contains("{Fields}")) {
-                    var data = (System.Dynamic.ExpandoObject)model;
-                    sql = sql.Replace("{Fields}", string.Join(",", data.Select(_ => $"[{_.Key}]")));
-                    sql = sql.Replace("{Parameters}", string.Join(",", data.Select(_ => $"@{_.Key}")));
+                    //if (!TryFindType(_configuration[$"ScreenConfig:Screens:{name}:assembly"], out Type type))
+                    //    type = typeof(object);
+                    //var data = type.GetProperties()
+                    //   .Where(_ => _.GetCustomAttribute<Dapper.Contrib.Extensions.KeyAttribute>() == null)
+                    //   .Where(_ => _.GetCustomAttribute<Dapper.Contrib.Extensions.ComputedAttribute>() == null)
+                    //   .Where(_ => obj.ContainsKey(_.Name))
+                    //   .Select(_ => _.Name);
+                    var data = ((IDictionary<String, object>)obj).Keys;
+                    sql = sql.Replace("{Fields}", string.Join(",", data.Select(_ => $"[{_}]")));
+                    sql = sql.Replace("{Parameters}", string.Join(",", data.Select(_ => $"@{_}")));
                 }
-                model.CurrentUserId = _userId;
-                return await _processRepository.ExecuteAsync(sql, model);
+                obj.CurrentUserId = _userId;
+                return await _processRepository.ExecuteAsync(sql, obj);
             }
             else {
                 throw new Exception("InsertQuery is not defined.");
             }
         }
 
-        public async Task<int> UpdateAsync(string name, string id, Model model) {
-            return await UpdateAsync(name, id, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(model)));
-        }
-
-        public async Task<int> UpdateAsync(string name, string id, dynamic model) {
+        public async Task<bool> UpdateAsync(string name, object id, dynamic model) {
+            var obj = JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(model));
             var section = _configuration.GetSection($"ScreenConfig:Queries:{name}:UpdateQuery");
             if (section.Exists()) {
                 var lines = section.GetSection("Lines").Get<string[]>();
@@ -152,23 +156,55 @@ namespace DNA.API.Services {
                     throw new Exception("UpdateQuery is not defined.");
                 var sql = string.Join(Environment.NewLine, lines);
                 if (sql.Contains("{Fields}")) {
-                    var data = (System.Dynamic.ExpandoObject)model;
-                    sql = sql.Replace("{Fields}", string.Join(",", data.Select(_ => $"[{_.Key}] = @{_.Key}")));
-
+                    if (!TryFindType(_configuration[$"ScreenConfig:Screens:{name}:assembly"], out Type type))
+                        type = typeof(object);
+                    var allKeys = type.GetProperties()
+                        .Where(_ => _.GetCustomAttribute<Dapper.Contrib.Extensions.KeyAttribute>() == null)
+                        .Where(_ => _.GetCustomAttribute<Dapper.Contrib.Extensions.ComputedAttribute>() == null)
+                        .Select(_ => _.Name);
+                    var data = ((IDictionary<String, object>)obj).Keys.Where(_=> allKeys.Contains(_));
+                    sql = sql.Replace("{Fields}", string.Join(",", data.Select(name => $"[{name}] = @{name}")));
                     if (sql.Contains("{InsertingFields}"))
-                        sql = sql.Replace("{InsertingFields}", string.Join(",", data.Select(_ => $"[{_.Key}]")));
+                        sql = sql.Replace("{InsertingFields}", string.Join(",", data.Select(name => $"[{name}]")));
                     if (sql.Contains("{InsertingParameters}"))
-                        sql = sql.Replace("{InsertingParameters}", string.Join(",", data.Select(_ => $"@{_.Key}")));
-
+                        sql = sql.Replace("{InsertingParameters}", string.Join(",", data.Select(name => $"@{name}")));
                 }
-                model.Id = id;
-                model.CurrentUserId = _userId;
-                return await _processRepository.ExecuteAsync(sql, model);
+                obj.Id = id;
+                obj.CurrentUserId = id;
+                return await _processRepository.ExecuteAsync(sql, obj) > 0;
             }
             else {
-                throw new Exception("UpdateQuery is not defined.");
+                return await _processRepository.UpdateAsync(model);
             }
         }
+
+        //public async Task<int> UpdateAsync(string name, string id, dynamic model) {
+        //    if (!TryFindType(_configuration[$"ScreenConfig:Screens:{name}:assembly"], out Type type))
+        //        type = typeof(object);
+        //    var section = _configuration.GetSection($"ScreenConfig:Queries:{name}:UpdateQuery");
+        //    if (section.Exists()) {
+        //        var lines = section.GetSection("Lines").Get<string[]>();
+        //        if (lines == null || lines.Length == 0)
+        //            throw new Exception("UpdateQuery is not defined.");
+        //        var sql = string.Join(Environment.NewLine, lines);
+        //        if (sql.Contains("{Fields}")) {
+        //            var data = (System.Dynamic.ExpandoObject)model;
+        //            sql = sql.Replace("{Fields}", string.Join(",", data.Select(_ => $"[{_.Key}] = @{_.Key}")));
+
+        //            if (sql.Contains("{InsertingFields}"))
+        //                sql = sql.Replace("{InsertingFields}", string.Join(",", data.Select(_ => $"[{_.Key}]")));
+        //            if (sql.Contains("{InsertingParameters}"))
+        //                sql = sql.Replace("{InsertingParameters}", string.Join(",", data.Select(_ => $"@{_.Key}")));
+
+        //        }
+        //        model.Id = id;
+        //        model.CurrentUserId = _userId;
+        //        return await _processRepository.ExecuteAsync(sql, model);
+        //    }
+        //    else {
+        //        throw new Exception("UpdateQuery is not defined.");
+        //    }
+        //}
 
         public async Task<int> DeleteAsync(string name, Model model) {
             return await DeleteAsync(name, JsonConvert.DeserializeObject<ExpandoObject>(JsonConvert.SerializeObject(model)));

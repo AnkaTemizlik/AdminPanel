@@ -9,7 +9,8 @@ namespace Dapper.Contrib.Extensions {
         public string Name { get; set; }
         public Type LookupType { get; set; }
         public bool DisplayExpr { get; set; }
-
         public bool Hidden { get; set; }
+        public bool Color { get; set; }
+        public bool Image { get; set; }
     }
 }

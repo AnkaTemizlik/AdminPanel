@@ -19,10 +19,10 @@ const useStyles = makeStyles(theme => {
 		},
 		logo: {
 			marginTop: -44,
-			width: 240,
+			width: 200,
 			[theme.breakpoints.down('xs')]: {
 				marginTop: -12,
-				width: 160
+				width: 140
 			}
 		}
 	}
@@ -58,8 +58,7 @@ const Welcome = (props) => {
 				<Grid item>
 					<Toolbar>
 						<img className={classes.logo} src={Plugin.CompanyLogo || logo256} alt="" style={{ marginRight: 16 }} />
-						<Typography variant="h2" style={{ color: "lightgray", paddingTop: 1 }}>{Plugin.ProgramName || 'API'}</Typography>
-						<Typography variant="body2" style={{ color: "lightgray", padding: "28px 0 0 16px" }}>{version}</Typography>
+						<Typography variant="h3" style={{ color: "lightgray", paddingTop: 1 }}>{Plugin.ProgramName || 'API'}</Typography>
 					</Toolbar>
 				</Grid>
 				<Box pt={1}></Box>
@@ -68,6 +67,7 @@ const Welcome = (props) => {
 						<Typography variant="h6" style={{ color: "white" }}>
 							<Tr>{Plugin.Description || 'Access points to the background workers'}</Tr>
 						</Typography>
+						<Typography variant="body2" style={{ color: "lightgray", paddingLeft: 8 }}>v{version}</Typography>
 					</Toolbar>
 				</Grid>
 				<Box flexGrow="1"></Box>
@@ -77,8 +77,9 @@ const Welcome = (props) => {
 					</Toolbar>
 					<Toolbar>
 						<Box flexGrow="1"></Box>
-						<Typography variant="caption" style={{ color: "lightgray" }}>
-							Powered by &nbsp;<img style={{ marginBottom: -8, marginLeft: 8 }} src={Logo || logo} alt="" />
+						<Typography variant="caption" style={{ color: "lightgray", display: "flex", alignItems: "center" }}>
+							<span>Powered by &nbsp;</span>
+							<img style={{ marginLeft: 8 }} src={Logo || logo} alt="" />
 						</Typography>
 					</Toolbar>
 				</Grid>
