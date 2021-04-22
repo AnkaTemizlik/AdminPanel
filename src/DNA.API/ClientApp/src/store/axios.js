@@ -1,6 +1,6 @@
 ﻿import axios from 'axios';
 const development = (process.env && process.env.NODE_ENV === "development")
-const Host = 'http://192.168.1.20:8800'
+const Host = 'http://localhost:8800'
 
 // AXIOS HELP : https://kapeli.com/cheat_sheets/Axios.docset/Contents/Resources/Documents/index
 // sample: { validateStatus: (status) => (status >= 200 && status < 300) } // 
