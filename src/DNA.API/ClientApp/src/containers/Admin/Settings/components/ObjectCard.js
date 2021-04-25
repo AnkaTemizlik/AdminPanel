@@ -13,6 +13,7 @@ const ObjectCard = (props) => {
 	const { field, h, handleChange, loading, isArray } = props
 	const { _, options } = field
 	const { caption, visible, action } = options;
+	const readOnly = props.readOnly || options.readOnly
 
 	if (visible == false)
 		return null;
@@ -28,6 +29,7 @@ const ObjectCard = (props) => {
 						field={f}
 						handleChange={handleChange}
 						loading={loading}
+						readOnly={readOnly}
 					/>
 				})}
 				{_.objects.map((f, i) => {
@@ -36,6 +38,7 @@ const ObjectCard = (props) => {
 						h={"subtitle1"}
 						handleChange={handleChange}
 						loading={loading}
+						readOnly={readOnly}
 					/>
 				})}
 				{_.forms.map((f, i) => {
@@ -44,6 +47,7 @@ const ObjectCard = (props) => {
 						h={"subtitle1"}
 						handleChange={handleChange}
 						loading={loading}
+						readOnly={readOnly}
 					/>
 				})}
 			</CollapsibleCard>

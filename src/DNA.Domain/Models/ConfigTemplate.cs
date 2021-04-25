@@ -18,8 +18,8 @@ namespace DNA.Domain.Models {
         Dictionary<string, FieldTemplate> _fields;
         bool configGenerated = false;
 
-        public ConfigProperty Property() {
-            var p = new ConfigProperty(this);
+        public ConfigProperty Property(bool readOnly = false) {
+            var p = new ConfigProperty(this, readOnly);
             Root ??= p;
             return p;
         }
@@ -112,15 +112,10 @@ namespace DNA.Domain.Models {
                     .Add("LogInsertQuery", "INSERT INTO [dbo].[{TablePrefix}NLOG] (MachineName, Logged, Level, Message, Logger, Callsite, Exception, EntityName, EntityKey) VALUES (@MachineName, @Logged, @Level, @Message, @Logger, @Callsite, @Exception, @EntityName, @EntityKey);")
                     .Add("LogSelectQuery", "SELECT [Id],[MachineName],[Logged],[EntityName],[EntityKey],[Level],[Message],[Logger],[Callsite] FROM [{TablePrefix}NLOG]")
                     )
-                .Set("Notification", false, Property()
+                .Set("Notification", false, "Notifications", Property()
                     .Add("Enabled", false, true)
                     .Add("RefreshCycleInMinutes", 5, true)
                     )
-                //.Set("Guard", false, Property()
-                //    .Add("Url", "http://192.168.34.60:57000", true)
-                //    .Add("ClientSecret", "00000000-0000-0000-0000-000000000000", true)
-                //    .Add("WorkOffline", false, true)
-                //    )
                 .Set("WarningMessage", true, Property()
                     .Add("Enabled", false)
                     .AddSelect("Severity", "AlertSeverityTypes", "warning")
@@ -143,17 +138,50 @@ namespace DNA.Domain.Models {
     public class ConfigProperty : Dictionary<string, object> {
 
         private ConfigTemplate _config;
+        private bool _readOnly;
         public Dictionary<string, FieldTemplate> FieldTemplates { get; } = new Dictionary<string, FieldTemplate>();
-        public ConfigProperty(ConfigTemplate configTemplate) {
+        public ConfigProperty(ConfigTemplate configTemplate, bool readOnly = false) {
+            _readOnly = readOnly;
             this._config = configTemplate;
         }
-        public ConfigProperty Set(string name, bool visible, ConfigProperty value) {
-            FieldTemplates.Add(name, new FieldTemplate() { visible = visible });
+        public ConfigProperty Set(string name, bool visible, string caption, ConfigProperty value) {
+            FieldTemplates.Add(name, new FieldTemplate() { visible = visible, readOnly = value._readOnly, caption = caption });
             base.Add(name, value);
             return this;
         }
+
+        public ConfigProperty Set(string name, bool visible, ConfigProperty value) {
+            FieldTemplates.Add(name, new FieldTemplate() { visible = visible, readOnly = value._readOnly });
+            base.Add(name, value);
+            return this;
+        }
+
+        public ConfigProperty SetGuard(Services.Communication.Response licenseValidationResponse) {
+            return Set("Guard", _config.Property()
+                    .Add("BaseUrl", "http://192.168.34.60:57001", restartRequired: true)
+                    .Add("PublicKey", "00000000-0000-0000-0000-000000000000", restartRequired: true)
+                    .Set("LicenseStatus", false, _config.Property(readOnly: true)
+                        .Add("Success", licenseValidationResponse.Success)
+                        .Add("LastTry", DateTime.Now.ToString("o"))
+                        .AddTextArea("Message", licenseValidationResponse.Message ?? "")
+                        .AddTextArea("Solution", licenseValidationResponse.Success ? "" : "Check logs and settings then try restarting the service.")
+                        .Add("ErrorCode", licenseValidationResponse.Code)
+                        .AddTextArea("Comment", $"{licenseValidationResponse.Comment}")
+                        .AddTextArray("Details", false, (licenseValidationResponse?.Details ?? new List<string>()).ToArray())
+                    )
+                );
+        }
+
+        public ConfigProperty SetGuardModule(string moduleName) {
+            return Set("Guard", _config.Property()
+                    .Set("Modules", true, _config.Property()
+                        .Add(moduleName, "00000000-0000-0000-0000-000000000000", true)
+                    )
+                );
+        }
+
         public ConfigProperty Set(string name, ConfigProperty value) {
-            FieldTemplates.Add(name, new FieldTemplate() { });
+            FieldTemplates.Add(name, new FieldTemplate() { readOnly = value._readOnly });
             base.Add(name, value);
             return this;
         }
@@ -186,7 +214,7 @@ namespace DNA.Domain.Models {
                     )
                 ;
 
-            FieldTemplates.Add(name, new FieldTemplate() { });
+            FieldTemplates.Add(name, new FieldTemplate() { readOnly = value._readOnly });
             base.Add(name, value);
             return this;
         }
@@ -329,7 +357,7 @@ namespace DNA.Domain.Models {
             return template;
         }
         public FieldTemplate DateTime(string caption_ = null, string format_ = null, bool? restartRequired_ = null) {
-            var template = new FieldTemplate().DateTime(caption_, format_, restartRequired_);
+            var template = new FieldTemplate().DateTime(format_, caption_, restartRequired_);
             return template;
         }
         public FieldTemplate Action(string text = null, string icon = null, string externalUrl = null, string apiUrl = null, string caption = null, bool? visible = null) {
@@ -455,6 +483,7 @@ namespace DNA.Domain.Models {
         string _path;
 
         public bool? visible { get; set; }
+        public bool? readOnly { get; set; }
 
         public string caption { get; set; }
 

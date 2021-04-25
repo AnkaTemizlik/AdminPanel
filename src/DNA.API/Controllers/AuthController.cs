@@ -83,6 +83,16 @@ namespace DNA.API.Controllers {
                 if (credentials.Key != key)
                     throw new Alert(AlertCodes.KeyIsNotValid);
 
+                var licenseSection = _configuration.GetSection("Config:Guard:LicenseStatus");
+                
+                if (licenseSection.Exists() && !licenseSection.GetValue<bool>("Success")) {
+                    return BadRequest(new Response() {
+                        Success = false,
+                        Message = licenseSection["Message"],
+                        Code = licenseSection.GetValue<int>("Code"),
+                        Comment = licenseSection["Comment"]
+                    });
+                }
 
                 if (localUser == null)
                     throw new Alert(AlertCodes.WrongEmailOrPassword);

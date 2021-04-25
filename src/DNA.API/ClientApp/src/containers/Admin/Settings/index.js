@@ -37,7 +37,7 @@ const Settings = (props) => {
 	}, [error, snack]);
 
 	useEffect(() => {
-		dispatch(changeSection(selectedSection));
+		selectedSection && dispatch(changeSection(selectedSection.name));
 	}, [dispatch, selectedSection]);
 
 	return (
@@ -113,7 +113,7 @@ const Settings = (props) => {
 												focusStateEnabled={false}
 												dataSource={sectionNames}
 												selectedItems={[selectedSection]}
-												itemRender={(i) => t(i)}
+												itemRender={(i) => i.caption}
 												onSelectionChanged={(i) => {
 													setSelectedSection(i.addedItems[0])
 												}}
@@ -125,7 +125,7 @@ const Settings = (props) => {
 											{currentSection
 												? <Section
 													onValueChange={(fieldName, newValue) => {
-														dispatch(checkRestartWarn({ fieldName, selectedSection }))
+														dispatch(checkRestartWarn({ fieldName, selectedSection: selectedSection.name }))
 														dispatch(addChange({ fullname: fieldName, value: newValue }))
 													}}
 												/>

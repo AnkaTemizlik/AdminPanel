@@ -52,6 +52,7 @@ namespace DNA.Domain.Utils {
         [JsonIgnore] public bool HasIdentityIncrement { get; set; }
         [JsonIgnore] public List<ScreenColumn> Columns { get; set; }
         [JsonIgnore] public List<ScreenSubModel> SubModels { get; set; }
+        [JsonIgnore] public List<ScreenSubMenu> SubMenus { get; set; }
 
 
         [JsonProperty("keyFieldName")]
@@ -265,6 +266,11 @@ namespace DNA.Domain.Utils {
             }
         }
 
+        public void GenerateSubMenus(List<ScreenSubMenu> existing, ScreenModelCollection parent) {
+            if (existing != null)
+                SubMenus = existing;
+        }
+
         public void GenerateSubModels(List<ScreenSubModel> existingSubModels, ScreenModelCollection parent) {
             SubModels = existingSubModels ?? new List<ScreenSubModel>();
             foreach (var item in Type.GetProperties()) {
@@ -459,9 +465,17 @@ namespace DNA.Domain.Utils {
         public string delete { get; set; }
     }
 
+    public class ScreenSubMenu {
+        public string name { get; set; }
+        public string type { get; set; }
+        public string[] defaultFilter { get; set; }
+        public bool showInSidebar { get; set; }
+    }
+
     public class ScreenSubModel {
         public string name { get; set; }
         public string title { get; set; }
+        public bool? visible { get; set; }
 
         /// <summary>
         /// list, property
@@ -491,6 +505,7 @@ namespace DNA.Domain.Utils {
         public bool? required { get; set; }
         public int? stringLength { get; set; }
         public bool? allowEditing { get; set; }
+        public bool? allowFiltering { get; set; }
         public string helpText { get; set; }
         public ScreenColumnData data { get; set; }
         public ScreenColumnEditWith editWith { get; set; }
@@ -518,6 +533,8 @@ namespace DNA.Domain.Utils {
         public bool? cacheRawData { get; set; }
         public string[] filter { get; set; }
 
+        public List<ScreenColumn> columns { get; set; }
+
     }
 
     public class ScreenColumnEditWith {
@@ -525,7 +542,7 @@ namespace DNA.Domain.Utils {
         public string key { get; set; }
         public string valueExpr { get; set; }
         public string displayExpr { get; set; }
-        public List<ScreenColumnData> columns { get; set; }
+        public List<ScreenColumn> columns { get; set; }
     }
 
     public class ScreenCalendar {
@@ -562,7 +579,7 @@ namespace DNA.Domain.Utils {
         public ScreenCalendarResource() {
 
         }
-        public ScreenCalendarResource(Type type, string fieldExpr, string valueExpr = "Id", string displayExpr = "Name",  string colorExpr= "Color") {
+        public ScreenCalendarResource(Type type, string fieldExpr, string valueExpr = "Id", string displayExpr = "Name", string colorExpr = "Color") {
             this.label = type.Name;
             this.dataSource = new ScreenDataSource { type = "customStore", name = type.Name };
             this.fieldExpr = fieldExpr;

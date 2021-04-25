@@ -5,10 +5,11 @@ import { Box, IconButton, Tooltip, InputAdornment, FormControl } from "@material
 import TextField from "../../../../components/UI/TextField";
 import CollapsibleCard from "../../../../components/UI/CollapsibleCard";
 
-const TextArrayEditor = ({ field, onChange, h, loading }) => {
-
+const TextArrayEditor = (props) => {
+	const { field, onChange, h, loading } = props
 	const { fullname, value, options } = field
 	const { caption, require, valueCaption, keyCaption, valueType, multiline } = options
+	const readOnly = props.readOnly == true || options.readOnly == true
 
 	var [state, setState] = useState({ list: value });
 
@@ -42,7 +43,7 @@ const TextArrayEditor = ({ field, onChange, h, loading }) => {
 				addComponent={
 					<Tooltip title="Yeni">
 						<span>
-							<IconButton onClick={addNew} edge="end">
+							<IconButton onClick={addNew} edge="end" disabled={readOnly}>
 								<AddIcon />
 							</IconButton>
 						</span>
@@ -52,7 +53,7 @@ const TextArrayEditor = ({ field, onChange, h, loading }) => {
 				{state.list &&
 					state.list.map((a, i) => {
 						return (
-							<FormControl key={i} fullWidth size="small" margin="normal" variant="outlined">
+							<FormControl key={i} fullWidth variant="outlined">
 								<TextField
 									variant="outlined"
 									id={`${fullname}${i}`}
@@ -63,7 +64,7 @@ const TextArrayEditor = ({ field, onChange, h, loading }) => {
 									}}
 									//onFocus={(e) => setActiveField(e.target)}
 									required={require}
-									disabled={loading}
+									disabled={readOnly}
 									value={a}
 									InputProps={{
 										endAdornment: (
@@ -77,7 +78,7 @@ const TextArrayEditor = ({ field, onChange, h, loading }) => {
 															}}
 															edge="end"
 															size="small"
-															disabled={loading}
+															disabled={readOnly}
 														>
 															<DeleteIcon />
 														</IconButton>
