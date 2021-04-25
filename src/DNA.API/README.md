@@ -20,17 +20,12 @@ Projeyi sağ tıkla ve publish et.
     sc.exe stop "DNA.API Service"; dotnet publish -c Release -o D:\Develop\DNA\publish; sc.exe start "DNA.API Service"
 
 
-
 # Hangfire
 #### Delete Queue
     DELETE j FROM HangFire.Job AS j
         LEFT JOIN HangFire.JobQueue AS jq ON jq.JobId=j.Id
         WHERE jq.[Queue]='default' AND (StateName='Enqueued');
     DELETE FROM HangFire.JobQueue WHERE [Queue]='default'
-
-#### Admin: 
-
-` bilgi@dna.com.tr ` ` Adm1n@dna `
 
 
 # TODO List ✓

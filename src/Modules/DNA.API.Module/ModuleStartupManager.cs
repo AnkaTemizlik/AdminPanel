@@ -50,7 +50,7 @@ namespace DNA.API.Module {
 
         public JObject GetDefaultConfig(ConfigTemplate template) {
             ConfigProperty Config = template
-                .RecurringJobsProperty(nameof(SynchronizationJob))
+                .RecurringJobsProperty(false, nameof(SynchronizationJob))
                 //.Set("EMails", template.Property()
                 //    .SetEmail("LicenseExpirationNotify", template.Property())
                 //)

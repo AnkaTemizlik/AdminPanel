@@ -21,7 +21,7 @@ const FooterView = React.memo(({ row, screen, name }) => {
 
 	useEffect(() => {
 		setModels(screen.subModels.filter((m) =>
-			rolesAllowed(user.Roles, m.roles) && (Array.isArray(m.showIn)
+			rolesAllowed(user.Roles, m.roles) && (Array.isArray(m.showIn) && (m.visible !== false)
 				? m.showIn.indexOf("tab") > -1
 				: m.showIn == "tab")))
 	}, [screen, user.Roles])

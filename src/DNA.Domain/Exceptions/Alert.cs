@@ -40,6 +40,16 @@ namespace DNA.Domain.Exceptions {
                 return (ex != null && ex is Alert) ? ex as Alert : new Alert(AlertCodes.GeneralError, ex, values);
             }
         }
+        public static Alert Log(this ILogger logger, KeyValue alertCode, Response response, params (string name, object value)[] values) {
+            if (response.Success) {
+                return LogInformation(logger, alertCode, null, values.ToArray());
+            }
+            else {
+                var ex = response.GetException();
+                logger.LogError(ex, values);
+                return (ex != null && ex is Alert) ? ex as Alert : new Alert(AlertCodes.GeneralError, ex, values);
+            }
+        }
 
         public static Alert LogInformation(this ILogger logger, KeyValue alertCode, params (string name, object value)[] values) {
             return LogInformation(logger, alertCode, null, values.ToArray());

@@ -21,7 +21,7 @@ i18n
 			caches: ['localStorage', 'cookie'],
 		},
 		ns: ["common"],
-		defaultNS: "common",
+		defaultNS: "common"
 		// react: {
 		// 	wait: false,
 		// 	useSuspense: true,

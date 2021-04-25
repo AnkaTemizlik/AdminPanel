@@ -6,10 +6,12 @@ import TextField from "../../../../components/UI/TextField";
 import CollapsibleCard from "../../../../components/UI/CollapsibleCard";
 import { useTranslation } from "../../../../store/i18next";
 
-const KeyValueEditor = ({ field, onChange, h, loading }) => {
+const KeyValueEditor = (props) => {
 	const { t } = useTranslation()
+	const { field, onChange, h, loading } = props
 	const { fullname, value, options } = field
 	const { caption, require, valueCaption, keyCaption, valueType } = options
+	const readOnly = props.readOnly == true || options.readOnly == true
 
 	var [list, setState] = useState(value);
 
@@ -56,7 +58,7 @@ const KeyValueEditor = ({ field, onChange, h, loading }) => {
 				addComponent={
 					<Tooltip title="Yeni">
 						<span>
-							<IconButton onClick={addNew} edge="end">
+							<IconButton onClick={addNew} edge="end" disabled={readOnly}>
 								<AddIcon />
 							</IconButton>
 						</span>
@@ -68,7 +70,7 @@ const KeyValueEditor = ({ field, onChange, h, loading }) => {
 						return (
 							<Box key={i} display="flex"  >
 
-								<FormControl size="small" margin="normal" variant="outlined">
+								<FormControl margin="normal" variant="outlined">
 									<InputLabel id={fullname}>{t(keyCaption)}</InputLabel>
 									<OutlinedInput
 										type={options.inputType || "text"}
@@ -80,12 +82,12 @@ const KeyValueEditor = ({ field, onChange, h, loading }) => {
 											nameChanged(i, e.target.value);
 										}}
 										required={require}
-										disabled={loading}
+										disabled={readOnly}
 										value={a.Key}
 									/>
 								</FormControl>
 
-								<FormControl size="small" margin="normal" variant="outlined" style={{ marginLeft: 4 }}>
+								<FormControl margin="normal" variant="outlined" style={{ marginLeft: 4 }}>
 									<InputLabel id={fullname}>{t(valueCaption)}</InputLabel>
 									<OutlinedInput
 										id={`${fullname}${i}value`}
@@ -95,7 +97,7 @@ const KeyValueEditor = ({ field, onChange, h, loading }) => {
 											valueChanged(i, e.target.value);
 										}}
 										required={require}
-										disabled={loading}
+										disabled={readOnly}
 										value={a.Value}
 										type={valueType || "text"}
 									/>
@@ -108,7 +110,7 @@ const KeyValueEditor = ({ field, onChange, h, loading }) => {
 													removeItem(i);
 												}}
 												edge="end"
-												disabled={loading}
+												disabled={readOnly}
 											>
 												<DeleteIcon />
 											</IconButton>

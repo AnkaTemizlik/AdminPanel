@@ -17,10 +17,6 @@ import { loadMessages } from "devextreme/localization";
 import dxMessages from 'devextreme/localization/messages/tr.json'
 import createTheme from './theme'
 
-require('devextreme/dist/css/dx.common.css')
-require('./index.css')
-require('moment/locale/tr')
-
 const LoadableApp = Loadable.Map({
 	loader: {
 		Root: () => import('./containers/Root'),
@@ -33,14 +29,21 @@ const LoadableApp = Loadable.Map({
 		settingsStatus: () => api.actions.run("GET", `/api/settings`)
 			.then((status) => {
 				if (status.Success) {
-					const { Plugin } = status.Resource.configs
-					return { ...status, Theme: createTheme(Plugin) };
+					const { Plugin, LicenseStatus } = status.Resource.configs
+					console.warning("settingsStatus", status.Resource.configs)
+					if (LicenseStatus.Success == false) {
+						throw new Error(LicenseStatus.Message + ". " + LicenseStatus.Solution + "")
+					}
+					else return { ...status, Theme: createTheme(Plugin) };
 				}
-				else throw status.Message
+				else
+					throw new Error(status.Message)
 			}),
 		menusStatus: () => api.actions.run("GET", `/api/menus`)
 			.then((status) => {
-				if (status.Success) return status; else throw status.Message
+				if (status.Success)
+					return status;
+				else throw new Error(status.Message)
 			}),
 	},
 	loading: Fallback,

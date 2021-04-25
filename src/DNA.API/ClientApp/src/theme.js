@@ -1,46 +1,57 @@
-
+import Loadable from 'react-loadable'
 import * as styles from '@material-ui/core/styles';
 
 var Theme;
+var ThemeName;
 
-const changeDxTheme = (theme) => {
-
-	if (theme == "dark-blue")
-		require('./assets/dx.material.dark-blue.css')
-	else if (theme == "red")
-		require('./assets/dx.material.red.css')
-	else if (theme == "green")
-		require('./assets/dx.material.green.css')
-	else
-		require('./assets/dx.material.blue.css')
-}
+var LoadableDxTheme = Loadable({
+	loader: () => {
+		let dxCommon = import('devextreme/dist/css/dx.common.css')
+		var t;
+		console.log("ThemeName", ThemeName)
+		if (ThemeName == "dark-blue")
+			t = import('./assets/dx.material.dark-blue.css')
+		else if (ThemeName == "red")
+			t = import('./assets/dx.material.red.css')
+		else if (ThemeName == "green")
+			t = import('./assets/dx.material.green.css')
+		else if (ThemeName == "orange")
+			t = import('./assets/dx.material.orange.css')
+		else
+			t = import('./assets/dx.material.blue.css')
+		let index = import('./index.css')
+		return t
+	},
+	loading: () => null
+})
 
 const createTheme = (Plugin) => {
 
 	if (Theme)
 		return Theme;
 
-	let themeName = (Plugin && Plugin.Theme && Plugin.Theme.Name) || "blue";
+	ThemeName = (Plugin && Plugin.Theme && Plugin.Theme.Name) || "blue";
 
-	changeDxTheme(themeName)
+	LoadableDxTheme.preload();
 
 	let primary = '#318CE7'
-	let secondary = '#ED872D'
+	let secondary = '#005376'
 
-	if (themeName == "dark-blue") {
+	if (ThemeName == "dark-blue") {
 		primary = '#005376'
-		secondary = '#ED872D'
+		secondary = '#19851f'
 	}
-	else if (themeName == "red") {
+	else if (ThemeName == "red") {
 		primary = '#8b0000'
-		secondary = '#ED872D'
+		secondary = '#005376'
 	}
-	else if (themeName == "green") {
-		primary = '#43a047'
-		secondary = '#ED872D'
+	else if (ThemeName == "green") {
+		primary = '#19851f'
+		secondary = '#005376'
 	}
-	else {
-
+	else if (ThemeName == "orange") {
+		primary = '#D2691E'
+		secondary = '#005376'
 	}
 
 	//const dark = '#323545'
@@ -230,11 +241,11 @@ const createTheme = (Plugin) => {
 				marginBottom: 8
 			}
 		},
-		MuiOutlinedInput: {
-			inputMarginDense: {
-
-			}
-		}
+		// MuiOutlinedInput: {
+		// 	input: {
+		// 		padding: 12
+		// 	}
+		// }
 	}
 	return Theme
 };

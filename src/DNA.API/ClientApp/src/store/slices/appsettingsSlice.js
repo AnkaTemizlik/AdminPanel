@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, createSelector, current } from '@reduxjs/toolkit';
 import { setSettings } from './settingsSlice'
 import api from '../api'
+import i18n from '../i18n';
 
 export const selectSystemSettings = createSelector(
 	[(state) => state.appSettings], (appSettings) => appSettings && appSettings.configs ? appSettings.configs[0] : {}
@@ -101,8 +102,10 @@ export const getFieldProps = (config, section, fullname) => {
 	let fieldConfig = config.Fields[fullname];
 
 	if (fieldConfig) {
-		options.multiline = fieldConfig.multiline == true || fieldConfig.type == "textArray"
+		options.multiline = fieldConfig.multiline == true || fieldConfig.type == "textArray" || fieldConfig.type == "multiline"
 		options.visible = fieldConfig.visible !== false
+		options.readOnly = fieldConfig.readOnly
+
 		if (fieldConfig.caption)
 			options.caption = fieldConfig.caption
 
@@ -170,11 +173,11 @@ const appsettingsSlice = createSlice({
 			state.changeCount = 0
 
 			let currentConfig = state.configs
-			state.sectionNames = Object.keys(currentConfig.values).filter((sec) => {
-				if (currentConfig.config.Fields[sec])
-					if (currentConfig.config.Fields[sec].visible === false)
-						return false;
-				return true
+			state.sectionNames = Object.keys(currentConfig.values).map((sec) => {
+				let options = currentConfig.config.Fields[sec]
+				if (options && options.visible === false)
+					return null;
+				return { name: sec, caption: i18n.t(options.caption || sec) }
 			})
 			//state.currentSection = null
 		},

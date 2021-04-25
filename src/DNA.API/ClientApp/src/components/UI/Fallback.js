@@ -17,31 +17,32 @@ const Fallback = (props) => {
 	// }
 
 	return <Backdrop open>
-		<Paper>
-			<Box pt={1} pb={1} pl={2} pr={2} display="flex" alignItems="center">
-				<Box p={2}>
-					{props.error
-						? <>
-							<Alert severity="error" variant="outlined" style={{ minWidth: 240 }}
-								action={
-									<Tooltip title="refresh">
-										<span>
-											<IconButton color="inherit" size="small" onClick={props.retry}>
-												<Icon>refresh</Icon>
-											</IconButton>
-										</span>
-									</Tooltip>
-								}>
-								<AlertTitle>Error </AlertTitle>
-								{typeof props.error == 'object' ? props.error.message : props.error}
-							</Alert>
-						</>
-						: <CircularProgress />
-					}
-				</Box>
 
-				{/* <Zoom direction="right" in={status && status.Success == false} mountOnEnter unmountOnExit>
+		<Box style={{ maxWidth: 540 }} display="flex" alignItems="center">
+			{props.error
+				? <Alert severity="error" variant="filled"
+					style={{ minWidth: 240, padding: '12px 24px' }}
+					action={
+						<Tooltip title="refresh">
+							<span>
+								<IconButton color="inherit" edge="start" onClick={props.retry}>
+									<Icon>refresh</Icon>
+								</IconButton>
+							</span>
+						</Tooltip>
+					}>
+					<AlertTitle>Error </AlertTitle>
+					{typeof props.error == 'object' ? props.error.message : props.error}
+				</Alert>
+				: <Paper elevation={0}>
+					<Box p={4}>
+						<CircularProgress />
+					</Box>
+				</Paper>
+			}
+		</Box>
 
+		{/* <Zoom direction="right" in={status && status.Success == false} mountOnEnter unmountOnExit>
 					<Box p={2} style={{ minWidth: 350 }}>
 						{status &&
 							<Alert severity="error" variant="outlined">
@@ -52,9 +53,6 @@ const Fallback = (props) => {
 						}
 					</Box>
 				</Zoom> */}
-
-			</Box>
-		</Paper>
 	</Backdrop>
 }
 

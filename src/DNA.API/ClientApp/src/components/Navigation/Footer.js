@@ -1,7 +1,8 @@
 import React from 'react'
+import { useSelector } from "react-redux";
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, Grid, Paper, Box, Hidden } from '@material-ui/core'
+import { Typography, Grid, Paper, Box, Hidden, Tooltip } from '@material-ui/core'
 import { ContactMenu, HomeMenu, SocialMenu, MainFooterMenu } from './Menus'
 import { Trans, Tr } from '../../store/i18next'
 import BrandLogo from './BrandLogo';
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 function Footer(props) {
 	const { full } = props
 	const classes = useStyles();
+	const { version, workerVersion } = useSelector((state) => state.settings)
 
 	return <div className={classes.root}>
 		<Grid container spacing={2}>
@@ -61,7 +63,9 @@ function Footer(props) {
 			<Grid item xs={12}>
 				<Box display="flex" justifyContent="center" m={3} alignItems="center">
 					{"Copyright © "}
-					{new Date().getFullYear() + "."}&nbsp;<Tr>All Rights Reserved</Tr>
+					{new Date().getFullYear() + "."}
+					&nbsp;<Tr>All Rights Reserved</Tr>
+					&nbsp;<Tooltip title={version}><span>v{workerVersion}</span></Tooltip>
 				</Box>
 				<Box display="flex" justifyContent="center">
 					<BrandLogo width={80} />

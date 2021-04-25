@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { Switch, Link, useRouteMatch, useHistory, Redirect, Route } from "react-router-dom";
+import { Switch, Link, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "../../store/i18next";
-import { CssBaseline, Box, Toolbar, Hidden, IconButton, Divider, Typography, Tooltip, Icon } from "@material-ui/core";
+import { CssBaseline, Box, Toolbar, Hidden, IconButton, Divider, Typography, Tooltip } from "@material-ui/core";
 import DashboardIcon from "@material-ui/icons/DashboardTwoTone";
 import HomeIcon from "@material-ui/icons/HomeTwoTone";
-import NavigateBeforeIcon from "@material-ui/icons/NavigateBeforeTwoTone";
 import * as Treasury from "@mui-treasury/layout";
 import Footer from "../../components/Navigation/Footer";
 import Layout from "../../components/Layout";
@@ -58,8 +57,7 @@ const Panel = (props) => {
 	let dispatch = useDispatch();
 	let { t } = useTranslation();
 	let { path, url } = useRouteMatch();
-	let history = useHistory();
-	const { menus, screenConfig, appsettings, settings } = useSelector((state) => state)
+	const { menus, screenConfig, settings } = useSelector((state) => state)
 	const isAuthenticated = useSelector((state) => state.auth.token !== null)
 	const { loading } = useSelector(selectScreen)
 	const { names } = useSelector((state) => state.screenConfig)
@@ -173,7 +171,7 @@ const Panel = (props) => {
 
 											s.subModels && s.subModels.map((f, j) => {
 												let sms = screenConfig.screens[f.name]
-												if (f.type == "list") {
+												if (f.type == "list" && f.visible !== false) {
 													routes.push(
 														<PrivateRoute path={`${url}/screen/${sms.route ?? n}/:field/:value`} key={f.name + j}>
 															<Screen name={f.name} />

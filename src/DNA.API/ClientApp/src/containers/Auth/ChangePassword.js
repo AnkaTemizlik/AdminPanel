@@ -117,7 +117,7 @@ const ChangePassword = ({ onChangePassword, registeredEmail, loading, error, res
 
 					{/* {development
                         ? null
-                        : <FormControl variant="filled" fullWidth margin="normal" size="small" >
+                        : <FormControl variant="filled" fullWidth margin="normal"  >
                             <ReCAPTCHA className="ReCAPTCHA"
                                 sitekey="6Lf16xkTAAAAAIQuyURRLboyKIz2idSiWmAc0HyD"
                                 onChange={(v) => recaptchaHandler(v)}
