@@ -37,12 +37,14 @@ BEGIN
 	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD AllDay BIT NOT NULL DEFAULT(0);
 END
 
+
 /* PA_Appointment > Title ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
 	WHERE t.name = '{TablePrefix}Appointment' AND c.name = 'Title')
 BEGIN
 	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD Title NVARCHAR(500) NOT NULL DEFAULT('');
 END
+
 
 /* PA_AppointmentEmployee ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}AppointmentEmployee]') AND type in (N'U'))
@@ -63,6 +65,7 @@ BEGIN
 	SET QUOTED_IDENTIFIER OFF
 END
 
+
 /* PA_Document ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Document]') AND type in (N'U'))
 BEGIN
@@ -74,14 +77,70 @@ BEGIN
 		 [CreationTime] DATETIME NOT NULL DEFAULT(GETDATE()) ,
 		 [UpdateTime] DATETIME NOT NULL DEFAULT(GETDATE()) ,
 		 [AppointmentId] INT NOT NULL DEFAULT(0) ,
+		 [Name] NVARCHAR(500) NOT NULL,
 		 [FileType] NVARCHAR(16) NOT NULL,
 		 [Url] NVARCHAR(1000) NOT NULL,
+		 ThumbnailUrl NVARCHAR(1000) NULL,
+		 [LastModifiedDate] DATETIME NULL,
+		 Size INT NOT NULL DEFAULT(0),
+		 Width INT NULL,
+		 Height INT NULL,
 	CONSTRAINT [PK_PA_Document] PRIMARY KEY CLUSTERED ([Id] ASC)
 	WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
 	SET ANSI_NULLS OFF
 	SET QUOTED_IDENTIFIER OFF
 END
+
+/* PA_Document > Size ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Size')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Document] ADD [Size] float NOT NULL DEFAULT(0);
+END
+
+/* PA_Document > Name ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Name')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Document] ADD [Name] NVARCHAR(500) NOT NULL;
+END
+
+/* PA_Document > LastModifiedDate ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Document' AND c.name = 'LastModifiedDate')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Document] ADD [LastModifiedDate] DATETIME NULL;
+END
+
+/* PA_Document > Width ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Width')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Document] ADD Width INT NULL;
+END
+
+/* PA_Document > Height ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Height')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Document] ADD Height INT NULL;
+END
+
+/* PA_Document > ThumbnailUrl ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Document' AND c.name = 'ThumbnailUrl')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Document] ADD ThumbnailUrl NVARCHAR(1000) NULL;
+END
+
+/* PA_Document > Size ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Size')
+BEGIN
+	ALTER TABLE [dbo].[{TablePrefix}Document] ADD Size INT NOT NULL DEFAULT(0);
+END
+
 
 /* PA_Service ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Service]') AND type in (N'U'))
@@ -117,6 +176,7 @@ BEGIN
 	ALTER TABLE [dbo].[{TablePrefix}Service] ADD Color NVARCHAR(50) NULL ;
 END
 
+
 /* PA_Customer ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Customer]') AND type in (N'U'))
 BEGIN
@@ -147,6 +207,7 @@ BEGIN
 	SET QUOTED_IDENTIFIER OFF
 END
 
+
 /* PA_Country ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Country]') AND type in (N'U'))
 BEGIN
@@ -172,7 +233,8 @@ BEGIN
 	INSERT INTO [{TablePrefix}Country] ([IsActive], [Alpha2], [Alpha3], [UNCode], [CallingCode], [Name]) VALUES 
 		(CAST(1 AS BIT), 'TR', 'TUR', '792', '90', N'Türkiye')
 END
-		
+	
+	
 /* PA_City ****************************/
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}City]') AND type in (N'U'))
 BEGIN

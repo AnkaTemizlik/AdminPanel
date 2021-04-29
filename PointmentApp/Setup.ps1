@@ -5,7 +5,7 @@
 param([string]$clientApp, [string]$projectName)
 
 [string]$pluginCode = "P00"
-[string]$host = "http://localhost:8800"
+[string]$host = "http://192.168.1.200:8800"
 
 Write-Output "**************** Starting "
 Write-Output $pluginCode 
