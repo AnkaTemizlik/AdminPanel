@@ -54,6 +54,8 @@ const createTheme = (Plugin) => {
 		secondary = '#005376'
 	}
 
+	document.querySelector('meta[name="theme-color"]').setAttribute('content', primary);
+
 	//const dark = '#323545'
 	//const dark2 = '#272a3a'
 	Theme = styles.createMuiTheme({
