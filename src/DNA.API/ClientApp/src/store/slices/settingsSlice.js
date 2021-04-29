@@ -169,6 +169,9 @@ const configureColumns = (name, columns, config) => {
 		}
 		else if (col.type == "color") {
 			col.editorType = "dxColorBox"
+			col.editorOptions = {
+				applyValueMode: "instantly"
+			}
 		}
 		// else if (col.type == "image") {
 		// 	col.editorType = "dxColorBox"
@@ -264,7 +267,7 @@ const configureColumns = (name, columns, config) => {
 const createFullDataSource = (ds, n) => {
 	return {
 		...ds,
-		load: (qs) => api.execute("GET", (ds.load ? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${qs}`) : `/api/entity?${qs}`)),
+		load: (qs) => api.execute("GET", (ds.load ? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${qs || 'name=' + (ds.name || n)}`) : `/api/entity?${qs || 'name=' + (ds.name || n)}`)),
 		byKey: (key) => api.execute("GET", (ds.byKey ? (`${ds.byKey}/${key}`) : `/api/entity/${n}/${key}`)),
 		insert: (values) => api.execute("POST", (ds.insert ? `${ds.insert}` : `/api/entity/${n}`), values),
 		update: (key, values) => api.execute("PUT", (ds.update ? `${ds.update}/${key}` : `/api/entity/${n}/${key}`), values),
@@ -280,12 +283,14 @@ const createSelectDataSource = (ds, n) => {
 		...ds,
 		load: (qs) => {
 			let url = ds.load
-				? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${qs}`)
+				? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${qs || 'name=' + (ds.name || n)}`)
 				: `/api/entity?${qs || 'name=' + (ds.name || n)}`
 			console.purple("createSelectDataSource", url, ds, qs)
 			return api.execute("GET", url)
 		},
-		byKey: (id) => { return api.execute("GET", `/api/entity/${ds.name || n}/${id}`) },
+		byKey: (id) => {
+			return api.execute("GET", `/api/entity/${ds.name || n}/${id}`)
+		},
 		params: {
 			name: ds.name || n
 		}
@@ -313,6 +318,7 @@ const screenConfigSlice = createSlice({
 			}))
 
 			if (config.names) {
+
 				config.names.map((n) => {
 					var s = config.screens[n];
 
@@ -330,25 +336,12 @@ const screenConfigSlice = createSlice({
 
 					s.dataSource = createFullDataSource(ds, n)
 
-					// SUB MODELS
-					if (s.subModels && s.subModels.length > 0) {
-						s.subModels.map((subModel, j) => {
-							let x = { ...config.screens[subModel.name] }
-							delete x.subModels
-							delete x.filters
-							delete x.hideInSidebar
-							s.subModels[j].screen = x;
-						})
-					}
-					else s.subModels = []
-
 					// Calendar Resources
 					if (s.calendar) {
 						s.calendar.dataSource = createFullDataSource(s.calendar.dataSource, n)
 						s.calendar.resources && s.calendar.resources.map(r => {
 							r.dataSource = createSelectDataSource(r.dataSource)
 						})
-						console.success("CalendarView resources", s.calendar.resources)
 					}
 
 					// columns order
@@ -366,6 +359,20 @@ const screenConfigSlice = createSlice({
 						}
 					})
 
+				});
+				config.names.map((n) => {
+					var s = config.screens[n];
+					// SUB MODELS
+					if (s.subModels && s.subModels.length > 0) {
+						s.subModels.map((subModel, j) => {
+							let x = { ...config.screens[subModel.name] }
+							delete x.subModels
+							delete x.filters
+							delete x.hideInSidebar
+							s.subModels[j].screen = x;
+						})
+					}
+					else s.subModels = []
 				});
 			}
 

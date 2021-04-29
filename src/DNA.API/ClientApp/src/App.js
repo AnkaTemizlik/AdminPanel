@@ -51,6 +51,7 @@ const LoadableApp = Loadable.Map({
 	render(loaded, props) {
 		const notistackRef = React.createRef();
 		const i18n = loaded.i18n.default
+		const setLanguage = loaded.i18n.setLanguage
 		const Root = loaded.Root.default
 		const locales = loaded.locales
 		const menusStatus = loaded.menusStatus
@@ -69,7 +70,8 @@ const LoadableApp = Loadable.Map({
 			if (locales.Translations.en)
 				i18n.addResourceBundle('en', 'common', locales.Translations.en)
 		}
-		console.success('i18n', i18n, MultiLanguage.Languages)
+		console.success('i18n', i18n.language, MultiLanguage.Languages)
+		setLanguage(MultiLanguage.Default)
 		// ************
 
 		const onSnackbarClickDismiss = (key) => () => {

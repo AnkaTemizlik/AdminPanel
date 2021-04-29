@@ -17,18 +17,19 @@ code {
 	height: 10px;
 }
 
+.dx-icon,
+.dx-dropdowneditor-icon {
+	color: rgba(0, 0, 0, 0.64) !important;
+}
+
 .dx-menu-base {
 	font-size: 13px;
 }
+
 .dx-menu-item {
 	color: rgba(0, 0, 0, 0.66);
 }
-.dx-button-mode-contained .dx-icon {
-	color: rgba(0, 0, 0, 0.66);
-}
-.dx-dropdowneditor-icon {
-	color: rgba(0, 0, 0, 0.66);
-}
+
 /* ::-webkit-scrollbar-track {
 	box-shadow: inset 0 0 4px #323545;
 } */

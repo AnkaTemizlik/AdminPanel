@@ -79,8 +79,17 @@ namespace DNA.Domain.Utils {
         [JsonProperty("icon")]
         public string Icon { get; set; }
 
+        [JsonProperty("dxIcon")]
+        public string DxIcon { get; set; }
+
+        [JsonProperty("roles")]
+        public string[] Roles { get; set; }
+
         [JsonProperty("hasInSidebar")]
         public bool HasInSidebar { get; set; } = false;
+
+        [JsonProperty("hideDetails")]
+        public bool? HideDetails { get; set; } = false;
 
         [JsonProperty("isDefinitionModel")]
         public bool IsDefinitionModel { get; set; } = false;
@@ -96,6 +105,61 @@ namespace DNA.Domain.Utils {
 
         [JsonProperty("dataSource")]
         public ScreenDataSource DataSource { get; set; }
+
+        /// <summary>
+        /// </summary>
+        /// <example>
+        /// "grid": {
+        ///   "allowFilter": true,
+        ///   "columnAutoWidth": true,
+        ///   "columnResizingMode": "widget",
+        ///   "disabled": false,
+        ///   "hoverStateEnabled": true,
+        ///   "noDataText": "No data",
+        ///   "pager": {
+        ///     "visible": true,
+        ///     "allowedPageSizes": null,
+        ///     "infoText": "Sayfa {0}/{1} ({2} kayıt)",
+        ///     "showInfo": true,
+        ///     "showNavigationButtons": true,
+        ///     "showPageSizeSelector": true
+        ///   },
+        ///   "paging": {
+        ///     "enabled": true,
+        ///     "defaultPageSize": 10
+        ///   },
+        ///   "rowAlternationEnabled": false,
+        ///   "scrolling": {
+        ///     "mode": "standard",
+        ///     "columnRenderingMode": "standard",
+        ///     "preloadEnabled": false,
+        ///     "rowRenderingMode": "standard",
+        ///     "scrollByContent": false,
+        ///     "scrollByThumb": false,
+        ///     "showScrollbar": "onHover",
+        ///     "useNative": "auto"
+        ///   },
+        ///   "searchPanel": {
+        ///     "visible": true
+        ///   },
+        ///   "selection": null,
+        ///   "showBorders": false,
+        ///   "showColumnHeaders": true,
+        ///   "showColumnLines": true,
+        ///   "showRowLines": false,
+        ///   "sorting": {
+        ///     "enabled": true,
+        ///     "mode": "multiple",
+        ///     "showSortIndexes": true,
+        ///     "default": {
+        ///       "selector": "Id",
+        ///       "desc": true
+        ///     }
+        ///   },
+        ///   "wordWrapEnabled": false
+        /// </example>
+        [JsonProperty("grid")]
+        public Dictionary<string, object> Grid { get; set; }
 
         /// <summary>
         /// 
@@ -223,6 +287,10 @@ namespace DNA.Domain.Utils {
             DataSource = existing;
         }
 
+        public void GenerateGrid(Dictionary<string, object> existing) {
+            Grid = existing;
+        }
+
         public void GenerateActions(object existing) {
             Actions = existing;
         }
@@ -275,9 +343,9 @@ namespace DNA.Domain.Utils {
             SubModels = existingSubModels ?? new List<ScreenSubModel>();
             foreach (var item in Type.GetProperties()) {
 
-                var jsonIgnorAttr = item.GetCustomAttribute<JsonIgnoreAttribute>();
-                if (jsonIgnorAttr != null)
-                    continue;
+                //var jsonIgnorAttr = item.GetCustomAttribute<JsonIgnoreAttribute>();
+                //if (jsonIgnorAttr != null)
+                //    continue;
                 if (!item.PropertyType.IsPublic)
                     continue;
                 if (item.PropertyType == typeof(string))
@@ -293,11 +361,12 @@ namespace DNA.Domain.Utils {
                         SubModels.Add(subModel);
                     }
                     subModel.title ??= $"{refScreen.Name} Screen";
-                    subModel.type ??= "list";
+                    subModel.type ??= refScreen.ViewType;
                     subModel.icon ??= refScreen.Icon;
+                    subModel.dxIcon ??= refScreen.DxIcon;
                     subModel.showIn ??= new string[] { "tab" };
-                    subModel.route ??= Regex.Replace(refScreen.Name, @"[A-Z]", (m) => $"-{m.Value}").Trim('-').ToLower();
-                    subModel.relationFieldNames ??= new object[2] { KeyFieldName, "?" };
+                    subModel.route ??= refScreen.Route;
+                    subModel.relationFieldNames ??= new object[2] { refScreen.KeyFieldName, "?" };
                 }
             }
         }
@@ -476,12 +545,19 @@ namespace DNA.Domain.Utils {
         public string name { get; set; }
         public string title { get; set; }
         public bool? visible { get; set; }
+        public bool? dependsOnSelected { get; set; }
 
         /// <summary>
-        /// list, property
+        /// list, property, gallery, files (not iplemented yet)
         /// </summary>
         public string type { get; set; }
         public string icon { get; set; }
+        public string dxIcon { get; set; }
+        public string uploadUrl { get; set; }
+
+        /// <summary>
+        /// toolbar, popup, tab  (multiple)
+        /// </summary>
         public object showIn { get; set; }
         public string route { get; set; }
         public object[] relationFieldNames { get; set; }
@@ -489,9 +565,15 @@ namespace DNA.Domain.Utils {
     }
 
     public class ScreenColumn {
+        public int? index { get; set; }
+        public int? editIndex { get; set; }
         public string name { get; set; }
         public string title { get; set; }
         public string caption { get; set; }
+
+        /// <summary>
+        /// , , , , currency
+        /// </summary>
         public string type { get; set; }
         public string format { get; set; }
         public string currency { get; set; }

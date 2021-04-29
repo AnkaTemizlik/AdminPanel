@@ -6,11 +6,9 @@ import { toQueryString } from "../../../../store/utils";
 import RowFieldsView from "./RowFieldsView";
 import { showMessage } from '../../../../store/slices/alertsSlice'
 
-const ModelView = ({ model }) => {
-	const { panel, screenConfig } = useSelector(state => state)
-	const { row } = panel.screen
+const ModelView = ({ model, row }) => {
+	const { screenConfig } = useSelector(state => state)
 	const dispatch = useDispatch()
-
 	const [data, setData] = useState({})
 	const [query, setQuery] = useState({ name: model.name, filter: [] })
 
