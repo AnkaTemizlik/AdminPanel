@@ -7,6 +7,7 @@ import withSnack from "../../../../store/snack";
 import RowFieldsView from "./RowFieldsView";
 import ModelView from "./ModelView";
 import TableView from "./TableView";
+import TileView from "./TileView";
 import { rolesAllowed } from "../../../../store/utils";
 
 const FooterView = React.memo(({ row, screen, name }) => {
@@ -21,9 +22,12 @@ const FooterView = React.memo(({ row, screen, name }) => {
 
 	useEffect(() => {
 		setModels(screen.subModels.filter((m) =>
-			rolesAllowed(user.Roles, m.roles) && (Array.isArray(m.showIn)
-				? m.showIn.indexOf("tab") > -1
-				: m.showIn == "tab")))
+			rolesAllowed(user.Roles, m.roles) && (m.visible !== false) && (
+				Array.isArray(m.showIn)
+					? m.showIn.indexOf("tab") > -1
+					: m.showIn == "tab"
+			)
+		))
 	}, [screen, user.Roles])
 
 	return (<>
@@ -40,13 +44,11 @@ const FooterView = React.memo(({ row, screen, name }) => {
 
 			{models.map((m, i) => {
 				return <TabPanel key={i} value={tabIndex} index={i}>
-					{row && m.type == "property" &&
-						<ModelView model={m} row={row} screen={screen} />}
-					{row && m.type == "list" &&
-						<TableView model={m} row={row} screen={screen} />}
+					{row && m.type == "property" && <ModelView model={m} row={row} />}
+					{row && m.type == "list" && <TableView model={m} row={row} />}
+					{row && m.type == "gallery" && <TileView model={m} row={row} />}
 				</TabPanel>
 			})}
-
 
 			<TabPanel value={tabIndex} index={models.length}>
 				<RowFieldsView row={row} columns={screen.columns || []} name={name} />

@@ -25,7 +25,7 @@ export const supplant = (text, data, alternate) => {
 		return text
 	var result = text.replace(/{([^{}]*)}/g,
 		function (a, b) {
-			let val = data[b] || alternate[b]
+			let val = data[b] || (alternate && alternate[b])
 			return isNotEmpty(val) ? val : a;
 		})
 	console.log("ActionsView", result)

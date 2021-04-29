@@ -593,6 +593,20 @@ namespace DNA.API.Services {
                                         json["ScreenConfig"]["Screens"][t.Name]["editing"] = JObject.FromObject(t.Editing, jsonSetting);
                                     }
 
+                                    // dataDource
+                                    var dataSource = json["ScreenConfig"]["Screens"][t.Name]["dataSource"]?.ToObject<ScreenDataSource>();
+                                    if (dataSource != null) {
+                                        t.GenerateDataSource(dataSource);
+                                        json["ScreenConfig"]["Screens"][t.Name]["dataSource"] = JObject.FromObject(t.DataSource, jsonSetting);
+                                    }
+
+                                    // grid
+                                    var grid = json["ScreenConfig"]["Screens"][t.Name]["grid"]?.ToObject<Dictionary<string, object>>();
+                                    if (grid != null) {
+                                        t.GenerateGrid(grid);
+                                        json["ScreenConfig"]["Screens"][t.Name]["grid"] = JObject.FromObject(t.Grid, jsonSetting);
+                                    }
+
                                     // calendar
                                     var calendar = json["ScreenConfig"]["Screens"][t.Name]["calendar"]?.ToObject<ScreenCalendar>();
                                     if (t.IsCalendarActive || calendar != null) {

@@ -8,6 +8,7 @@ import { Box, Icon, IconButton, Tooltip, Typography } from "@material-ui/core";
 import Modal from "../../../../components/UI/Modal";
 import { useTranslation } from "../../../../store/i18next";
 import { Button } from 'devextreme-react/button';
+import PopupView from "./PopupView";
 
 const ActionsView = ({ renderActions, actions, refresh }) => {
 	const { panel, screenConfig } = useSelector(state => state)
@@ -17,6 +18,7 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 	const { t } = useTranslation();
 	const history = useHistory()
 	const [modalOpen, setModalOpen] = useState(false);
+	const [popupViewOpen, setPopupViewOpen] = useState(null);
 	const [confirmMessage, setConfirmMessage] = useState(null);
 	const [currentAction, setCurrentAction] = useState(null);
 
@@ -175,7 +177,7 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 		else return null
 	}
 
-	return (<Box display="flex" >
+	return (<Box display="flex">
 
 		{screen.subModels && screen.subModels.map((m, i) => {
 			let field = "";
@@ -190,19 +192,33 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 					value = row[m.relationFieldNames[0]]
 				}
 			}
+			if (Array.isArray(m.showIn) ? m.showIn.indexOf("toolbar") > -1 : m.showIn == "toolbar") {
+				console.info("popup", m)
+				return m.showIn.indexOf("popup") > -1
+					? <Button key={i}
+						hint={t(m.title)}
+						disabled={m.dependsOnSelected == true ? !row : false}
+						style={{ marginRight: 5 }}
+						icon={m.dxIcon}
+						onClick={(e) => setPopupViewOpen(m)}
+					>
+						{m.icon
+							&& <Icon style={{ fontSize: "1.125rem" }}>{m.icon}</Icon>}
+					</Button>
+					: <Button key={i}
+						hint={t(m.title)}
+						disabled={!row}
+						component={Link}
+						to={row ? `/panel/screen/${screenConfig.screens[m.name].route}/${field}/${value}` : `${m.route}`}
+						style={{ marginRight: 5 }}
+						icon={m.dxIcon}
+					>
+						{m.icon
+							&& <Icon style={{ fontSize: "1.125rem" }}>{m.icon}</Icon>}
+					</Button>
+			}
 
-			return (Array.isArray(m.showIn) ? m.showIn.indexOf("toolbar") > -1 : m.showIn == "toolbar")
-				? <Button key={i}
-					disabled={!row}
-					component={Link}
-					to={row ? `/panel/screen/${screenConfig.screens[m.name].route}/${field}/${value}` : `${url}`}
-					style={{ marginRight: 5 }}
-					icon={m.dxIcon}
-				>
-					{m.icon
-						&& <Icon style={{ fontSize: "1.125rem" }}>{m.icon}</Icon>}
-				</Button>
-				: null
+			return null
 		})}
 
 		{actions && actions.filter(a => a.visible !== false && a.type != "dx").map((a, i) => {
@@ -214,16 +230,19 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 		<Modal
 			open={modalOpen}
 			onClose={handleModalCancel}
-			title={t("Confirm")}
+			title="Confirm"
 			ok={handleModalConfirm}
 			cancel={handleModalCancel}
-			okText={t("Ok")}
-			cancelText={t("Cancel")}
+			okText="Ok"
+			cancelText="Cancel"
 		>
 			<Box>
 				<Typography>{t(confirmMessage)}</Typography>
 			</Box>
 		</Modal>
+
+		{popupViewOpen &&
+			<PopupView model={popupViewOpen} onClose={() => setPopupViewOpen(null)} />}
 
 	</Box>
 	)

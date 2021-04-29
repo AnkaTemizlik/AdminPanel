@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import _ from 'lodash'
 import { useSelector } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import DataGrid, { Button, Column, ColumnChooser, Editing, Form, Export, FilterBuilderPopup, FilterPanel, FilterRow, LoadPanel, Popup, Pager, Paging, RequiredRule, SearchPanel, Selection, Position, Lookup, HeaderFilter, Scrolling, Sorting } from "devextreme-react/data-grid";
@@ -242,7 +243,7 @@ const DataTable = React.memo((props) => {
 			</Popup>
 
 			<Form>
-				{columns.map((c, i) => {
+				{_.orderBy(columns, ['editIndex'], ['asc']).map((c, i) => {
 					if (Object.keys(defaultValue).indexOf(c.name) > -1)
 						return null
 					return c.allowEditing == true

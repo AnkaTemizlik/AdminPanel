@@ -3,12 +3,9 @@ import { useSelector } from 'react-redux';
 import DataTable from "../../../../components/UI/Table/DataTable";
 import withSnack from "../../../../store/snack";
 
-const TableView = ({ model, snack }) => {
-	const { panel, screenConfig } = useSelector(state => state)
-	const { row } = panel.screen
+const TableView = ({ model, row, snack }) => {
+	const { screenConfig } = useSelector(state => state)
 	const screen = screenConfig.screens[model.name]
-	//const dispatch = useDispatch()
-
 	const [query, setQuery] = useState({ name: model.name, filter: [] })
 	const [error, setError] = useState(null);
 	const [defaultValue, setDefaultValue] = useState(null)

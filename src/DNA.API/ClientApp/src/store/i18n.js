@@ -26,13 +26,17 @@ i18n
 		// 	wait: false,
 		// 	useSuspense: true,
 		// }
-	}, (err, t) => {
-		moment.locale(i18n.language);
-		locale(i18n.language);
-		axios.defaults.headers.common['Accept-Language'] = i18n.language
-		if (err)
-			console.error("i18n", err)
 	});
+
+const setLanguage = (language) => {
+	i18n.changeLanguage(language);
+	moment.locale(language);
+	locale(language);
+	axios.defaults.headers.common['Accept-Language'] = language
+	console.success('i18n', language)
+}
+
+export { setLanguage }
 
 export default i18n
 
