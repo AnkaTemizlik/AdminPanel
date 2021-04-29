@@ -50,13 +50,12 @@ const PasswordField = (props, ref) => {
 
 	return <TextField
 		{...rest}
-		size="small"
 		fullWidth
 		margin="normal"
 		type={values.showPassword ? 'text' : 'password'}
+		autoComplete="new-password"
 		InputLabelProps={inputLabelProps}
 		InputProps={{
-
 			endAdornment: <InputAdornment position="end">
 				{options && options.generatePassword
 					? <Tooltip title="Generate new password">
@@ -72,7 +71,6 @@ const PasswordField = (props, ref) => {
 					</Tooltip>
 					: null
 				}
-
 				<IconButton
 					onClick={handleClickShowPassword}
 					onMouseDown={handleMouseDownPassword}

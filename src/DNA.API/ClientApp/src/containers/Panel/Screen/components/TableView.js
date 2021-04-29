@@ -39,9 +39,7 @@ const TableView = ({ model, row, snack }) => {
 			filter.push(row[parentRelationName])
 			dv[modelRelationName] = row[parentRelationName]
 		}
-
 		setDefaultValue(dv)
-		console.warning("TableView defaultValue", dv, model.relationFieldNames)
 		setQuery((q) => {
 			return { ...q, filter, parentRelationName, modelRelationName }
 		})

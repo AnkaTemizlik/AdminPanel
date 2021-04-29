@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Typography, Toolbar, Grid, Container } from '@material-ui/core';
+import { Box, Typography, Toolbar, Grid, Container, Tooltip } from '@material-ui/core';
 import { Tr } from '../../store/i18next'
 import { HomeMenu } from '../../components/Navigation/Menus';
 import logo from '../../assets/logo6432.png'
@@ -34,8 +34,7 @@ const Welcome = (props) => {
 	const isAuthenticated = useSelector((state) => state.auth.token !== null)
 	const homeMenu = useSelector((state) => state.menus.home)
 	const settings = useSelector((state) => state.settings)
-
-	const { version, Plugin, Logo } = settings
+	const { workerVersion, version, Plugin, Logo } = settings
 
 	return <Box className={`bg-${rnd}`} style={{
 		backgroundRepeat: "no-repeat !important",
@@ -67,7 +66,9 @@ const Welcome = (props) => {
 						<Typography variant="h6" style={{ color: "white" }}>
 							<Tr>{Plugin.Description || 'Access points to the background workers'}</Tr>
 						</Typography>
-						<Typography variant="body2" style={{ color: "lightgray", paddingLeft: 8 }}>v{version}</Typography>
+						<Typography variant="body2" style={{ color: "lightgray", paddingLeft: 8 }}>
+							<Tooltip title={version}><span>v{workerVersion}</span></Tooltip>
+						</Typography>
 					</Toolbar>
 				</Grid>
 				<Box flexGrow="1"></Box>

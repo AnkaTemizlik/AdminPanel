@@ -113,6 +113,11 @@ namespace DNA.API.Services {
 
             var version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
+            var pluginLocation = _configuration["Worker:Assembly"];
+            if (string.IsNullOrWhiteSpace(Path.GetDirectoryName(pluginLocation)))
+                pluginLocation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pluginLocation);
+            var workerVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(pluginLocation).FileVersion;
+
             if (string.IsNullOrWhiteSpace(file))
                 throw new Exception("FATAL: Config file not found.");
 
@@ -122,6 +127,7 @@ namespace DNA.API.Services {
             var Plugin = jObject.SelectToken("Config.Company") ?? new JObject();
             var AppId = jObject.SelectToken("AppId.WEB");
             var Logo = jObject.SelectToken("Worker.Logo") ?? "";
+            var LicenseStatus = jObject.SelectToken("Config.Guard.LicenseStatus") ?? new JObject();
 
             if (!isAuthenticated) {
                 return new {
@@ -133,10 +139,12 @@ namespace DNA.API.Services {
                         WarningMessage = jObject.SelectToken("Config.WarningMessage")
                     },
                     version,
+                    workerVersion,
                     MultiLanguage,
                     Plugin,
                     AppId,
-                    Logo
+                    Logo,
+                    LicenseStatus
                 };
             }
 
@@ -170,10 +178,12 @@ namespace DNA.API.Services {
                 values = jObject["Config"],
                 config = jObject["ConfigEditing"],
                 version,
+                workerVersion,
                 MultiLanguage,
                 Plugin,
                 AppId,
-                Logo
+                Logo,
+                LicenseStatus
             };
         }
 
@@ -279,7 +289,6 @@ namespace DNA.API.Services {
                 _menuService.Configure(_configuration);
 
                 //WriteMenus(menus);
-
             }
             catch (Exception ex) {
                 throw ex;
@@ -480,6 +489,12 @@ namespace DNA.API.Services {
                 return;
 
             var json = JObject.Parse(File.ReadAllText(fileFullName));
+
+            //if (moduleScreenDefaults != null) {
+
+            //    json.Merge(moduleScreenDefaults, _jsonMergeSettings);
+            //}
+
             foreach (var t in models.Where(_ => _.Type.IsClass)) {
                 var screen = json["ScreenConfig"]["Screens"][t.Name];
                 if (screen != null) {
@@ -617,12 +632,20 @@ namespace DNA.API.Services {
                                     // subModels
                                     var existingSubModels = json["ScreenConfig"]["Screens"][t.Name]["subModels"]?.ToObject<List<ScreenSubModel>>();
                                     t.GenerateSubModels(existingSubModels, classes);
-                                    json["ScreenConfig"]["Screens"][t.Name]["subModels"] = JArray.FromObject(t.SubModels, jsonSetting);
+                                    if (t.SubModels != null)
+                                        json["ScreenConfig"]["Screens"][t.Name]["subModels"] = JArray.FromObject(t.SubModels, jsonSetting);
+
+                                    // subModels
+                                    var existingSubMenus = json["ScreenConfig"]["Screens"][t.Name]["subMenus"]?.ToObject<List<ScreenSubMenu>>();
+                                    t.GenerateSubMenus(existingSubMenus, classes);
+                                    if (t.SubMenus != null)
+                                        json["ScreenConfig"]["Screens"][t.Name]["subMenus"] = JArray.FromObject(t.SubMenus, jsonSetting);
 
                                     // columns
                                     var existingColumns = json["ScreenConfig"]["Screens"][t.Name]["columns"]?.ToObject<List<ScreenColumn>>();
                                     t.GenerateColumns(existingColumns, classes);
-                                    json["ScreenConfig"]["Screens"][t.Name]["columns"] = JArray.FromObject(t.Columns, jsonSetting);
+                                    if (t.Columns != null)
+                                        json["ScreenConfig"]["Screens"][t.Name]["columns"] = JArray.FromObject(t.Columns, jsonSetting);
 
                                     jsonWriter.WritePropertyName("assembly");
                                     jsonWriter.WriteValue(t.Assembly);
@@ -752,8 +775,6 @@ namespace DNA.API.Services {
 
             var generated = ((JObject)jsonWriter.Token);
 
-            generated.Merge(moduleScreenDefaults, _jsonMergeSettings);
-
             generated.Merge(json, _jsonMergeSettings);
 
             string result = generated.ToString();
@@ -827,6 +848,9 @@ namespace DNA.API.Services {
             jsonText = jsonText.Replace("GIBService", "TNBService");
             var json = JObject.Parse(jsonText);
 
+            if (json["Config"]["Guard"] != null)
+                json["Config"]["Guard"]["LicenseStatus"] = new JObject();
+
             var Config = template.GetConfig();
 
             var templateObj = JObject.FromObject(
@@ -837,6 +861,7 @@ namespace DNA.API.Services {
                     Worker = new {
                         Enabled = false,
                         Assembly = ".dll",
+                        PublicKey = "",
                         Controllers = GetControllers(template),
                         Logo = ""
                     },

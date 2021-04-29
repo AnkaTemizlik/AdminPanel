@@ -6,6 +6,7 @@ const FormCard = (props) => {
 	const { field, h, handleChange, loading } = props
 	const { fullname, options } = field
 	const { textArray, keyValue, visible } = options
+	const readOnly = props.readOnly == true || options.readOnly == true
 
 	if (!visible)
 		return null;
@@ -15,6 +16,7 @@ const FormCard = (props) => {
 			{textArray ? (
 				<TextArrayEditor
 					field={field}
+					readOnly={readOnly}
 					h={h}
 					loading={loading}
 					onChange={(v) => {
@@ -25,6 +27,7 @@ const FormCard = (props) => {
 			{keyValue ? (
 				<KeyValueEditor
 					field={field}
+					readOnly={readOnly}
 					loading={loading}
 					h={h}
 					onChange={(v) => {

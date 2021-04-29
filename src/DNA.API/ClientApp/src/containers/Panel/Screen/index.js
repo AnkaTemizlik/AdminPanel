@@ -121,7 +121,7 @@ const Screen = React.memo((props) => {
 											defaultFilter={(filter && subMenu && subMenu.defaultFilter) ? [filter, "and", subMenu.defaultFilter] : (filter ? filter : subMenu ? subMenu.defaultFilter : null)}
 											editing={currentScreen.editing}
 											actions={currentScreen.actions}
-											actionsTemplate={() => (currentScreen.subModels || currentScreen.actions)
+											actionsTemplate={() => (currentScreen.actions)
 												? <ActionsView
 													actions={currentScreen.actions}
 													refresh={refresh}
@@ -131,7 +131,6 @@ const Screen = React.memo((props) => {
 																row={row}
 																setLoading={setLoadStatus}
 																loading={loading}
-																screens={currentScreen ? currentScreen.subScreens : []}
 																refresh={refresh}
 															/>
 															: null

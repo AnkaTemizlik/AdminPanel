@@ -8,7 +8,6 @@ import { Template } from 'devextreme-react/core/template';
 import DropDownBoxComponent from "./DropDownBoxComponent";
 import createCustomStore from "./createCustomStore";
 import { supplant } from "../../../store/utils";
-import { ColorBox } from "devextreme-react";
 
 const DataTable = React.memo((props) => {
 	const {
@@ -134,7 +133,7 @@ const DataTable = React.memo((props) => {
 							history.push(supplant(a.route, texts, row))
 						}
 						else {
-							console.error("The 'dx' action only supports the 'eval' feature for now.")
+							console.error("The 'dx' action only supports the 'eval' and 'route' feature for now.")
 						}
 					}
 				}

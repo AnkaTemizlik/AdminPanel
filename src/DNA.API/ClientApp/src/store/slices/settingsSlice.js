@@ -68,10 +68,12 @@ const settingsSlice = createSlice({
 				if (appConfig)
 					Object.keys(appConfig).map((s) => state[s] = appConfig[s])
 				state.version = payload.Resource.configs.version
+				state.workerVersion = payload.Resource.configs.workerVersion
 				state.Plugin = payload.Resource.configs.Plugin
 				state.AppId = payload.Resource.configs.AppId
 				state.MultiLanguage = payload.Resource.configs.MultiLanguage
 				state.Logo = payload.Resource.configs.Logo
+				state.Guard = payload.Resource.configs.Guard
 			}
 			else
 				state.error = payload

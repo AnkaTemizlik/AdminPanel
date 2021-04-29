@@ -17,12 +17,12 @@ const Section = (props) => {
 	const _ = configs._[currentSection]
 
 	function handleChange(fullname, val) {
+		console.info("handleChange", fullname, val)
 		props.onValueChange(fullname, val);
 	}
 
 	return (_) ? (
 		<Grid container spacing={2}>
-
 			{_.fields.length > 0 ? (
 				<Grid item xs={12} sm={6} md={6} lg={4}>
 					<Box mb={1} mt={1}>
@@ -34,6 +34,7 @@ const Section = (props) => {
 									field={f}
 									handleChange={handleChange}
 									loading={loading}
+									readOnly={f.options.readOnly == true}
 								/>
 							})}
 
@@ -50,12 +51,15 @@ const Section = (props) => {
 							h="h6"
 							handleChange={handleChange}
 							loading={loading}
+							readOnly={f.options.readOnly == true}
 						/>
 					</Grid>
 				);
 			})}
 
 			{_.objects.map((f, i) => {
+
+				console.warning("ObjectCard", f)
 				return (
 					<Grid item xs={12} sm={6} md={6} lg={4} key={i}>
 						<ObjectCard
@@ -63,10 +67,12 @@ const Section = (props) => {
 							h="h6"
 							handleChange={handleChange}
 							loading={loading}
+							readOnly={f.options.readOnly == true}
 						/>
 					</Grid>
 				);
 			})}
+
 		</Grid>
 	) : (
 		<Grid item xs={12}></Grid>

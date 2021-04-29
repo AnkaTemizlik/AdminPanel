@@ -44,8 +44,8 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 		}
 	}
 
-	const runAction = () => {
-		const { method, refreshAfterSuccess, url, data, onError, onSuccess } = currentAction.request
+	const runAction = (req) => {
+		const { method, refreshAfterSuccess, url, data, onError, onSuccess } = req || currentAction.request
 		let params = {}
 		if (data) {
 			data.map(f => params[f] = row[f])
@@ -182,6 +182,10 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 		{screen.subModels && screen.subModels.map((m, i) => {
 			let field = "";
 			let value = "";
+
+			if (m.visible == false)
+				return null;
+
 			if (row) {
 				if (Array.isArray(m.relationFieldNames[0])) {
 					field = m.relationFieldNames[0][1];

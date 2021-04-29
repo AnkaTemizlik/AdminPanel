@@ -1,25 +1,32 @@
 
 import React, { useEffect, useState } from "react";
-import { FormControl, FormControlLabel, InputLabel, Select, MenuItem, Switch, OutlinedInput } from "@material-ui/core";
+import { FormControl, FormControlLabel, InputLabel, Select, MenuItem, Switch, OutlinedInput, TextField } from "@material-ui/core";
 import PasswordField from "../../../../components/UI/PasswordField";
 import AutoCompleteAdornment from "./AutoCompleteAdornment";
 import { useTranslation } from "../../../../store/i18next";
 
-const Field = ({ field, handleChange, loading }) => {
+const Field = (props) => {
 	const { t } = useTranslation()
+	const { field, handleChange, loading } = props
 	const { value, name, fullname, _, options } = field
 	const { caption, password, require, selectList, autoComplete, textArea, check, action, multiline, inputType } = options
 	const [activeField, setActiveField] = useState(null);
 	const [val, setVal] = useState(undefined);
+	const readOnly = props.readOnly == true || options.readOnly == true
 
 	useEffect(() => {
 		setVal(value)
 	}, [value])
 
+	useEffect(() => {
+		console.info("AutoCompleteAdornment", `-${activeField}-`)
+	}, [activeField])
+
 	const renderSelect = () => {
 		return <FormControl variant="outlined" fullWidth margin="normal" size="small" key={fullname}>
 			<InputLabel id={fullname}>{t(caption)}</InputLabel>
 			<Select
+				disabled={readOnly == true}
 				labelId={fullname}
 				id={fullname}
 				defaultValue={value}
@@ -46,7 +53,7 @@ const Field = ({ field, handleChange, loading }) => {
 	const renderPassword = () => {
 		return <PasswordField
 			variant="outlined"
-			autoComplete="off"
+			fullWidth
 			id={fullname}
 			key={fullname}
 			label={t(caption)}
@@ -56,14 +63,14 @@ const Field = ({ field, handleChange, loading }) => {
 			}}
 			onFocus={(e) => setActiveField(e.target)}
 			required={require}
-			disabled={loading}
-			defaultValue={"********"}
+			disabled={readOnly == true}
+			defaultValue={""}
 			multiline={false}
 		/>
 	}
 
 	const renderCheck = () => {
-		return <FormControl component="fieldset" key={fullname} size="small" margin="normal" >
+		return <FormControl component="fieldset" key={fullname} margin="normal" style={{ marginLeft: 16 }}>
 			<FormControlLabel
 				label={t(caption)}
 				control={
@@ -74,7 +81,7 @@ const Field = ({ field, handleChange, loading }) => {
 							handleChange(fullname, e.target.checked);
 						}}
 						name={fullname}
-						disabled={loading}
+						disabled={readOnly == true}
 					/>
 				}
 			/>
@@ -82,27 +89,32 @@ const Field = ({ field, handleChange, loading }) => {
 	}
 
 	const renderText = () => {
-		//let multiline = typeof value == "string";
-		return <FormControl fullWidth size="small" variant="outlined" margin="normal">
-			<InputLabel htmlFor={fullname}>{t(caption)}</InputLabel>
-			<OutlinedInput
-				type={options.inputType || "text"}
-				id={fullname}
-				key={fullname}
-				label={caption}
-				name={fullname}
-				onChange={(e) => {
-					setVal(e.target.value)
-					handleChange(fullname, e.target.value);
-				}}
-				onFocus={(e) => {
-					setActiveField(e.target.name)
-				}}
-				required={require}
-				disabled={loading}
-				value={val || ''}
-				multiline={textArea || multiline}
-				endAdornment={(autoComplete && activeField === fullname)
+		console.warning("AutoCompleteAdornment", (autoComplete && activeField === fullname))
+
+		return <TextField
+			style={{ margin: "6px 0" }}
+			fullWidth
+			margin={textArea ? "dense" : "normal"}
+			variant="outlined"
+			type={options.inputType || "text"}
+			id={fullname}
+			key={fullname}
+			label={t(caption)}
+			name={fullname}
+			labelId={fullname}
+			onChange={(e) => {
+				setVal(e.target.value)
+				handleChange(fullname, e.target.value);
+			}}
+			onFocus={(e) => {
+				setActiveField(e.target.name)
+			}}
+			required={require}
+			disabled={readOnly == true}
+			value={val || ''}
+			multiline={textArea || multiline}
+			InputProps={{
+				endAdornment: (autoComplete && activeField == fullname)
 					? <AutoCompleteAdornment
 						value={val || ''}
 						caption={caption}
@@ -113,9 +125,9 @@ const Field = ({ field, handleChange, loading }) => {
 						}}
 					/>
 					: null
-				}
-			/>
-		</FormControl>
+			}}
+			autoComplete="nope"
+		/>
 	}
 
 	return selectList

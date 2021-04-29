@@ -281,7 +281,7 @@ const UserEdit = (props) => {
 								<Grid item xs={12} sm={6}>
 									<Box p={2}>
 										<form noValidate autoComplete="off" className={classes.root}>
-											<FormControl variant="outlined" size="small" fullWidth error={isInvalid(userForm.FullName)}>
+											<FormControl variant="outlined" fullWidth error={isInvalid(userForm.FullName)}>
 												<InputLabel htmlFor="name">
 													<Trans>FullName</Trans>
 												</InputLabel>
@@ -297,7 +297,7 @@ const UserEdit = (props) => {
 												/>
 											</FormControl>
 
-											<FormControl variant="outlined" size="small" fullWidth error={isInvalid(userForm.Email)} disabled={loading || me.Id == user.Id}>
+											<FormControl variant="outlined" fullWidth error={isInvalid(userForm.Email)} disabled={loading || me.Id == user.Id}>
 												<InputLabel htmlFor="email">
 													<Trans>Email</Trans>
 												</InputLabel>
@@ -313,7 +313,7 @@ const UserEdit = (props) => {
 												/>
 											</FormControl>
 
-											<FormControl variant="outlined" size="small" fullWidth error={isInvalid(userForm.Role)} disabled={loading || me.Id == user.Id}>
+											<FormControl variant="outlined" fullWidth error={isInvalid(userForm.Role)} disabled={loading || me.Id == user.Id}>
 												<InputLabel id="role">
 													<Trans>Role</Trans>
 												</InputLabel>
