@@ -808,8 +808,10 @@ namespace DNA.API.Services {
                 foreach (var t in classes) {
                     if (values.ContainsKey(t.Name))
                         continue;
-                    if (!t.Type.IsEnum)
+                    if (!t.Type.IsEnum) {
                         values.Add(t.Name + " Screen", t.Name + "s");
+                        values.Add("Edit " + t.Name, "Edit " + t.Name);
+                    }
                     var fields = t.Type.IsEnum
                         ? t.Type.GetFields().Where(_ => !_.IsSpecialName).Select(_ => _.Name).ToDictionary(_ => _, _ => _.ToTitleCase())
                         : t.Type.GetProperties().Select(_ => _.Name).ToDictionary(_ => _, _ => _.ToTitleCase());

@@ -531,7 +531,7 @@ namespace DNA.API.Controllers {
 
                 var emailSent = await _emailService.SendAsync(_configuration.GetSection("Config:Smtp:ConfirmationEmailSettings"), null, null);
                 if (!emailSent)
-                    throw new Exception("Kullanıcı e-posta adresi güncellendi ancak kullanıcıya e-posta gönderilmedi.");
+                    throw new Exception("Kullanıcı e-posta adresi güncellendi ancak kullanıcıya e-posta gönderilmedi. (ConfirmationEmailSettings)");
 
                 var resultUser = _mapper.Map<ApplicationUserResource>(appUser);
                 return Ok(new Response(resultUser));

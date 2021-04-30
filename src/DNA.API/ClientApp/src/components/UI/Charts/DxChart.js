@@ -57,7 +57,11 @@ const DxChart = ({ data, series, argumentField, rotated }) => {
 		for (let i = 0; i < series.length; i++) {
 			const serie = series[i];
 			if (serie.type != "pie")
-				return <ArgumentAxis />
+				return <ArgumentAxis
+					tickFormat={(x) => {
+						console.info("DxChart tickFormat", x)
+					}}
+				/>
 		}
 		return null
 	}
@@ -119,6 +123,7 @@ const DxChart = ({ data, series, argumentField, rotated }) => {
 					name={t(s.title)}
 					valueField={s.valueField}
 					argumentField={argumentField}
+					color={s.color}
 				/>
 
 			if (s.type == "line")
@@ -126,6 +131,7 @@ const DxChart = ({ data, series, argumentField, rotated }) => {
 					name={t(s.title)}
 					valueField={s.valueField}
 					argumentField={argumentField}
+					color={s.color}
 				/>
 
 			if (s.type == "area")
@@ -133,6 +139,7 @@ const DxChart = ({ data, series, argumentField, rotated }) => {
 					name={t(s.title)}
 					valueField={s.valueField}
 					argumentField={argumentField}
+					color={s.color}
 				/>
 
 			if (s.type == "pie") {
@@ -140,6 +147,7 @@ const DxChart = ({ data, series, argumentField, rotated }) => {
 					name={t(s.title)}
 					valueField={s.valueField}
 					argumentField={argumentField}
+					color={s.color}
 				//onClick={(e) => handleClick(s, argumentField)}
 				/>
 			}
