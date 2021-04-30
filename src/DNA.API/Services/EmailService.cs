@@ -230,7 +230,6 @@ namespace DNA.API.Services {
             LoadSmtpFromConfig();
 
             MailAddress from = new MailAddress(_FromAddress, _FromName);
-            MailAddress replyTo = new MailAddress(_ReplyTo, _FromName);
             MailAddress to = new MailAddress(toAddress, toName);
 
             using SmtpClient client = new SmtpClient(_Address, _Port);
@@ -245,8 +244,8 @@ namespace DNA.API.Services {
                     foreach (var item in attachments) {
                         message.Attachments.Add(new Attachment(item));
                     }
-
-            message.ReplyToList.Add(replyTo);
+            if (!string.IsNullOrWhiteSpace(_ReplyTo))
+                message.ReplyToList.Add(new MailAddress(_ReplyTo, _FromName));
             message.Priority = MailPriority.Normal;
             message.Subject = subject;
 
@@ -333,7 +332,7 @@ namespace DNA.API.Services {
         public string GetHtmlBody(string title, string comment, string buttonText = null, string urlPart = "x", string confirmationCode = null) {
 
             var bodySection = _smtpConfig.GetSection("Body");
-            
+
             var linksVisible = bodySection.GetSection("LinksRows").GetValue<bool>("Visible");
             var viewInBrowserVisible = bodySection.GetSection("ViewInBrowser").GetValue<bool>("Visible");
             var unsubscribeVisible = bodySection.GetSection("Unsubscribe").GetValue<bool>("Visible");

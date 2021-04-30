@@ -14,8 +14,6 @@ const AutoCompleteAdornment = ({ value, caption, autoComplete, handleChange }) =
 	const [val, setVal] = useState(value || '');
 	const [modelTabIndex, setModelTabIndex] = React.useState(0);
 
-	console.success("AutoCompleteAdornment", autoComplete)
-
 	const highlight = [{
 		highlight: /{\w+}/gi,
 		className: 'blue'

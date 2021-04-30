@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { Switch, Link, useHistory, useParams, useRouteMatch, useLocation, Route } from "react-router-dom";
 //import { Switch, Link, useRouteMatch, useHistory, Redirect, Route } from "react-router-dom";
-import { Grid, Toolbar, Box, Button, IconButton, Badge, Paper, Typography, Hidden, Tabs, Tab, Collapse, Icon } from "@material-ui/core";
+import { Grid, Toolbar, Box, IconButton, Badge, Paper, Typography, Hidden, Tabs, Tab, Collapse, Icon } from "@material-ui/core";
 import { Tooltip } from "@material-ui/core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Plugin from "../../../plugins";
@@ -14,6 +14,7 @@ import DataTable from "../../../components/UI/Table/DataTable";
 import ActionsView from "./components/ActionsView";
 import View from "./View";
 import Calendar from "./Calendar";
+import { Button } from "devextreme-react";
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -24,12 +25,15 @@ const Screen = React.memo((props) => {
 	const { t } = useTranslation();
 	const history = useHistory();
 	const params = useParams();
+	const query = useQuery();
 	let { path, url } = useRouteMatch();
 	const dispatch = useDispatch();
 	const { currentScreen, row, loading } = useSelector(selectScreen)
 	const [error, setError] = useState(null);
 	const [grid, setGrid] = useState(null);
-	const [filter] = useState(params.field ? [params.field, '=', params.value] : null);
+	const [filter, setFilter] = useState(null);
+
+	//console.info("filter", path, url, query.get("title"), params)
 
 	const subMenu = currentScreen && currentScreen.subMenus && currentScreen.subMenus.find(f => f.name == params.subMenuName);
 
@@ -38,6 +42,10 @@ const Screen = React.memo((props) => {
 	const refresh = () => {
 		grid && grid.refresh();
 	};
+
+	useEffect(() => {
+		setFilter(params.field ? [params.field, '=', params.value] : null)
+	}, [params.field, params.value]);
 
 	useEffect(() => {
 		if (error) {
@@ -78,6 +86,19 @@ const Screen = React.memo((props) => {
 								<Typography variant="h4" gutterBottom>
 									{t(currentScreen.title)}
 								</Typography>
+
+								{query.get("title") && <Typography variant="h6" gutterBottom>
+									<span>
+										<Button
+											onClick={() => history.push("/panel/screen/" + name)}
+											icon="close"
+											stylingMode="text"
+											hint={t("Clear")}
+											type="back"
+										/>
+									</span>
+									<span>{query.get("title")}</span>
+								</Typography>}
 							</Box>
 
 							<Box flexGrow={1} />
@@ -110,6 +131,7 @@ const Screen = React.memo((props) => {
 										<DataTable
 											id={"idFor" + name}
 											name={name}
+											title={t(name)}
 											keyFieldName={currentScreen.keyFieldName}
 											gridOptions={currentScreen.grid}
 											instance={setGrid}

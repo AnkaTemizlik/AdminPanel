@@ -8,6 +8,7 @@ import { Template } from 'devextreme-react/core/template';
 import DropDownBoxComponent from "./DropDownBoxComponent";
 import createCustomStore from "./createCustomStore";
 import { supplant } from "../../../store/utils";
+import { useTranslation } from "react-i18next";
 
 const DataTable = React.memo((props) => {
 	const {
@@ -38,6 +39,7 @@ const DataTable = React.memo((props) => {
 	const { lists } = useSelector(s => s.screenConfig)
 	const defaultValue = props.defaultValue || {}
 	let history = useHistory();
+	const { t } = useTranslation()
 
 	// function selectionChanged(selection) {
 	// 	const { selectedRowsData } = selection
@@ -237,7 +239,7 @@ const DataTable = React.memo((props) => {
 			useIcons={editing.useIcons !== false}
 			{...editing}
 		>
-			<Popup title={props.name} showTitle={true} maxWidth={700} height={525}>
+			<Popup title={t(`Edit ${props.name}`)} showTitle={true} maxWidth={700} height={525}>
 				<Position my="center" at="center" of={window} />
 			</Popup>
 
@@ -280,6 +282,9 @@ const DataTable = React.memo((props) => {
 			if (defaultSortOrder == undefined && sorting && sorting.default) {
 				if (sorting.default.selector == c.dataField)
 					defaultSortOrder = sorting.default.desc ? "desc" : "asc"
+			}
+			if (c.type == "check") {
+				defaultValue[c.name] = false
 			}
 			return <Column
 				key={i}

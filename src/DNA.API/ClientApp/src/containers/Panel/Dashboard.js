@@ -40,6 +40,7 @@ const Dashboard = ({ snack }) => {
 						let config = cards[name];
 						let newRows = [];
 						let cardData = status.Resource[name];
+						console.info("DxChart cardData", cardData)
 						cardData.forEach((row) => {
 							row[config.argumentField + 'Desc'] = row[config.argumentField]
 							if (config.autoComplete) {
@@ -95,59 +96,66 @@ const Dashboard = ({ snack }) => {
 											<Typography>{loading ? t("Loading") : t(c.noDataText)}</Typography>
 										</Grid>
 									) : c.series ? (
-										<DxChart rotated data={data} series={c.series} argumentField={c.argumentField + 'Desc'} />
+										<DxChart
+											rotated={c.rotated != false}
+											data={data}
+											series={c.series}
+											argumentField={c.argumentField + 'Desc'}
+										/>
 									) : (
-												<>
-													<Grid container spacing={2}>
-														{c.collection &&
-															data.map((r, i) => {
-																let colletionCustomData = customFunction(r);
-																return (
-																	<Grid item xs={12} sm={6} key={i}>
-																		<Box mt={1} mb={1}>
-																			<Card>
-																				<CardActionArea component={Link} to={`${c.route}`}>
-																					<CardHeader
-																						avatar={
-																							<Avatar className={classes.avatar}>
-																								<Icon>{c.icon ?? "picture_in_picture"}</Icon>
-																							</Avatar>
-																						}
-																						title={t(r[c.collection.title])}
-																						subheader={
-																							<Tooltip title={t(c.collection.date)}>
-																								<span>
-																									<Moment format={"LLL"}>{new Date(r[c.collection.date])}</Moment>
-																								</span>
-																							</Tooltip>
-																						}
-																					/>
-																					<CardMedia>
-																						<Box display="flex" alignItems="center" alignContent="center" justifyContent="center">
-																							<Icon style={{ fontSize: 80, color: colors[colletionCustomData.color][500] }}>{colletionCustomData.icon}</Icon>
-																						</Box>
-																					</CardMedia>
-																					<CardContent>
-																						<Box display="flex" justifyContent="center">
-																							<Typography gutterBottom variant="body1">
-																								<Trans>{r[c.argumentField + 'Desc']}</Trans>
-																							</Typography>
-																						</Box>
-																					</CardContent>
-																				</CardActionArea>
-																				{/* <CardActions>
+										<>
+											<Grid container spacing={2}>
+												{c.collection &&
+													data.map((r, i) => {
+														let colletionCustomData = customFunction(r);
+														return (
+															<Grid item xs={12} sm={6} key={i}>
+																<Box mt={1} mb={1}>
+																	<Card>
+																		<CardActionArea component={Link} to={`${c.route}`}>
+																			<CardHeader
+																				avatar={
+																					<Avatar className={classes.avatar}>
+																						<Icon>{c.icon ?? "picture_in_picture"}</Icon>
+																					</Avatar>
+																				}
+																				title={t(r[c.collection.title])}
+																				subheader={
+																					<Tooltip title={t(c.collection.date)}>
+																						<span>
+																							<Moment format={"LLL"}>{new Date(r[c.collection.date])}</Moment>
+																						</span>
+																					</Tooltip>
+																				}
+																			/>
+																			<CardMedia>
+																				<Box display="flex" alignItems="center" alignContent="center" justifyContent="center">
+																					<Icon style={{ fontSize: 80, color: colors[colletionCustomData.color][500] }}>
+																						{colletionCustomData.icon}
+																					</Icon>
+																				</Box>
+																			</CardMedia>
+																			<CardContent>
+																				<Box display="flex" justifyContent="center">
+																					<Typography gutterBottom variant="body1">
+																						<Trans>{r[c.argumentField + 'Desc']}</Trans>
+																					</Typography>
+																				</Box>
+																			</CardContent>
+																		</CardActionArea>
+																		{/* <CardActions>
 																			<Button size="small" color="primary" component={Link} to={`${path}`}>
 																				<Trans>Learn More</Trans>
 																			</Button>
 																		</CardActions> */}
-																			</Card>
-																		</Box>
-																	</Grid>
-																);
-															})}
-													</Grid>
-												</>
-											)}
+																	</Card>
+																</Box>
+															</Grid>
+														);
+													})}
+											</Grid>
+										</>
+									)}
 								</CollapsibleCard>
 							</Grid>
 						);
