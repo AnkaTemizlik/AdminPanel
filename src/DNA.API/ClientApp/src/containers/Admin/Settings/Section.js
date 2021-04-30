@@ -17,7 +17,6 @@ const Section = (props) => {
 	const _ = configs._[currentSection]
 
 	function handleChange(fullname, val) {
-		console.info("handleChange", fullname, val)
 		props.onValueChange(fullname, val);
 	}
 
@@ -58,8 +57,6 @@ const Section = (props) => {
 			})}
 
 			{_.objects.map((f, i) => {
-
-				console.warning("ObjectCard", f)
 				return (
 					<Grid item xs={12} sm={6} md={6} lg={4} key={i}>
 						<ObjectCard

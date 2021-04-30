@@ -18,10 +18,6 @@ const Field = (props) => {
 		setVal(value)
 	}, [value])
 
-	useEffect(() => {
-		console.info("AutoCompleteAdornment", `-${activeField}-`)
-	}, [activeField])
-
 	const renderSelect = () => {
 		return <FormControl variant="outlined" fullWidth margin="normal" size="small" key={fullname}>
 			<InputLabel id={fullname}>{t(caption)}</InputLabel>
@@ -89,8 +85,6 @@ const Field = (props) => {
 	}
 
 	const renderText = () => {
-		console.warning("AutoCompleteAdornment", (autoComplete && activeField === fullname))
-
 		return <TextField
 			style={{ margin: "6px 0" }}
 			fullWidth

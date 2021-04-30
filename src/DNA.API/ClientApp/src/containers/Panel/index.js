@@ -169,16 +169,16 @@ const Panel = (props) => {
 												);
 											})
 
-											s.subModels && s.subModels.map((f, j) => {
-												let sms = screenConfig.screens[f.name]
-												if (f.type == "list" && f.visible !== false) {
-													routes.push(
-														<PrivateRoute path={`${url}/screen/${sms.route ?? n}/:field/:value`} key={f.name + j}>
-															<Screen name={f.name} />
-														</PrivateRoute>
-													);
-												}
-											})
+											// s.subModels && s.subModels.map((f, j) => {
+											// 	let sms = screenConfig.screens[f.name]
+											// 	if (f.type == "list" && f.visible !== false) {
+											routes.push(
+												<PrivateRoute path={`${url}/screen/${n}/:field/:value`} key={n + i}>
+													<Screen name={n} />
+												</PrivateRoute>
+											);
+											// 	}
+											// })
 
 											routes.push(
 												<PrivateRoute path={`${url}/screen/${s.route ?? n}`} key={n + i}>
