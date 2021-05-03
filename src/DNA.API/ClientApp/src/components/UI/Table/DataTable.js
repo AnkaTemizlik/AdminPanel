@@ -9,6 +9,7 @@ import DropDownBoxComponent from "./DropDownBoxComponent";
 import createCustomStore from "./createCustomStore";
 import { supplant } from "../../../store/utils";
 import { useTranslation } from "react-i18next";
+import { Avatar } from "@material-ui/core";
 
 const DataTable = React.memo((props) => {
 	const {
@@ -121,7 +122,7 @@ const DataTable = React.memo((props) => {
 									// eslint-disable-next-line no-eval
 									eval(command)
 									if (a.onSuccess) {
-										let text = supplant(a.onSuccess.text, texts, row)
+										let text = supplant(t(a.onSuccess.text), texts, row)
 										props.onError && props.onError({ Success: true, Message: text })
 									}
 								}
@@ -148,7 +149,12 @@ const DataTable = React.memo((props) => {
 	}
 
 	const imageCellRender = (data, c) => {
-		return <img src={data.value} alt="" />;
+		let style = { maxHeight: 42, margin: "-6px 0" }
+		return data.value
+			? <Avatar src={data.value} alt={data.value} style={style} />
+			: <div style={style}>
+				<Avatar />
+			</div>
 	}
 
 	return <DataGrid

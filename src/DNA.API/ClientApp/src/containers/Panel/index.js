@@ -84,14 +84,14 @@ const Panel = (props) => {
 								{/* <IconButton onClick={() => history.goBack()} color="inherit">
 									<NavigateBeforeIcon />
 								</IconButton> */}
-
-								<Tooltip title="Home">
-									<span>
-										<IconButton component={Link} to="/" color="inherit">
-											<HomeIcon />
-										</IconButton>
-									</span>
-								</Tooltip>
+								{settings.Plugin.AuthSettings.GoPanelOnStart == false &&
+									<Tooltip title="Home">
+										<span>
+											<IconButton component={Link} to="/" color="inherit">
+												<HomeIcon />
+											</IconButton>
+										</span>
+									</Tooltip>}
 
 								<Hidden xsDown>
 									<Tooltip title="Dashboard">
@@ -106,7 +106,7 @@ const Panel = (props) => {
 
 								<Hidden xsDown>
 									<Box pl={2}>
-										<Typography variant="h6">{t(settings.Plugin.ProgramName)}</Typography>
+										<Typography variant="h6">{settings.Plugin.ProgramName}</Typography>
 									</Box>
 								</Hidden>
 

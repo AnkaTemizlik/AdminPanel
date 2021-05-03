@@ -11,6 +11,8 @@ import AdminRoute from '../components/Route/AdminRoute'
 import withSnack from "../store/snack";
 import * as actions from "../store/actions";
 import { Alert, AlertTitle } from "@material-ui/lab";
+import EmailView from "./Home/EmailView";
+import Main from "./Home/Main";
 
 const Root = (props) => {
 	let dispatch = useDispatch();
@@ -27,6 +29,8 @@ const Root = (props) => {
 		onTryAutoSignup()
 	}, [onTryAutoSignup]);
 
+	console.info("EmailView", settings)
+
 	return <>
 
 		{settings && settings.WarningMessage && settings.WarningMessage.Enabled &&
@@ -42,6 +46,8 @@ const Root = (props) => {
 		}
 
 		<Switch>
+
+			<Route path="/view-email/:url/:confirmationCode/:uniqueId" ><Home /></Route>
 
 			<PrivateRoute path="/panel" ><Panel /></PrivateRoute>
 
@@ -65,7 +71,14 @@ const Root = (props) => {
 
 			<Route path="/help"><Help /></Route>
 
-			<Route path="/"><Home /></Route>
+			{/* <Route path="/"><Home /></Route> */}
+
+			<Route path="/">
+				{settings.Plugin.AuthSettings.GoPanelOnStart == true
+					? <Redirect to="/panel" />
+					: <Home />
+				}
+			</Route>
 
 		</Switch>
 	</>

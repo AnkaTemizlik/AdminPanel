@@ -78,11 +78,38 @@ namespace DNA.Persistence.Contexts {
 				ALTER TABLE [dbo].[{TablePrefix}USER] ADD CONSTRAINT [DF_{TablePrefix}USER_AccessFailedCount]  DEFAULT ((0)) FOR [AccessFailedCount];
 			END; ";
 
-        public const string User_AddColumn_IsInitialPassword = @"
+		public const string User_AddColumn_CreationTime = @"
+			IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+				WHERE t.name = '{TablePrefix}USER' AND c.name = 'CreationTime')
+			BEGIN
+				ALTER TABLE [dbo].[{TablePrefix}USER] ADD CreationTime DATETIME NOT NULL DEFAULT(GETDATE());
+			END";
+
+		public const string User_AddColumn_UpdateTime = @"
+			IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+				WHERE t.name = '{TablePrefix}USER' AND c.name = 'UpdateTime')
+			BEGIN
+				ALTER TABLE [dbo].[{TablePrefix}USER] ADD UpdateTime DATETIME NOT NULL DEFAULT(GETDATE());
+			END";
+		public const string User_AddColumn_PictureUrl = @"
+			IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+				WHERE t.name = '{TablePrefix}USER' AND c.name = 'PictureUrl')
+			BEGIN
+				ALTER TABLE [dbo].[{TablePrefix}USER] ADD PictureUrl NVARCHAR(MAX);
+			END";
+
+		public const string User_AddColumn_IsInitialPassword = @"
 			IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
 				WHERE t.name = '{TablePrefix}USER' AND c.name = 'IsInitialPassword')
 			BEGIN
 				ALTER TABLE [dbo].[{TablePrefix}USER] ADD IsInitialPassword BIT NOT NULL DEFAULT(0);
+			END";
+
+		public const string User_AddColumn_IsDeleted = @"
+			IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+				WHERE t.name = '{TablePrefix}USER' AND c.name = 'IsDeleted')
+			BEGIN
+				ALTER TABLE [dbo].[{TablePrefix}USER] ADD IsDeleted BIT NOT NULL DEFAULT(0);
 			END";
 
         public const string User_Insert_Admin = @"

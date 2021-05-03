@@ -15,7 +15,7 @@ namespace DNA.Domain.Repositories {
         Task<ApplicationUser> FindByEmailAsync(string emaill);
         Task<bool> CheckPasswordAsync(ApplicationUser userIdentity, string password);
         Task<ApplicationUser> ConfirmEmailAsync(string emailConfirmationCode);
-        Task<bool> RecoveryPasswordAsync(string email, string code);
+        Task<ApplicationUser> RecoveryPasswordAsync(string email, string code);
         Task<bool> ChangePasswordAsync(int id, string password, string passwordConfirmationCode);
         Task<DateTime> GetDatabaseTime();
         Task<QueryResult<ApplicationUser>> GetUsersAsync(UserQuery query);

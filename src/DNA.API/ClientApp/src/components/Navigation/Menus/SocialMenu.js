@@ -9,6 +9,8 @@ const SocialMenu = ({ minimal, menu }) => {
 		{menu && menu.menus && menu.menus.map((m, index) => {
 			if (minimal && !menu.primary)
 				return null;
+			if (m.visible == false)
+				return null
 			return <IconButton key={index}
 				//component={Link}
 				href={m.to}

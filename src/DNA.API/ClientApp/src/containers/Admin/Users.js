@@ -74,6 +74,32 @@ const Users = (props) => {
 		setUser(row);
 	}
 
+	const renderActions = () => {
+		return <>
+			<Tooltip title={t("Add New")}>
+				<span>
+					<IconButton component={Link} to={`${url}/new`} disabled={loading}>
+						<AddIcon />
+					</IconButton>
+				</span>
+			</Tooltip>
+			<Tooltip title={t("Edit")}>
+				<span>
+					<IconButton edge="start" component={Link} to={`${url}/${user ? user.Id : 0}`} disabled={loading || !user}>
+						<EditIcon />
+					</IconButton>
+				</span>
+			</Tooltip>
+			<Tooltip title={t("Delete")}>
+				<span>
+					<IconButton edge="start" onClick={refresh} disabled={loading || !user}>
+						<DeleteIcon />
+					</IconButton>
+				</span>
+			</Tooltip>
+		</>
+	}
+
 	return (
 		<Container loading={loading}>
 			<Grid container spacing={2} alignItems="stretch">
@@ -103,27 +129,6 @@ const Users = (props) => {
 							</span>
 						</Tooltip>
 						<Box flexGrow="1"></Box>
-						<Tooltip title={t("Add New")}>
-							<span>
-								<IconButton component={Link} to={`${url}/new`} disabled={loading}>
-									<AddIcon />
-								</IconButton>
-							</span>
-						</Tooltip>
-						<Tooltip title={t("Edit")}>
-							<span>
-								<IconButton edge="start" component={Link} to={`${url}/${user ? user.Id : 0}`} disabled={loading || !user}>
-									<EditIcon />
-								</IconButton>
-							</span>
-						</Tooltip>
-						<Tooltip title={t("Delete")}>
-							<span>
-								<IconButton edge="start" onClick={refresh} disabled={loading || !user}>
-									<DeleteIcon />
-								</IconButton>
-							</span>
-						</Tooltip>
 					</Toolbar>
 				</Grid>
 				<Grid item xs={12}>
@@ -138,6 +143,7 @@ const Users = (props) => {
 								allowFilter={false}
 								allowPaging={false}
 								onFocusedRowChanged={focusedRowChanged}
+								actionsTemplate={() => renderActions()}
 							/>
 						</Box>
 					</Paper>

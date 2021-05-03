@@ -29,7 +29,10 @@ namespace DNA.Persistence.Repositories {
             , [IsInitialPassword]
             , [LockoutEnd]
             , [LockoutEnabled]
-            , [Location] ";
+            , [Location] 
+            , [PictureUrl] 
+            , [IsDeleted] 
+            ";
 
         public UserRepository(IAppDbContext context) : base(context) {
 
@@ -62,16 +65,46 @@ namespace DNA.Persistence.Repositories {
 
             using var connection = Context.Connection;
             var sql = Context.SetTablePrefix($@"
-                    INSERT INTO [{{TablePrefix}}USER] ([FullName], [UserName], [Role], [Email], [PhoneNumber], [EmailConfirmed], [EmailConfirmationCode],[Password], [Token], [Location], [IsInitialPassword], [PasswordConfirmationCode])
-                    VALUES (ISNULL(@FullName, ''), ISNULL(@UserName, @Email), @Role, @Email, @PhoneNumber, 0, @EmailConfirmationCode, 
-                        CONVERT(VARCHAR(1500), HASHBYTES('SHA2_512', CAST(@Password AS VARCHAR(50))), 1), @Token, @Location, @IsInitialPassword, @EmailConfirmationCode)
 
-                    DECLARE @Id INT = ISNULL(SCOPE_IDENTITY(), 0)
+                IF EXISTS(SELECT Id FROM [{{TablePrefix}}USER] WHERE [Email] = @Email AND IsDeleted = 0)
+                    RAISERROR('E-mail address already exists!', 16, 1)
+                ELSE 
+                BEGIN
 
+                    DECLARE @Id INT = 0
+                    SELECT @Id = Id FROM [{{TablePrefix}}USER] WHERE [Email] = @Email
+
+                    IF @Id > 0
+                    BEGIN
+                        UPDATE u 
+                        SET FullName = ISNULL(@FullName, '')
+                            , UserName = ISNULL(@UserName, @Email)
+                            , Role = @Role
+                            , PhoneNumber = @PhoneNumber
+                            , EmailConfirmed = 0
+                            , EmailConfirmationCode = @EmailConfirmationCode
+                            , Password = CONVERT(VARCHAR(1500), HASHBYTES('SHA2_512', CAST(@Password AS VARCHAR(50))), 1)
+                            , Token = @Token
+                            , Location = @Location
+                            , IsInitialPassword = @IsInitialPassword
+                            , PasswordConfirmationCode = @EmailConfirmationCode
+                            , IsDeleted = 0
+                        FROM [{{TablePrefix}}USER] AS u
+                        WHERE Id = @Id AND IsDeleted = 1
+                    END
+                    ELSE 
+                    BEGIN
+                        INSERT INTO [{{TablePrefix}}USER] ([FullName], [UserName], [Role], [Email], [PhoneNumber], [EmailConfirmed], [EmailConfirmationCode],[Password], [Token], [Location], [IsInitialPassword], [PasswordConfirmationCode])
+                        VALUES (ISNULL(@FullName, ''), ISNULL(@UserName, @Email), @Role, @Email, @PhoneNumber, 0, @EmailConfirmationCode, 
+                            CONVERT(VARCHAR(1500), HASHBYTES('SHA2_512', CAST(@Password AS VARCHAR(50))), 1), @Token, @Location, @IsInitialPassword, @EmailConfirmationCode)
+                        SET @Id = ISNULL(SCOPE_IDENTITY(), 0)
+                    END
                     SELECT {_fields} 
                     FROM [{{TablePrefix}}USER] 
                     WHERE [Id] = @Id
+                END
                 ");
+
             return await connection.QueryFirstOrDefaultAsync<ApplicationUser>(sql,
                 new {
                     userIdentity.FullName,
@@ -204,7 +237,7 @@ namespace DNA.Persistence.Repositories {
                 });
         }
 
-        public async Task<bool> RecoveryPasswordAsync(string email, string code) {
+        public async Task<ApplicationUser> RecoveryPasswordAsync(string email, string code) {
             using var connection = Context.Connection;
             var sql = Context.SetTablePrefix($@"
                     DECLARE @Id INT = NULL;
@@ -212,20 +245,16 @@ namespace DNA.Persistence.Repositories {
                     SELECT @Id = [Id] FROM [{{TablePrefix}}USER] 
                     WHERE Email = @Email;
 
-                    IF @Id IS NULL 
-                        SELECT CAST(0 AS BIT)
-                    ELSE 
+                    IF @Id IS NOT NULL 
                     BEGIN
                         UPDATE u 
                         SET PasswordConfirmationCode = @PasswordConfirmationCode 
                         FROM [{{TablePrefix}}USER] u
                         WHERE Id = @Id;
-
-                        SELECT CAST(1 AS BIT)
-
+                        SELECT {_fields} FROM [{{TablePrefix}}USER] WHERE Id = @Id 
                     END
                 ");
-            return await connection.QueryFirstOrDefaultAsync<bool>(sql,
+            return await connection.QueryFirstOrDefaultAsync<ApplicationUser>(sql,
                 new {
                     Email = email,
                     PasswordConfirmationCode = code

@@ -28,7 +28,7 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 		// eslint-disable-next-line no-eval
 		eval(command)
 		let msg = {
-			Success: true, Message: supplant(action.onSuccess.text)
+			Success: true, Message: supplant(t(action.onSuccess.text))
 		}
 		dispatch(showMessage(msg))
 	}
@@ -56,15 +56,15 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 			.then(status => {
 
 				if (status.Success) {
-					dispatch(showMessage({ Success: true, Message: ((onSuccess && onSuccess.message) || "İşlem Başarılı.") }))
+					dispatch(showMessage({ Success: true, Message: ((onSuccess && t(onSuccess.text)) || "İşlem Başarılı.") }))
 					if (refreshAfterSuccess == true)
 						refresh && refresh()
 				}
 				else
-					dispatch(showMessage({ Success: false, Message: ((onError && onError.message) || "İşlem Başarısız. ") + (status.Message || status.Error) }))
+					dispatch(showMessage({ Success: false, Message: ((onError && t(onError.text)) || "İşlem Başarısız. ") + " " + (t(status.Message) || status.Error) }))
 			})
 			.catch(e => {
-				dispatch(showMessage({ Success: false, Message: ((onError && onError.message) || "İşlem Başarısız. ") + e }))
+				dispatch(showMessage({ Success: false, Message: ((onError && t(onError.text)) || "İşlem Başarısız. ") + " " + e }))
 			})
 	}
 
@@ -91,7 +91,7 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 			if (row) {
 				if (action.executeWhen.condition && Array.isArray(action.executeWhen.condition)) {
 					var c = action.executeWhen.condition;
-					var cond = '{' + c[0] + '}' + c[1] + c[2]
+					var cond = `{${c[0]}}${c[1]}${c[2]}`
 					// eslint-disable-next-line no-eval
 					disabled = !eval(supplant(cond, row))
 				}
@@ -99,12 +99,12 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 					try {
 						// eslint-disable-next-line no-eval
 						disabled = !eval(supplant(action.executeWhen.eval, row))
-						if (action.onSuccess)
-							dispatch(showMessage(supplant(action.onSuccess.text)))
+						// if (action.onSuccess)
+						// 	dispatch(showMessage(supplant(action.onSuccess.text)))
 					} catch (error) {
-						console.error(error)
-						if (action.onError)
-							dispatch(showMessage(supplant(action.onError.text)))
+						// console.error(error)
+						// if (action.onError)
+						// 	dispatch(showMessage(supplant(action.onError.text)))
 						disabled = true
 					}
 				}

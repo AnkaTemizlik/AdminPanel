@@ -21,6 +21,7 @@ const HomeMenu = ({ menu, isAuthenticated }) => {
 	const smUp = useMediaQuery(theme.breakpoints.up('sm'));
 	const { t } = useTranslation();
 	const classes = useStyles();
+
 	return menu.menus.map((m, index) => {
 		if (m.isDivider) {
 			return <Divider key={index} orientation="vertical" flexItem className={classes.divider} />
