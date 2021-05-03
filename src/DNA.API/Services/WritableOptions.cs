@@ -224,14 +224,28 @@ namespace DNA.API.Services {
                 var tablePrefix = _configuration["Config:Database:TablePrefix"];
                 var models = new ScreenModelCollection(tablePrefix);
 
-                models.TryAdd(new ScreenModel(null, typeof(Notification), true).HiddenInSidebar());
-                models.TryAdd(new ScreenModel(null, typeof(Models.User), true).HiddenInSidebar());
-                models.TryAdd(new ScreenModel(typeof(LogLevelTypes)));
-                models.TryAdd(new ScreenModel(typeof(OperatorTypes)));
+                models.TryAdd(new ScreenModel(typeof(Notification), true, true).HiddenInSidebar());
+                models.TryAdd(new ScreenModel(typeof(Models.User), true, true)
+                    .Visibility(true)
+                    .Definition()
+                    .Editable(true)
+                    .Emblem("people")
+                    );
+                models.TryAdd(new ScreenModel(typeof(LogLevelTypes), false, true));
+                models.TryAdd(new ScreenModel(typeof(OperatorTypes), false, true));
+
+                var moduleScreenDefaults = JObject.FromObject(new {
+                    ScreenConfig = new {
+                        Lists = new {
+                            // Roles
+                            Roles = Roles.Values()
+                        }
+                    }
+                });
 
                 string pluginSourcePath = null;
                 var pluginConfigTemplate = JObject.Parse("{}");
-                var moduleScreenDefaults = JObject.Parse("{}");
+
                 var menus = LoadMenus();
                 var extraScreenLists = new Dictionary<string, IEnumerable>();
                 var pluginNotifyTypes = new NotificationTypes();
@@ -264,7 +278,8 @@ namespace DNA.API.Services {
                     // config
                     if (manager.IsModule) {
                         pluginConfigTemplate.Merge(manager.GetDefaultConfig(new ConfigTemplate()), _jsonMergeSettings);
-                        moduleScreenDefaults.Merge(manager.GetScreenDefaults(), _jsonMergeSettings);
+                        // TODO: moduül içindeki eskimiş kısımlar yeni yapıyı bozabiliyor, o yüzden geçici iptal.
+                        // moduleScreenDefaults.Merge(manager.GetScreenDefaults(), _jsonMergeSettings);
                     }
                     else {
                         if (!manager.SourcePath.Contains(":"))
@@ -281,7 +296,12 @@ namespace DNA.API.Services {
                     SqlTableScriptGenerator.Generate(pluginSourcePath, models, tablePrefix);
 #endif
                     AddModelsToPluginScreenConfig(pluginSourcePath, models, extraScreenLists, moduleScreenDefaults);
-                    AddModelsToTranslation(pluginSourcePath, models);
+
+                    AddModelsToTranslation(pluginSourcePath, models.Where(_ => !_.AddToMainConfig).ToList());
+                    AddModelsToTranslation(null,
+                        models.Where(_ => _.AddToMainConfig).ToList(),
+                        new KeyValuePair<string, IEnumerable<string>>("Roles", Roles.Values().Select(_ => _.Value))
+                        );
                 }
 
                 _configuration.Reload();
@@ -490,10 +510,9 @@ namespace DNA.API.Services {
 
             var json = JObject.Parse(File.ReadAllText(fileFullName));
 
-            //if (moduleScreenDefaults != null) {
-
-            //    json.Merge(moduleScreenDefaults, _jsonMergeSettings);
-            //}
+            if (moduleScreenDefaults != null) {
+                json.Merge(moduleScreenDefaults, _jsonMergeSettings);
+            }
 
             foreach (var t in models.Where(_ => _.Type.IsClass)) {
                 var screen = json["ScreenConfig"]["Screens"][t.Name];
@@ -790,7 +809,7 @@ namespace DNA.API.Services {
         /// <summary>
         /// write to appsettings.locales...json
         /// </summary>
-        void AddModelsToTranslation(string _pluginSourcePath, List<ScreenModel> models) {
+        void AddModelsToTranslation(string _pluginSourcePath, List<ScreenModel> models, params KeyValuePair<string, IEnumerable<string>>[] lists) {
 
             var classes = new List<ScreenModel>(models);
             foreach (var lng in new string[] { "tr", "en" }) {
@@ -818,6 +837,10 @@ namespace DNA.API.Services {
                     values.Add(t.Name, fields);
                 }
 
+                foreach (var item in lists) {
+                    values.Add(item.Key, item.Value.ToDictionary(_ => _, _ => _.ToTitleCase()));
+                }
+
                 var translations = JObject.FromObject(new {
                     Translations = new Dictionary<string, object>() {
                         { lng, values }
@@ -832,6 +855,11 @@ namespace DNA.API.Services {
                 if (!string.IsNullOrWhiteSpace(_pluginSourcePath)) {
                     var devFullName = Path.Combine(_pluginSourcePath, fileName);
                     File.WriteAllText(devFullName, result, System.Text.Encoding.UTF8);
+                }
+                // DNA.API içindeki json dosyasına yaz
+                else {
+                    var sourceFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Split("bin")[0], fileName);
+                    File.WriteAllText(sourceFileName, result, System.Text.Encoding.UTF8);
                 }
 #endif
 

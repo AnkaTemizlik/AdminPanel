@@ -15,7 +15,6 @@ const RowFieldsView = React.memo(({ row, columns, name }) => {
 
 			if (c.translate)
 				value = t(value);
-
 			if (c.type == "datetime" || c.type == "date" || c.type == "time") {
 				return (
 					<Moment titleFormat="LLLL" withTitle format={c.localized || "LL"}>
@@ -23,13 +22,25 @@ const RowFieldsView = React.memo(({ row, columns, name }) => {
 					</Moment>
 				);
 			}
-
-			if (c.type == "check" || c.type == "bool")
+			else if (c.type == "image") {
+				return <img src={value} alt={value} style={{ maxWidth: 200 }} />
+			}
+			else if (c.type == "color") {
+				return <div
+					style={{
+						width: 72,
+						height: 36,
+						backgroundColor: `${value}`,
+						position: "inherit",
+						border: '1px solid #ddd',
+						borderRadius: 4
+					}} />
+			}
+			else if (c.type == "check" || c.type == "bool")
 				return <Icon style={{ color: green[500], position: "absolute", marginTop: -12 }}>
 					check
 					</Icon>;
-
-			if (c.type == "number" || c.type == "numeric") {
+			else if (c.type == "number" || c.type == "numeric") {
 				if (c.currency) {
 					return <Box>
 						{Intl.NumberFormat(i18n.language, { style: 'currency', currency: c.currency }).format(value)}
@@ -39,15 +50,13 @@ const RowFieldsView = React.memo(({ row, columns, name }) => {
 					{Intl.NumberFormat(i18n.language).format(value)}
 				</Box>
 			}
-
-			if (c.type == "textArea") {
+			else if (c.type == "textArea" || c.type == "multiline") {
 				return <TextArea readOnly={true} value={value} autoResizeEnabled={true} maxHeight={200} />
 			}
-
-			if (c.type == "code")
+			else if (c.type == "code")
 				return <TextArea readOnly={true} value={value} autoResizeEnabled={true} style={{ font: "13px monospace" }} />
-			//return <pre style={{ whiteSpace: "pre-wrap" }}>{value}</pre>;
 
+			//return <pre style={{ whiteSpace: "pre-wrap" }}>{value}</pre>;
 			return value;
 		}
 		return "";

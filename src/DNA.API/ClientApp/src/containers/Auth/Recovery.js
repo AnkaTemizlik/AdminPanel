@@ -5,7 +5,7 @@ import * as actions from '../../store/actions';
 import VpnKeyTwoTone from "@material-ui/icons/VpnKeyTwoTone";
 import FormWrapper from "../../components/UI/FormContainer";
 import Alert from '@material-ui/lab/Alert';
-import { FormControl, Button } from "@material-ui/core";
+import { FormControl, Button, Box } from "@material-ui/core";
 import TextField from "../../components/UI/TextField";
 import { Trans, Tr, useTranslation } from '../../store/i18next'
 const development = (process.env && process.env.NODE_ENV === "development")
@@ -52,33 +52,36 @@ const Recovery = ({ loading, error, onRecovery, resetError, history }) => {
 					{error}
 				</Alert>
 			}
+
 			<form noValidate onSubmit={handleRegister} >
-				<TextField size="medium" id="emailForRegister"
-					label={t("E-posta Adresi")}
-					name="emailForRegister"
-					onChange={(e) => setEmail(e.target.value)}
-					onBlur={(e) => checkEmail()}
-					required autoFocus disabled={loading}
-					error={!isEmailValid}
-					helperText={isEmailValid ? null : t("Geçerli bir e-posta adresi girin.")}
-				/>
+				<Box mt={6}>
+					<TextField size="medium" id="emailForRegister"
+						label={t("Email")}
+						name="emailForRegister"
+						onChange={(e) => setEmail(e.target.value)}
+						onBlur={(e) => checkEmail()}
+						required autoFocus disabled={loading}
+						error={!isEmailValid}
+						helperText={isEmailValid ? null : t("Type a valid e-mail address")}
+					/>
 
-				{/* {development
-                    ? null
-                    : <FormControl variant="filled" fullWidth margin="normal" size="small" >
-                        <ReCAPTCHA className="ReCAPTCHA"
-                            sitekey="6Lf16xkTAAAAAIQuyURRLboyKIz2idSiWmAc0HyD"
-                            onChange={(v) => recaptchaHandler(v)}
-                            data-theme="dark" />
-                    </FormControl>} */}
-
-				<FormControl fullWidth margin="normal">
-					<Button type="submit" variant="contained" color="secondary" disabled={!isValid() || loading}>
-						{t("Gönder")}
-					</Button>
-				</FormControl>
+					{/* {development
+							? null
+							: <FormControl variant="filled" fullWidth margin="normal" size="small" >
+									<ReCAPTCHA className="ReCAPTCHA"
+											sitekey="6Lf16xkTAAAAAIQuyURRLboyKIz2idSiWmAc0HyD"
+											onChange={(v) => recaptchaHandler(v)}
+											data-theme="dark" />
+							</FormControl>} */}
+				</Box>
+				<Box mt={8} style={{ display: "flex", justifyContent: "flex-end" }}>
+					<FormControl margin="normal">
+						<Button type="submit" variant="contained" color="primary" disabled={!isValid() || loading}>
+							{t("Send")}
+						</Button>
+					</FormControl>
+				</Box>
 			</form>
-
 		</FormWrapper>
 	)
 }

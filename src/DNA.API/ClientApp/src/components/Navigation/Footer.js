@@ -65,7 +65,7 @@ function Footer(props) {
 					{"Copyright © "}
 					{new Date().getFullYear() + "."}
 					&nbsp;<Tr>All Rights Reserved</Tr>
-					&nbsp;<Tooltip title={version}><span>v{workerVersion}</span></Tooltip>
+					&nbsp;<Tooltip title={version}><span><Typography variant="caption">v{workerVersion}</Typography></span></Tooltip>
 				</Box>
 				<Box display="flex" justifyContent="center">
 					<BrandLogo width={80} />

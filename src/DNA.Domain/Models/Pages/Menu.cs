@@ -13,6 +13,7 @@ namespace DNA.Domain.Models.Pages {
         public string name { get; set; }
         public string target { get; set; }
         public string color { get; set; }
+        public bool? visible { get; set; }
         public bool? isDivider { get; set; }
         public bool? showOnAuth { get; set; }
         public string description { get; set; }

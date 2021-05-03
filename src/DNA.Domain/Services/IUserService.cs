@@ -14,7 +14,7 @@ namespace DNA.Domain.Services {
         Task<bool> CheckPasswordAsync(ApplicationUser userIdentity, string password);
         Task<bool> IsRecaptchaValidAsync(string recaptcha);
         Task<ApplicationUser> ConfirmAsync(string code);
-        Task<string> RecoveryAsync(string email);
+        Task<ApplicationUser> RecoveryAsync(string email);
         Task<System.DateTime> GetDatabaseTime();
         Task<bool> ChangePasswordAsync(int id, string password, string passwordConfirmationCode);
         Task<ApplicationUser> GetUserByIdAsync(UserQuery query);

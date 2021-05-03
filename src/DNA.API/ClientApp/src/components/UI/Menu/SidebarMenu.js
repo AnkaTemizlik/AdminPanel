@@ -134,7 +134,9 @@ const Item = ({ setOpened, m, to, t, level }) => {
 		target={m.target || "_self"}
 		activeClassName={classes.selected}>
 		{m.icon
-			? <ListItemIcon><Icon>{m.icon}</Icon></ListItemIcon>
+			? <ListItemIcon>
+				<Icon>{m.icon}</Icon>
+			</ListItemIcon>
 			: null}
 		<ListItemText primaryTypographyProps={{
 			variant: level > 1 ? "body2" : "body1"

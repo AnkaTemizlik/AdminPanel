@@ -86,59 +86,58 @@ const menusSlice = createSlice({
 				});
 			}
 		},
-		appendMenusFromConfig: (state, action) => {
+		//appendMenusFromConfig: (state, action) => {
 
-			let { configs, user } = action.payload
-			let m = _.find(state.panel.menus, { name: "Settings" })
+		// let { configs, user } = action.payload
+		// let m = _.find(state.panel.menus, { name: "Settings" })
 
-			let settingsMenu = m ? m : {
-				label: "Settings",
-				name: "Settings",
-				to: "",
-				areMenusVisible: true,
-				isHeaderVisible: true,
-				roles: ["Admin", "Writer"],
-				menus: [],
-			};
+		// let settingsMenu = m ? m : {
+		// 	label: "Settings",
+		// 	name: "Settings",
+		// 	to: "",
+		// 	areMenusVisible: true,
+		// 	isHeaderVisible: true,
+		// 	roles: ["Admin", "Writer"],
+		// 	menus: [],
+		// };
 
-			settingsMenu.menus = settingsMenu.menus || []
+		// settingsMenu.menus = settingsMenu.menus || []
 
-			settingsMenu.menus.push({
-				label: "Users",
-				to: "/users",
-				isHeaderVisible: true,
-				icon: "people",
-				roles: ["Admin", "Writer"],
-				menus: []
-			});
-
-
-			settingsMenu.menus.push({
-				label: configs.title,
-				to: "/settings",
-				icon: configs.icon,
-				roles: ["Admin", "Writer"],
-				menus: [],
-			});
+		// settingsMenu.menus.push({
+		// 	label: "Users",
+		// 	to: "/users",
+		// 	isHeaderVisible: true,
+		// 	icon: "people",
+		// 	roles: ["Admin", "Writer"],
+		// 	menus: []
+		// });
 
 
-			if (!settingsMenu) {
-				state.panel.menus.push({ isDivider: true });
-				state.panel.menus.push(settingsMenu)
-			}
+		// settingsMenu.menus.push({
+		// 	label: configs.title,
+		// 	to: "/settings",
+		// 	icon: configs.icon,
+		// 	roles: ["Admin", "Writer"],
+		// 	menus: [],
+		// });
 
-			var adminSettingsMenu = _.find(state.admin.menus, { name: "Settings" })
-			if (!adminSettingsMenu) {
-				state.admin.menus.push({ isDivider: true });
-				state.admin.menus.push(settingsMenu)
-			}
-		}
+		// if (!settingsMenu) {
+		// 	state.panel.menus.push({ isDivider: true });
+		// 	state.panel.menus.push(settingsMenu)
+		// }
+
+		// var adminSettingsMenu = _.find(state.admin.menus, { name: "Settings" })
+		// if (!adminSettingsMenu) {
+		// 	state.admin.menus.push({ isDivider: true });
+		// 	state.admin.menus.push(settingsMenu)
+		// }
+		//}
 	},
 	extraReducers: {}
 });
 
 export const {
-	appendMenusFromConfig,
+	//appendMenusFromConfig,
 	appendMenusFromScreens,
 	addTokenToHangfireMenu,
 	resetPanelMenu,

@@ -39,6 +39,9 @@ namespace DNA.API.Services {
             if (localUser == null) {
                 throw new Exception("Wrong e-mail or password");
             }
+            if(localUser.IsDeleted)
+                throw new Exception("Your account has been deleted. Contact the administrator.");
+
             if (string.IsNullOrWhiteSpace(localUser.PasswordConfirmationCode)) {
                 localUser.PasswordConfirmationCode = GetUniqueCode();
                 await UpdateAsync(localUser);
@@ -118,10 +121,10 @@ namespace DNA.API.Services {
             return user;
         }
 
-        public async Task<string> RecoveryAsync(string email) {
+        public async Task<ApplicationUser> RecoveryAsync(string email) {
             var code = GetUniqueCode();
-            var ok = await _userRepository.RecoveryPasswordAsync(email, code);
-            return ok ? code : null;
+            var user = await _userRepository.RecoveryPasswordAsync(email, code);
+            return user;
         }
 
         public async Task<bool> ChangePasswordAsync(int id, string password, string passwordConfirmationCode) {

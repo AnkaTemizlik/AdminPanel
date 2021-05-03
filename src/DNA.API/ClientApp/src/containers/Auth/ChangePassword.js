@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 // import ReCAPTCHA from "react-google-recaptcha";
 import Alert from '@material-ui/lab/Alert';
 import { useParams } from "react-router-dom";
-import { FormControl, Button, Typography } from "@material-ui/core";
+import { FormControl, Button, Typography, Box } from "@material-ui/core";
 import * as actions from '../../store/actions'
 import AccountCircleIcon from "@material-ui/icons/AccountCircleTwoTone";
 import FormWrapper from "../../components/UI/FormContainer";
 import TextField from "../../components/UI/TextField";
-import { Trans, Tr, useTranslation } from '../../store/i18next'
+import { useTranslation } from '../../store/i18next'
 
 const development = (process.env && process.env.NODE_ENV === "development")
 
@@ -33,7 +33,7 @@ const ChangePassword = ({ onChangePassword, registeredEmail, loading, error, res
 		onChangePassword({ email, password, passwordConfirm, recaptcha, code })
 			.then((status) => {
 				if (status.Success) {
-					setSuccessMessage(`${t("Password saved.")} ${t("Redirecting")}...`)
+					setSuccessMessage(`${t("Password saved. Redirecting")}`)
 					setTimeout(() => {
 						history.push('/auth/login');
 					}, 2000)
@@ -69,11 +69,13 @@ const ChangePassword = ({ onChangePassword, registeredEmail, loading, error, res
 	}, [])
 
 	return (
-		<FormWrapper title={t("New Password")} icon={AccountCircleIcon} comment={t("Type your e-mail address and password")} loading={loading}>
+		<FormWrapper title={t("New Password")}
+			icon={AccountCircleIcon}
+			comment={t("Type your e-mail address and new password")}
+			loading={loading}>
 
 			{error &&
 				<Alert variant="outlined" severity="error">
-					{/* <AlertTitle>Hata</AlertTitle> */}
 					{t(error)}
 				</Alert>
 			}
@@ -82,54 +84,64 @@ const ChangePassword = ({ onChangePassword, registeredEmail, loading, error, res
 				{
 					loading
 						? t(`Checking, please wait`)
-						: t(error) ? `` : t(successMessage)
+						: t(error)
+							? ``
+							: t(successMessage)
 				}
 			</Typography>
 
-			{successMessage
-				? null
-				:
-				<form noValidate onSubmit={handleRegister} >
+			{successMessage ? null
+				: <form noValidate onSubmit={handleRegister}>
+					<Box mt={4}>
+						<TextField size="medium"
+							id="emailForRegister"
+							label={t("Email")}
+							name="emailForRegister"
+							onChange={(e) => setEmail(e.target.value)}
+							onBlur={(e) => checkEmail()}
+							required autoFocus disabled={loading}
+							error={!isEmailValid}
+							helperText={isEmailValid ? null : t("Type a valid e-mail address")}
+						/>
 
-					<TextField size="medium" id="emailForRegister"
-						label={t("E-posta Adresi")}
-						name="emailForRegister"
-						onChange={(e) => setEmail(e.target.value)}
-						onBlur={(e) => checkEmail()}
-						required autoFocus disabled={loading}
-						error={!isEmailValid}
-						helperText={isEmailValid ? null : t("Type a valid e-mail address")}
-					/>
+						<TextField size="medium"
+							id="passwordForRegister"
+							label={t("Password")}
+							name="passwordForRegister"
+							type="password"
+							onChange={(e) => handlePassword(e.target.value)}
+							onBlur={(e) => checkPassword()}
+							required
+							disabled={loading}
+							error={!isPasswordValid}
+							helperText={isPasswordValid ? null : t("Password length must atleast 8 char. Its includes atleast one uppercase and lowercase letter. Its must have number in your password")} />
 
-					<TextField size="medium" id="passwordForRegister" label={t("Şifre")} name="passwordForRegister" type="password"
-						onChange={(e) => handlePassword(e.target.value)}
-						onBlur={(e) => checkPassword()}
-						required
-						disabled={loading}
-						error={!isPasswordValid}
-						helperText={isPasswordValid ? null : t("Password length must atleast 8 char. Its includes atleast one uppercase and lowercase letter. Its must have number in your password")} />
-
-					<TextField size="medium" id="passwordConfirmForRegister" label={t("Password Confirm")} name="passwordConfirmForRegister" type="password"
-						onChange={(e) => setPasswordConfirm(e.target.value)}
-						required
-						disabled={loading}
-						error={!checkPasswordConfirm()} />
-
+						<TextField size="medium"
+							id="passwordConfirmForRegister"
+							label={t("Password Confirm")}
+							name="passwordConfirmForRegister"
+							type="password"
+							onChange={(e) => setPasswordConfirm(e.target.value)}
+							required
+							disabled={loading}
+							error={!checkPasswordConfirm()} />
+					</Box>
 					{/* {development
-                        ? null
-                        : <FormControl variant="filled" fullWidth margin="normal"  >
-                            <ReCAPTCHA className="ReCAPTCHA"
-                                sitekey="6Lf16xkTAAAAAIQuyURRLboyKIz2idSiWmAc0HyD"
-                                onChange={(v) => recaptchaHandler(v)}
-                                data-theme="dark" />
-                        </FormControl>} */}
+							? null
+							: <FormControl variant="filled" fullWidth margin="normal"  >
+									<ReCAPTCHA className="ReCAPTCHA"
+											sitekey="6Lf16xkTAAAAAIQuyURRLboyKIz2idSiWmAc0HyD"
+											onChange={(v) => recaptchaHandler(v)}
+											data-theme="dark" />
+							</FormControl>} */}
 
-					<FormControl fullWidth margin="normal">
-						<Button type="submit" variant="contained" color="secondary" disabled={!isValid() || loading}>
-							{t("Save")}
-						</Button>
-					</FormControl>
-
+					<Box mt={6} style={{ display: "flex", justifyContent: "flex-end" }}>
+						<FormControl margin="normal">
+							<Button type="submit" variant="contained" color="secondary" disabled={!isValid() || loading}>
+								{t("Save")}
+							</Button>
+						</FormControl>
+					</Box>
 				</form>
 			}
 		</FormWrapper >
