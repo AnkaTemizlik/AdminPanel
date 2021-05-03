@@ -22,17 +22,20 @@ namespace PointmentApp {
         public bool IsModule => false;
 
         private readonly ILogger<PluginStartupManager> _logger;
+        private readonly IMenuService _menuService;
         private readonly IProcessService _processService;
         private readonly IMapper _mapper;
 
-        public PluginStartupManager(ILogger<PluginStartupManager> logger, IProcessService processService, IMapper mapper) {
+        public PluginStartupManager(ILogger<PluginStartupManager> logger, IMenuService menuService, IProcessService processService, IMapper mapper) {
             _logger = logger;
+            _menuService = menuService;
             _processService = processService;
             _mapper = mapper;
 
 #if DEBUG
             _logger.LogInformation($"ctor {nameof(PluginStartupManager)}");
 #endif
+
         }
 
         public async Task DoWork() {
@@ -50,6 +53,23 @@ namespace PointmentApp {
 
         public JObject GetDefaultConfig(ConfigTemplate template) {
 
+            _menuService
+                .Root["panel"]
+                .menus.Find(_ => _.name == "Settings")
+                .menus.Find(_ => _.name == "Users")
+                .visible = false;
+
+            _menuService.Root["social"].menus
+                .Add(new DNA.Domain.Models.Pages.Menu {
+                    label = "WhatsApp",
+                    to = "",
+                    icon = "WhatsApp",
+                    color = "#25d366",
+                    areMenusVisible = true,
+                    isHeaderVisible = true,
+                    menus = new DNA.Domain.Models.Pages.MenuCollection()
+                });
+
             ConfigProperty Config = template
                 .RecurringJobsProperty(true, nameof(Services.AppProcessJob))
                 .Set("SocialMediaLinks", false, template.Property()
@@ -57,7 +77,8 @@ namespace PointmentApp {
                     .AddTextArea("YouTube", "https://www.youtube.com/channel/")
                     .AddTextArea("Facebook", "https://facebook.com/")
                     .AddTextArea("Instagram", "https://www.instagram.com/")
-                    .AddTextArea("LinkedIn", "https://www.linkedin.com/company/")
+                    .AddTextArea("LinkedIn", "")
+                    .AddTextArea("WhatsApp", "https://wa.me/9050000000?text=")
                     .AddTextArea("Email", "mailto:bilgi@?.com.tr")
                     )
                 ;
@@ -87,8 +108,8 @@ namespace PointmentApp {
                 new ScreenModel(null, typeof(Appointment), true)
                     .Visibility(true)
                     .Editable(true)
-                    .CalendarView("Title","AllDay", "StartDate", "EndDate", "Note", 
-                        new ScreenCalendarResource(typeof(Service), "ServiceId") { useColorAsDefault = true }, 
+                    .CalendarView("Title","AllDay", "StartDate", "EndDate", "Note",
+                        new ScreenCalendarResource(typeof(Service), "ServiceId") { useColorAsDefault = true },
                         new ScreenCalendarResource(typeof(Customer), "CustomerId")
                      )
                     .Emblem("event_available"),
