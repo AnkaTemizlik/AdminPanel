@@ -33,7 +33,7 @@ const config = {
 
 const Auth = (props) => {
 
-	const menus = useSelector((state) => state.menus)
+	const { menus, settings } = useSelector((state) => state)
 
 	return <Layout config={config}>
 		{({ setSecondaryOpened }) => {
@@ -41,9 +41,10 @@ const Auth = (props) => {
 				<CssBaseline />
 				<Header position="absolute">
 
-					<IconButton component={Link} to="/" color="inherit">
-						<HomeIcon />
-					</IconButton>
+					{settings.Plugin.AuthSettings.GoPanelOnStart != true &&
+						<IconButton component={Link} to="/" color="inherit">
+							<HomeIcon />
+						</IconButton>}
 
 					<Hidden xsDown>
 						<HomeMenu menu={menus.home} isAuthenticated={props.isAuthenticated} />
@@ -54,7 +55,6 @@ const Auth = (props) => {
 					<Hidden smDown>
 						<SocialMenu minimal />
 					</Hidden>
-
 
 					<LanguageChanger />
 					{/* {props.isAuthenticated

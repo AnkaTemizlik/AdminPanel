@@ -10,7 +10,7 @@ import BrandLogo from '../BrandLogo';
 const HomeSidebar = (props) => {
 
 	return <Treasury.SecondarySidebar>
-		<AuthInfo user={props.user} />
+		<AuthInfo />
 
 		<Divider />
 

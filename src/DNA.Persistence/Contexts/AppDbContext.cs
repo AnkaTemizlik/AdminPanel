@@ -68,6 +68,10 @@ namespace DNA.Persistence.Contexts {
                 connection.Execute(SetTablePrefix(TableScripts.Log_AddColumn_EntityKey));
                 connection.Execute(SetTablePrefix(TableScripts.User));
                 connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_IsInitialPassword));
+                connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_CreationTime));
+                connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_UpdateTime));
+                connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_PictureUrl));
+                connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_IsDeleted));
                 connection.Execute(SetTablePrefix(TableScripts.User_Insert_Admin));
                 connection.Execute(SetTablePrefix(TableScripts.User_Update_Admin));
 

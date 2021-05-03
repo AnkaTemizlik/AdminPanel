@@ -9,6 +9,15 @@ namespace DNA.Domain.Models {
         public const string Reader = "Reader";
         public const string Writer = "Writer";
         public const string Admin = "Admin";
+
+        public static List<IdValue<string>> Values() {
+            return new List<IdValue<string>> {
+            new IdValue<string>("Admin","Admin"),
+            new IdValue<string>("Writer","Writer"),
+            new IdValue<string>("Reader","Reader"),
+            new IdValue<string>("User","User")
+            };
+        }
     }
 
     public static class Policies {

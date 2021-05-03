@@ -61,7 +61,7 @@ const Confirm = (props) => {
 					</Box>
 					<Box mt={4} style={{ minHeight: 200 }}>
 						<FormControl fullWidth margin="normal">
-							<Button type="submit" variant="contained" disabled color="secondary" style={{ textTransform: 'none' }}>
+							<Button type="submit" variant="contained" disabled color="primary" style={{ textTransform: 'none' }}>
 								{t("Doğrulama e-postasını tekrar gönder.")}
 							</Button>
 						</FormControl>

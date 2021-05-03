@@ -84,7 +84,7 @@ namespace DNA.API.Controllers {
                     throw new Alert(AlertCodes.KeyIsNotValid);
 
                 var licenseSection = _configuration.GetSection("Config:Guard:LicenseStatus");
-                
+
                 if (licenseSection.Exists() && !licenseSection.GetValue<bool>("Success")) {
                     return BadRequest(new Response() {
                         Success = false,
@@ -144,8 +144,11 @@ namespace DNA.API.Controllers {
             if (userCreated == null)
                 return BadRequest(Errors.AddErrorToModelState("user_create_failure", "Kullanıcı kaydı oluşturulamadı.", ModelState));
 
-            var body = _emailService.CreateBodyForConfirmEmail(userCreated.EmailConfirmationCode);
-            var emailSent = await _emailService.SendAsync(body, "E-posta Doğrulama", resource.Email, userCreated.FullName, null);
+            _valuerService.SetCurrentModel(userCreated);
+
+            //var body = _emailService.CreateBodyForConfirmEmail(userCreated.EmailConfirmationCode);
+            var emailSent = await _emailService.SendAsync("ConfirmationEmailSettings", null);
+            //var emailSent = await _emailService.SendAsync(body, "E-posta Doğrulama", resource.Email, userCreated.FullName, null);
             if (!emailSent)
                 return BadRequest(Errors.AddErrorToModelState("send_email_failure", "Kullanıcı kaydı oluşturulamadı.", ModelState));
 
@@ -182,12 +185,15 @@ namespace DNA.API.Controllers {
                 return BadRequest(ModelState);
             }
 
-            string code = await _userService.RecoveryAsync(resource.Email);
-            if (code == null)
+            var user = await _userService.RecoveryAsync(resource.Email);
+            if (user == null)
                 return BadRequest(Errors.AddErrorToModelState("password_recovery_failure", "İşlem tamamlanmadı.", ModelState));
 
-            string body = _emailService.CreateBodyForRecoveryPassword(code);
-            var emailSent = await _emailService.SendAsync(body, "Şifre Sıfırlama", resource.Email, string.Empty, null);
+            _valuerService.SetCurrentModel(user);
+
+            //string body = _emailService.CreateBodyForRecoveryPassword(code);
+            var emailSent = await _emailService.SendAsync("PasswordRecoveryEmailSettings", null);
+            //var emailSent = await _emailService.SendAsync(body, "Şifre Sıfırlama", resource.Email, string.Empty, null);
             if (!emailSent)
                 return BadRequest(Errors.AddErrorToModelState("send_email_failure", "İşlem tamamlanmadı.", ModelState));
 
@@ -399,8 +405,8 @@ namespace DNA.API.Controllers {
             try {
 
                 #region Validations
-                if (resource.Key != _configuration["AppId:WEB"])
-                    throw new Exception("Permision Key not found");
+                //if (resource.Key != _configuration["AppId:WEB"])
+                //    throw new Exception("Permision Key not found");
 
                 if (string.IsNullOrWhiteSpace(resource.FullName))
                     throw new ArgumentNullException("FullName");
@@ -455,7 +461,7 @@ namespace DNA.API.Controllers {
                         // var body = _emailService.CreateBodyForConfirmEmail(appUser.EmailConfirmationCode);
                         // var emailSent = await _emailService.SendAsync(body, "E-posta Doğrulama", appUser.Email, appUser.FullName, null);
 
-                        var emailSent = await _emailService.SendAsync(_configuration.GetSection("Config:Smtp:ConfirmationEmailSettings"), null, null);
+                        var emailSent = await _emailService.SendAsync("Smtp:ConfirmationEmailSettings", null);
                         if (!emailSent)
                             throw new Exception("The user registration has been created but e-mail could not be sent to the user.");
                     }
@@ -485,7 +491,7 @@ namespace DNA.API.Controllers {
 
                     //var body = _emailService.CreateBodyForConfirmEmail(userCreated.EmailConfirmationCode);
                     //var emailSent = await _emailService.SendAsync(body, "E-posta Doğrulama", resource.Email, userCreated.FullName, null);
-                    var emailSent = await _emailService.SendAsync(_configuration.GetSection("Config:Smtp:ConfirmationEmailSettings"), null, null);
+                    var emailSent = await _emailService.SendAsync("Smtp:ConfirmationEmailSettings", null);
                     if (!emailSent)
                         throw new Exception("The user registration has been created but e-mail could not be sent to the user");
                     var resultUser = _mapper.Map<ApplicationUserResource>(userCreated);
@@ -529,7 +535,7 @@ namespace DNA.API.Controllers {
                 var appUser = await _userService.UpdateAsync(user);
                 _valuerService.SetCurrentModel(appUser);
 
-                var emailSent = await _emailService.SendAsync(_configuration.GetSection("Config:Smtp:ConfirmationEmailSettings"), null, null);
+                var emailSent = await _emailService.SendAsync("Smtp:ConfirmationEmailSettings", null);
                 if (!emailSent)
                     throw new Exception("Kullanıcı e-posta adresi güncellendi ancak kullanıcıya e-posta gönderilmedi. (ConfirmationEmailSettings)");
 
@@ -564,14 +570,13 @@ namespace DNA.API.Controllers {
 
                 var emailSent = false;
                 if (!string.IsNullOrWhiteSpace(group))
-                    emailSent = await _emailService.SendAsync(_configuration.GetSection("Config:Smtp:" + group), null, null);
+                    emailSent = await _emailService.SendAsync(group, null);
                 else {
-                    var body = _emailService.GetHtmlBody(Utils.Lorem(10), Utils.Lorem(60));
-                    emailSent = await _emailService.SendAsync(body, Utils.Lorem(7), appUser.Email, appUser.FullName, null);
+                    emailSent = await _emailService.SendAsync("Smtp:SMTPSettingsTestEmail", null);
                 }
 
                 if (!emailSent)
-                    throw new Exception("Kullanıcı e-posta adresi güncellendi ancak kullanıcıya e-posta gönderilmedi.");
+                    throw new Exception("E-mail gönderilmedi.");
 
                 return Ok(new Response<string>() { Resource = "E-mail Sent." });
 

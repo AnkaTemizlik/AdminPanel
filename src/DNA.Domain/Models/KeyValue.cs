@@ -52,4 +52,22 @@ namespace DNA.Domain.Models {
             Value = value;
         }
     }
+
+
+    public class IdValue<T> {
+
+        [JsonProperty("id")]
+        public T Id { get; set; }
+
+        [JsonProperty("value")]
+        public string Value { get; set; }
+
+        public IdValue() {
+
+        }
+        public IdValue(T id, string value) {
+            Id = id;
+            Value = value;
+        }
+    }
 }

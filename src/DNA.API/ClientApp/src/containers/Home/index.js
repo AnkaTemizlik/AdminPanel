@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect, useSelector } from 'react-redux'
-import { Route, Switch } from 'react-router-dom'
-import { CssBaseline, Box, Typography } from '@material-ui/core';
+import { Link, Route, Switch } from 'react-router-dom'
+import { CssBaseline, Box, Typography, Tooltip, IconButton, Icon } from '@material-ui/core';
 import * as Treasury from "@mui-treasury/layout";
 import Header from '../../components/Navigation/Header'
 import Layout from '../../components/Layout'
@@ -10,6 +10,7 @@ import AuthButton from '../../components/Navigation/AuthButton';
 import Main from './Main'
 import About from './About'
 import LanguageChanger from '../../components/UI/LanguageChanger';
+import EmailView from './EmailView';
 
 const config = {
 	xs: Treasury.getDefaultScreenConfig({
@@ -66,6 +67,7 @@ const Home = (props) => {
 
 				<div>
 					<Switch>
+						<Route path="/view-email/:url/:confirmationCode/:uniqueId" ><EmailView /></Route>
 						<Route path="/about" exact component={About} />
 						<Route path="/" component={Main} />
 					</Switch>
@@ -73,7 +75,7 @@ const Home = (props) => {
 			</>
 			)
 		}}
-	</Layout >
+	</Layout>
 }
 
 const mapStateToProps = (state) => ({

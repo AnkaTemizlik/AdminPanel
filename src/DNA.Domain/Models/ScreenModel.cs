@@ -54,6 +54,8 @@ namespace DNA.Domain.Utils {
         [JsonIgnore] public List<ScreenSubModel> SubModels { get; set; }
         [JsonIgnore] public List<ScreenSubMenu> SubMenus { get; set; }
 
+        [JsonIgnore] public bool AddToMainConfig { get; set; }
+
 
         [JsonProperty("keyFieldName")]
         public string KeyFieldName { get; set; }
@@ -229,12 +231,13 @@ namespace DNA.Domain.Utils {
         //         TableName = tableName;
         // }
 
-        public ScreenModel(Type type, bool hasIdentityIncrement) : this(type) {
+        public ScreenModel(Type type, bool hasIdentityIncrement, bool addToMainConfig = false) : this(type) {
             HasIdentityIncrement = hasIdentityIncrement;
+            AddToMainConfig = addToMainConfig;
         }
 
-        public ScreenModel(string tableName, Type type, bool hasIdentityIncrement) : this(type) {
-            HasIdentityIncrement = hasIdentityIncrement;
+        public ScreenModel(string tableName, Type type, bool hasIdentityIncrement, bool addToMainConfig = false) 
+            : this(type, hasIdentityIncrement, addToMainConfig) {
             if (!string.IsNullOrWhiteSpace(tableName))
                 TableName = tableName;
         }

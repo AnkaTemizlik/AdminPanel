@@ -18,7 +18,7 @@ function useQuery() {
 const Login = (props) => {
 	const { loading, isAuthenticated, error } = props
 	const { snack } = props
-	const { AppId } = useSelector((state) => state.settings)
+	const { AppId, Plugin } = useSelector((state) => state.settings)
 	let history = useHistory();
 	let location = useLocation();
 	let query = useQuery();
@@ -109,32 +109,35 @@ const Login = (props) => {
 						} />
 				</Box>
 				{/* {development
-                    ? null
-                    : <Box ml={0} mt={2} mb={3}>
-                        <ReCAPTCHA className="ReCAPTCHA"
-                            sitekey="6Lf16xkTAAAAAIQuyURRLboyKIz2idSiWmAc0HyD"
-                            onChange={recaptchaHandler} />
-                    </Box>} */}
-
+					? null
+					: <Box ml={0} mt={2} mb={3}>
+							<ReCAPTCHA className="ReCAPTCHA"
+									sitekey="6Lf16xkTAAAAAIQuyURRLboyKIz2idSiWmAc0HyD"
+									onChange={recaptchaHandler} />
+					</Box>} */}
 
 				<Box ml={0} mt={2} mb={3}>
 					<Button type="submit" fullWidth variant="contained" color="primary" disabled={!values.valid || loading}>
 						<Trans>Login</Trans>
 					</Button>
 				</Box>
-				{/* <Grid container>
-                    <Grid item xs>
-                        <Link to="/auth/passwordRecovery" variant="body1" component={RouteLink}>
-                            Şifreni mi unuttun?
-						</Link>
-                    </Grid>
-                    <Grid item>
-                        Hesabın yok mu? Şimdi&nbsp;
+				<Grid container>
+					{Plugin.AuthSettings.AllowPasswordChanging == true &&
+						<Grid item xs>
+							<Link to="/auth/passwordRecovery" variant="body1" component={RouteLink}>
+								{t('Forgot Password')}
+							</Link>
+						</Grid>
+					}
+					{Plugin.AuthSettings.AllowRegistration == true &&
+						<Grid item>
+							{t("Don't have an account?")} &nbsp;
 						<Link to="/auth/register" variant="body1" component={RouteLink}>
-                            <b>kayıt ol</b>
-                        </Link>
-                    </Grid>
-                </Grid> */}
+								<b>{t("Register now")}</b>
+							</Link>
+						</Grid>
+					}
+				</Grid>
 			</form>
 		</FormWrapper>
 	}

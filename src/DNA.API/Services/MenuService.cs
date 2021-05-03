@@ -40,15 +40,17 @@ namespace DNA.API.Services {
             // Social Links
             var section = configuration.GetSection("Config:SocialMediaLinks");
             _menus["social"].menus.ForEach(menu => {
-                menu.to = section[menu.name ?? menu.label] ?? "";
+                if (string.IsNullOrWhiteSpace(section[menu.name ?? menu.label]))
+                    menu.visible = false;
+                else
+                    menu.to = section[menu.name ?? menu.label] ?? "";
             });
 
-            //
+            // 
         }
 
         public void AddRoot(string root, Menu menu) {
             _menus.Add(root, menu);
         }
-
     }
 }

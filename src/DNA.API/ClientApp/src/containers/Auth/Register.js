@@ -157,7 +157,7 @@ const Register = ({ isAuthenticated, onRegister, loading, error, resetError, his
 				</FormControl>
 
 				<FormControl fullWidth margin="normal">
-					<Button type="submit" variant="contained" color="secondary" disabled={!isValid() || loading}>
+					<Button type="submit" variant="contained" color="primary" disabled={!isValid() || loading}>
 						Kayıt Ol
 					</Button>
 				</FormControl>

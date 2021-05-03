@@ -95,7 +95,6 @@ const Field = (props) => {
 			key={fullname}
 			label={t(caption)}
 			name={fullname}
-			labelId={fullname}
 			onChange={(e) => {
 				setVal(e.target.value)
 				handleChange(fullname, e.target.value);

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { createSlice, createAsyncThunk, createSelector, current } from '@reduxjs/toolkit';
-import { appendMenusFromScreens, appendMenusFromConfig, resetPanelMenu, addTokenToHangfireMenu } from './menuSlice'
+import { appendMenusFromScreens, resetPanelMenu, addTokenToHangfireMenu } from './menuSlice'
 import { applyAppSettings } from './appsettingsSlice'
 import { showMessage } from './alertsSlice'
 
@@ -41,10 +41,10 @@ export const getSettings = createAsyncThunk(
 				screenConfig: resource.screenConfig,
 				user: state.auth.user
 			}))
-			dispatch(appendMenusFromConfig({
-				configs: resource.configs,
-				user: state.auth.user
-			}))
+			// dispatch(appendMenusFromConfig({
+			// 	configs: resource.configs,
+			// 	user: state.auth.user
+			// }))
 			dispatch(getScreenConfig({
 				screenConfig: resource.screenConfig,
 				roles: state.auth.user.Roles
@@ -73,7 +73,7 @@ const settingsSlice = createSlice({
 				state.AppId = payload.Resource.configs.AppId
 				state.MultiLanguage = payload.Resource.configs.MultiLanguage
 				state.Logo = payload.Resource.configs.Logo
-				state.Guard = payload.Resource.configs.Guard
+				state.LicenseStatus = payload.Resource.configs.LicenseStatus
 			}
 			else
 				state.error = payload

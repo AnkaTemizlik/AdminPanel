@@ -122,16 +122,26 @@ namespace DNA.Domain.Models {
                     .Add("Title", "Warning")
                     .AddTextArea("Message", "You are currently working in a test environment")
                     )
-                .Set("Company", false, Property()
+                .Set("Company", false, "Company Informations", Property()
                     .Add("CompanyName", "DNA")
                     .Add("CompanyLogo", "")
                     .Add("ProgramName", "DNA.API")
                     .Add("Description", "Access points to the background workers")
                     .Set("Theme", Property()
                         .Add("Name", "blue")
+                        )
+                .Set("AuthSettings", false, "Auth Settings", Property()
+                    .Add("GoPanelOnStart", false)
+                    .Add("AllowPasswordChanging", false)
+                    .Add("AllowRegistration", false)
+                    .Set("ReCAPTCHA", Property()
+                        .Add("Enabled", false)
+                        .Add("SiteKey", "")
+                        .Add("DataTheme", "dark")
+                        )
                     )
                 )
-                ;
+            ;
         }
     }
 
