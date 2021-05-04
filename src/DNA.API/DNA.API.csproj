@@ -144,7 +144,6 @@
     <ProjectReference Include="..\..\PointmentApp\PointmentApp.csproj" />
     <ProjectReference Include="..\DNA.Domain\DNA.Domain.csproj" />
     <ProjectReference Include="..\DNA.Persistence\DNA.Persistence.csproj" />
-    <ProjectReference Include="..\Plugins\DNA.API.PluginTemplate\DNA.API.PluginTemplate.csproj" />
   </ItemGroup>
 
   <ItemGroup>
