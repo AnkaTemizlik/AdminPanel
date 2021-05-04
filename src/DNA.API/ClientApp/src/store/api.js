@@ -255,7 +255,7 @@ const actions = {
 	getNotifications
 };
 /** exports */
-export default {
+const exports = {
 	auth,
 	log,
 	entity,
@@ -263,3 +263,5 @@ export default {
 	execute: run,
 	...Plugin.api
 };
+
+export default exports

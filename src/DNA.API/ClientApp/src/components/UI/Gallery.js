@@ -1,21 +1,6 @@
 import React from 'react';
 import Gallery from 'devextreme-react/gallery';
 
-export default ({ dataSource, defaultSelectedIndex, onSelectionChanged }) => {
-	return <Gallery
-		id="gallery"
-		dataSource={dataSource.filter(s => s.type != "button")}
-		defaultSelectedIndex={defaultSelectedIndex || 0}
-		onSelectionChanged={(e) => onSelectionChanged(e.addedItems[0])}
-		loop={false}
-		showNavButtons={true}
-		showIndicator={true}
-		itemRender={(d) => <Item {...d} />}
-		height={"100%"}
-		width={"100%"}
-	/>
-}
-
 function Item({ Name, Url, size, FileType, UpdateTime, CreationTime, Id }) {
 	return (
 		<div style={{
@@ -42,3 +27,18 @@ function Item({ Name, Url, size, FileType, UpdateTime, CreationTime, Id }) {
 		</div>
 	);
 }
+
+const GalleryComponent = ({ dataSource, defaultSelectedIndex, onSelectionChanged }) => <Gallery
+	id="gallery"
+	dataSource={dataSource.filter(s => s.type != "button")}
+	defaultSelectedIndex={defaultSelectedIndex || 0}
+	onSelectionChanged={(e) => onSelectionChanged(e.addedItems[0])}
+	loop={false}
+	showNavButtons={true}
+	showIndicator={true}
+	itemRender={(d) => <Item {...d} />}
+	height={"100%"}
+	width={"100%"}
+/>
+
+export default GalleryComponent
