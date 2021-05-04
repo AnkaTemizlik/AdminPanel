@@ -50,7 +50,7 @@ ScrollTop.propTypes = {
 	children: PropTypes.element.isRequired,
 };
 
-export default (props) => {
+const ScrollTopComponent = (props) => {
 	const classes = useStyles();
 	return <ScrollTop {...props}>
 		<Fab color="primary" className={classes.fab} size="small">
@@ -58,3 +58,5 @@ export default (props) => {
 		</Fab>
 	</ScrollTop>
 }
+
+export default ScrollTopComponent

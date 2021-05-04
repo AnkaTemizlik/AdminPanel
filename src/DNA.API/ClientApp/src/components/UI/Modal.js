@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default ({ children, open, onClose, title, ok, cancel, okText, cancelText, params, loading = false }) => {
+const ModalComponent = ({ children, open, onClose, title, ok, cancel, okText, cancelText, params, loading = false }) => {
 
 	const classes = useStyles();
 
@@ -83,3 +83,5 @@ export default ({ children, open, onClose, title, ok, cancel, okText, cancelText
 		</Modal>
 	);
 };
+
+export default ModalComponent
