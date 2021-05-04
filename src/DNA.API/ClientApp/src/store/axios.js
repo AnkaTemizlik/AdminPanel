@@ -1,14 +1,15 @@
-﻿import axios from 'axios';
+﻿import axios from 'axios'
+
 const development = (process.env && process.env.NODE_ENV === "development")
 const Host = 'http://192.168.1.200:8800'
 
 // AXIOS HELP : https://kapeli.com/cheat_sheets/Axios.docset/Contents/Resources/Documents/index
 // sample: { validateStatus: (status) => (status >= 200 && status < 300) } // 
-const ApiURL = new URL(development
-	? (window.location.origin.indexOf(':30') > -1
+const origin = window.location.origin;
+const ApiURL = new URL(
+	(origin.indexOf('192.168.1.200:') > -1 || origin.indexOf('localhost:') > -1 || origin.indexOf('127.0.0.1:') > -1)
 		? Host
-		: window.location.origin)
-	: `${window.location.origin}/`)
+		: `${window.location.origin}/`)
 
 console.log("Development:", development)
 console.log("Host:", Host)

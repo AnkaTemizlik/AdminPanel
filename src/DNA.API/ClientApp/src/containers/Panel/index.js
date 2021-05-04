@@ -81,9 +81,6 @@ const Panel = (props) => {
 							<Toolbar>
 								<SidebarTrigger />
 
-								{/* <IconButton onClick={() => history.goBack()} color="inherit">
-									<NavigateBeforeIcon />
-								</IconButton> */}
 								{settings.Plugin.AuthSettings.GoPanelOnStart == false &&
 									<Tooltip title="Home">
 										<span>
@@ -91,24 +88,24 @@ const Panel = (props) => {
 												<HomeIcon />
 											</IconButton>
 										</span>
-									</Tooltip>}
-
-								<Hidden xsDown>
-									<Tooltip title="Dashboard">
-										<span>
-											<IconButton component={Link} to={path} color="inherit">
-												<DashboardIcon />
-											</IconButton>
-										</span>
 									</Tooltip>
-								</Hidden>
-								<Box flexGrow="1" />
+								}
+
+								<Tooltip title="Dashboard">
+									<span>
+										<IconButton component={Link} to={path} color="inherit">
+											<DashboardIcon />
+										</IconButton>
+									</span>
+								</Tooltip>
 
 								<Hidden xsDown>
-									<Box pl={2}>
-										<Typography variant="h6">{settings.Plugin.ProgramName}</Typography>
-									</Box>
+									<Box flexGrow="1" />
 								</Hidden>
+
+								<Box pl={2}>
+									<Typography variant="h6">{settings.Plugin.ProgramName}</Typography>
+								</Box>
 
 								<Box flexGrow="1" />
 

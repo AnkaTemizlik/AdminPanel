@@ -5,8 +5,9 @@ import { Button } from 'devextreme-react/button';
 import Box, { Item } from 'devextreme-react/box';
 import { isNotEmpty } from "../../store/utils";
 import ResponsiveBox, { Row, Col, Item as ResponsiveItem, Location } from 'devextreme-react/responsive-box';
+import ModalComponent from "./Modal";
 
-export default ({ children, visible, toolbarItems, title, onClose, ok, cancel, okText, cancelText, params, loading = false, ...rest }) => {
+const PopupComponent = ({ children, visible, toolbarItems, title, onClose, ok, cancel, okText, cancelText, params, loading = false, ...rest }) => {
 	const { t } = useTranslation();
 	function screen(width) {
 		return (width < 700) ? 'sm' : 'lg';
@@ -68,3 +69,5 @@ export default ({ children, visible, toolbarItems, title, onClose, ok, cancel, o
 		</ResponsiveBox>
 	</Popup>
 };
+
+export default PopupComponent
