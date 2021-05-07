@@ -3,6 +3,7 @@ using DNA.Domain.Extentions;
 using DNA.Domain.Services;
 using Microsoft.Extensions.Logging;
 using PointmentApp.Exceptions;
+using S8.SmsModule.Services;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,13 +11,15 @@ using System.Threading.Tasks;
 namespace PointmentApp.Services {
     
     [Service(typeof(IScopedProcessingService), Lifetime.Scoped)]
-    public class AppProcessJob : IScopedProcessingService {
-        public string ProcessName => nameof(AppProcessJob);
+    public class SyncJob : IScopedProcessingService {
+        public string ProcessName => nameof(SyncJob);
 
-        private readonly ILogger<AppProcessJob> _logger;
+        private readonly ILogger<SyncJob> _logger;
+        private readonly ISmsService _smsService;
 
-        public AppProcessJob(ILogger<AppProcessJob> logger) {
+        public SyncJob(ILogger<SyncJob> logger, ISmsService smsService) {
             _logger = logger;
+            _smsService = smsService;
         }
 
         public async Task Init() {

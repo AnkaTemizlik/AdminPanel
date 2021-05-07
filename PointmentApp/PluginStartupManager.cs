@@ -59,6 +59,11 @@ namespace PointmentApp {
                 .menus.Find(_ => _.name == "Users")
                 .visible = false;
 
+            _menuService.Root["home"].menus.Find(_ => _.name == "Swagger").visible = false;
+            _menuService.Root["home"].menus.Find(_ => _.name == "Files").visible = false;
+            _menuService.Root["home"].menus.Find(_ => _.name == "Jobs").visible = false;
+            _menuService.Root["home"].menus.Find(_ => _.name == "Help").visible = false;
+
             _menuService.Root["social"].menus
                 .Add(new DNA.Domain.Models.Pages.Menu {
                     label = "WhatsApp",
@@ -71,7 +76,29 @@ namespace PointmentApp {
                 });
 
             ConfigProperty Config = template
-                .RecurringJobsProperty(true, nameof(Services.AppProcessJob))
+                .Property()
+                //.RecurringJobsProperty(true, nameof(Services.SyncJob))
+                .Set("AppointmentSettings", template.Property()
+                    .Add("NumberOfAppointmentsAllowedPerDay", 3)
+                )
+                .Set("SmsSettings", template.Property()
+                    .Set("StateChangeMessage", template.Property()
+                        .Add("Enabled", true)
+                        .AddSelect("State", AppointmentState.Assigned)
+                        .AddAutoComplete<Customer>("PhoneNumber", "{Customer.PhoneNumber}")
+                        .AddAutoComplete<Appointment, Service>("Text", "Konu: {Appointment.Title}. Tarih: {Appointment.StartDate}. Hizmet: {Service.Name}")
+                        .Add("SendPreviousDayAtThisHour", 18)
+                        .Add("SendBeforeThisHour", 3)
+                        .Add("DeleteUnsentIfStatusNotAvailable", true)
+                        )
+                    .Set("AppointmentPlaningInformationMessage", template.Property()
+                        .Add("Enabled", true)
+                        .AddSelect("State", AppointmentState.Assigned)
+                        .AddAutoComplete<Customer>("PhoneNumber", "{Customer.PhoneNumber}")
+                        .AddAutoComplete<Appointment, Service>("Text", "{Appointment.StartDate} tarihine {Service.Name} kaydı oluşturuldu.")
+                        .Add("SendInMinutes", 10)
+                        )
+                    )
                 .Set("SocialMediaLinks", false, template.Property()
                     .AddTextArea("Twitter", "https://twitter.com/")
                     .AddTextArea("YouTube", "https://www.youtube.com/channel/")
@@ -105,7 +132,7 @@ namespace PointmentApp {
 
         public List<ScreenModel> LoadModels() {
             return new List<ScreenModel> {
-                new ScreenModel(null, typeof(Appointment), true)
+                new ScreenModel(typeof(Appointment), true)
                     .Visibility(true)
                     .Editable(true)
                     .CalendarView("Title","AllDay", "StartDate", "EndDate", "Note",
@@ -113,10 +140,15 @@ namespace PointmentApp {
                         new ScreenCalendarResource(typeof(Customer), "CustomerId")
                      )
                     .Emblem("event_available"),
-                new ScreenModel(null, typeof(AppointmentEmployee), true)
+                new ScreenModel(typeof(AppointmentEmployee), true)
                     .Visibility(true)
                     .Emblem("person_outline")
                     .Editable(true)
+                    .HiddenInSidebar(),
+                new ScreenModel(typeof(AppointmentSms), true)
+                    .Visibility(false)
+                    .Emblem("sms")
+                    .Editable(false)
                     .HiddenInSidebar(),
                 new ScreenModel(null, typeof(CustomerSummary), true).Visibility(true).Emblem("people_alt"),
                 new ScreenModel(null, typeof(Document), true)

@@ -13,7 +13,10 @@ namespace PointmentApp {
         #endregion
 
         #region Module Queries
-        //public static string SelectInvoiceByCode => GetByName(nameof(SelectInvoiceByCode));
+        public static string SelectSmsForPlaning => GetByName(nameof(SelectSmsForPlaning));
+        public static string SelectSmsForCreation => GetByName(nameof(SelectSmsForCreation));
+        public static string DeleteSms => GetByName(nameof(DeleteSms));
+        public static string CheckOneDayAppointmentCount => GetByName(nameof(CheckOneDayAppointmentCount));
 
         #endregion
     }

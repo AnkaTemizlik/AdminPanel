@@ -35,7 +35,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="SqlQueries\DeleteSms.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="SqlQueries\PointmentApp.Migration.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SqlQueries\CheckOneDayAppointmentCount.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SqlQueries\SelectSmsForPlaning.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SqlQueries\SelectSmsForCreation.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="SqlQueries\_CreateTableScripts.sql">
@@ -44,13 +56,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
     <Folder Include="Responses\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\src\DNA.Domain\DNA.Domain.csproj" />
+    <ProjectReference Include="..\src\Modules\S8.SmsModule\S8.SmsModule.csproj" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

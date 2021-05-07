@@ -36,5 +36,6 @@ namespace PointmentApp.Models {
         [Computed] public int UpdatedBy { get; set; }
         [JsonIgnore] [Computed] public List<Document> Documents { get; set; }
         [JsonIgnore] [Computed] public List<AppointmentEmployee> AssignTo { get; set; }
+        [JsonIgnore] [Computed] public List<S8.SmsModule.Models.Sms> SortMessages { get; set; }
     }
 }

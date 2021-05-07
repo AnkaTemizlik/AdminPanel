@@ -1,5 +1,5 @@
 ﻿/* PA_Appointment ****************************/
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Appointment]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PA_Appointment]') AND type in (N'U'))
 BEGIN
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
@@ -25,29 +25,29 @@ END
 
 /* PA_Appointment UpdatedBy ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Appointment' AND c.name = 'UpdatedBy')
+	WHERE t.name = 'PA_Appointment' AND c.name = 'UpdatedBy')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD UpdatedBy INT NOT NULL DEFAULT(0);
+	ALTER TABLE [dbo].[PA_Appointment] ADD UpdatedBy INT NOT NULL DEFAULT(0);
 END
 
 /* PA_Appointment AllDay ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Appointment' AND c.name = 'AllDay')
+	WHERE t.name = 'PA_Appointment' AND c.name = 'AllDay')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD AllDay BIT NOT NULL DEFAULT(0);
+	ALTER TABLE [dbo].[PA_Appointment] ADD AllDay BIT NOT NULL DEFAULT(0);
 END
 
 
 /* PA_Appointment > Title ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Appointment' AND c.name = 'Title')
+	WHERE t.name = 'PA_Appointment' AND c.name = 'Title')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Appointment] ADD Title NVARCHAR(500) NOT NULL DEFAULT('');
+	ALTER TABLE [dbo].[PA_Appointment] ADD Title NVARCHAR(500) NOT NULL DEFAULT('');
 END
 
 
 /* PA_AppointmentEmployee ****************************/
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}AppointmentEmployee]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PA_AppointmentEmployee]') AND type in (N'U'))
 BEGIN
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
@@ -67,7 +67,7 @@ END
 
 
 /* PA_Document ****************************/
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Document]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PA_Document]') AND type in (N'U'))
 BEGIN
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
@@ -94,56 +94,56 @@ END
 
 /* PA_Document > Size ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Size')
+	WHERE t.name = 'PA_Document' AND c.name = 'Size')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Document] ADD [Size] float NOT NULL DEFAULT(0);
+	ALTER TABLE [dbo].[PA_Document] ADD [Size] float NOT NULL DEFAULT(0);
 END
 
 /* PA_Document > Name ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Name')
+	WHERE t.name = 'PA_Document' AND c.name = 'Name')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Document] ADD [Name] NVARCHAR(500) NOT NULL;
+	ALTER TABLE [dbo].[PA_Document] ADD [Name] NVARCHAR(500) NOT NULL;
 END
 
 /* PA_Document > LastModifiedDate ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Document' AND c.name = 'LastModifiedDate')
+	WHERE t.name = 'PA_Document' AND c.name = 'LastModifiedDate')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Document] ADD [LastModifiedDate] DATETIME NULL;
+	ALTER TABLE [dbo].[PA_Document] ADD [LastModifiedDate] DATETIME NULL;
 END
 
 /* PA_Document > Width ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Width')
+	WHERE t.name = 'PA_Document' AND c.name = 'Width')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Document] ADD Width INT NULL;
+	ALTER TABLE [dbo].[PA_Document] ADD Width INT NULL;
 END
 
 /* PA_Document > Height ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Height')
+	WHERE t.name = 'PA_Document' AND c.name = 'Height')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Document] ADD Height INT NULL;
+	ALTER TABLE [dbo].[PA_Document] ADD Height INT NULL;
 END
 
 /* PA_Document > ThumbnailUrl ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Document' AND c.name = 'ThumbnailUrl')
+	WHERE t.name = 'PA_Document' AND c.name = 'ThumbnailUrl')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Document] ADD ThumbnailUrl NVARCHAR(1000) NULL;
+	ALTER TABLE [dbo].[PA_Document] ADD ThumbnailUrl NVARCHAR(1000) NULL;
 END
 
 /* PA_Document > Size ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Document' AND c.name = 'Size')
+	WHERE t.name = 'PA_Document' AND c.name = 'Size')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Document] ADD Size INT NOT NULL DEFAULT(0);
+	ALTER TABLE [dbo].[PA_Document] ADD Size INT NOT NULL DEFAULT(0);
 END
 
 
 /* PA_Service ****************************/
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Service]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PA_Service]') AND type in (N'U'))
 BEGIN
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
@@ -160,7 +160,7 @@ BEGIN
 	SET ANSI_NULLS OFF
 	SET QUOTED_IDENTIFIER OFF
 
-	INSERT INTO [{TablePrefix}Service] ([Name]) VALUES
+	INSERT INTO [PA_Service] ([Name]) VALUES
 		(N'Ev Temizliği'),
 		(N'Dış Cephe Cam Temizliği'),
 		(N'Villa Temizliği'),
@@ -171,14 +171,14 @@ END
 
 /* PA_Service > Color ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
-	WHERE t.name = '{TablePrefix}Service' AND c.name = 'Color')
+	WHERE t.name = 'PA_Service' AND c.name = 'Color')
 BEGIN
-	ALTER TABLE [dbo].[{TablePrefix}Service] ADD Color NVARCHAR(50) NULL ;
+	ALTER TABLE [dbo].[PA_Service] ADD Color NVARCHAR(50) NULL ;
 END
 
 
 /* PA_Customer ****************************/
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Customer]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PA_Customer]') AND type in (N'U'))
 BEGIN
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
@@ -209,7 +209,7 @@ END
 
 
 /* PA_Country ****************************/
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}Country]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PA_Country]') AND type in (N'U'))
 BEGIN
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
@@ -223,20 +223,27 @@ BEGIN
 		 [Alpha3] NVARCHAR(3) ,
 		 [UNCode] NVARCHAR(16) ,
 		 [CallingCode] NVARCHAR(8) ,
-		 [Name] NVARCHAR(50) NOT NULL
+		 [Name] NVARCHAR(50) NOT NULL,
+		 [Image] NVARCHAR(1000) NULL
 	CONSTRAINT [PK_PA_Country] PRIMARY KEY CLUSTERED ([Id] ASC)
 	WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
 	SET ANSI_NULLS OFF
 	SET QUOTED_IDENTIFIER OFF
 
-	INSERT INTO [{TablePrefix}Country] ([IsActive], [Alpha2], [Alpha3], [UNCode], [CallingCode], [Name]) VALUES 
+	INSERT INTO [PA_Country] ([IsActive], [Alpha2], [Alpha3], [UNCode], [CallingCode], [Name]) VALUES 
 		(CAST(1 AS BIT), 'TR', 'TUR', '792', '90', N'Türkiye')
 END
-	
+
+/* PA_Country > Image ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = 'PA_Country' AND c.name = 'Image')
+BEGIN
+	ALTER TABLE [dbo].[PA_Country] ADD [Image] NVARCHAR(1000) NULL;
+END	
 	
 /* PA_City ****************************/
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[{TablePrefix}City]') AND type in (N'U'))
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PA_City]') AND type in (N'U'))
 BEGIN
 	SET ANSI_NULLS ON
 	SET QUOTED_IDENTIFIER ON
@@ -254,7 +261,7 @@ BEGIN
 	SET ANSI_NULLS OFF
 	SET QUOTED_IDENTIFIER OFF
 
-	INSERT INTO [{TablePrefix}City] ([CountryId], [Code], [Name]) VALUES
+	INSERT INTO [PA_City] ([CountryId], [Code], [Name]) VALUES
 		(1, '01', N'Adana'),
 		(1, '02', N'Adıyaman'),
 		(1, '03', N'Afyon'),
@@ -336,4 +343,31 @@ BEGIN
 		(1, '79', N'Kilis'),
 		(1, '80', N'Osmaniye'),
 		(1, '81', N'Düzce')
+END
+
+/* PA_AppointmentSms ****************************/
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE UPPER(name COLLATE SQL_Latin1_General_CP1_CI_AS) = UPPER('PA_AppointmentSms' COLLATE SQL_Latin1_General_CP1_CI_AS) )
+BEGIN
+	SET ANSI_NULLS ON
+	SET QUOTED_IDENTIFIER ON
+	CREATE TABLE [PA_AppointmentSms] ( 
+		 [Id] INT NOT NULL IDENTITY(1, 1),
+		 [CreationTime] DATETIME NOT NULL DEFAULT(GETDATE()) ,
+		 [UpdateTime] DATETIME NOT NULL DEFAULT(GETDATE()) ,
+		 [AppointmentId] INT NOT NULL DEFAULT(0) ,
+		 [SmsId] INT NOT NULL DEFAULT(0)
+	CONSTRAINT [PK_PA_AppointmentSms] PRIMARY KEY CLUSTERED ([Id] ASC)
+	WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+	SET ANSI_NULLS OFF
+	SET QUOTED_IDENTIFIER OFF
+END
+
+/* PA_City - CountryCity-Unique ****************************/
+IF NOT EXISTS (SELECT object_id FROM sys.indexes WHERE name = 'PA_City-CountryCity-Unique')
+BEGIN
+	CREATE UNIQUE NONCLUSTERED INDEX [PA_City-CountryCity-Unique] ON [dbo].[PA_City] (
+		[CountryId] ASC,
+		[Code] ASC
+	) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 END
