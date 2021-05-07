@@ -620,52 +620,52 @@ namespace DNA.API.Services {
                                     jsonWriter.WritePropertyName("isDefinitionModel");
                                     jsonWriter.WriteValue(getVal("isDefinitionModel", t.IsDefinitionModel));
 
-                                    // editing
-                                    var editing = json["ScreenConfig"]["Screens"][t.Name]["editing"]?.ToObject<ScreenEditing>();
-                                    if (t.AllowEditing || editing != null) {
-                                        t.GenerateEditing(editing);
-                                        json["ScreenConfig"]["Screens"][t.Name]["editing"] = JObject.FromObject(t.Editing, jsonSetting);
-                                    }
+                                    if (screen != null) {
+                                        // editing
+                                        var editing = screen["editing"]?.ToObject<ScreenEditing>();
+                                        if (t.AllowEditing) {
+                                            t.GenerateEditing(editing);
+                                            screen["editing"] = JObject.FromObject(t.Editing, jsonSetting);
+                                        }
 
-                                    // dataDource
-                                    var dataSource = json["ScreenConfig"]["Screens"][t.Name]["dataSource"]?.ToObject<ScreenDataSource>();
-                                    if (dataSource != null) {
+                                        // dataDource
+                                        var dataSource = screen["dataSource"]?.ToObject<ScreenDataSource>();
                                         t.GenerateDataSource(dataSource);
-                                        json["ScreenConfig"]["Screens"][t.Name]["dataSource"] = JObject.FromObject(t.DataSource, jsonSetting);
-                                    }
+                                        if (t.DataSource != null)
+                                            screen["dataSource"] = JObject.FromObject(t.DataSource, jsonSetting);
 
-                                    // grid
-                                    var grid = json["ScreenConfig"]["Screens"][t.Name]["grid"]?.ToObject<Dictionary<string, object>>();
-                                    if (grid != null) {
+                                        // grid
+                                        var grid = screen["grid"]?.ToObject<Dictionary<string, object>>();
                                         t.GenerateGrid(grid);
-                                        json["ScreenConfig"]["Screens"][t.Name]["grid"] = JObject.FromObject(t.Grid, jsonSetting);
+                                        if (t.Grid != null)
+                                            screen["grid"] = JObject.FromObject(t.Grid, jsonSetting);
+
+                                        // calendar
+                                        var calendar = screen["calendar"]?.ToObject<ScreenCalendar>();
+                                        if (t.IsCalendarActive) {
+                                            t.GenerateCalendar(calendar);
+                                            if (t.Calendar != null)
+                                                screen["calendar"] = JObject.FromObject(t.Calendar, jsonSetting);
+                                        }
+
+                                        // subModels
+                                        var existingSubModels = screen["subModels"]?.ToObject<List<ScreenSubModel>>();
+                                        t.GenerateSubModels(existingSubModels, classes);
+                                        if (t.SubModels != null)
+                                            screen["subModels"] = JArray.FromObject(t.SubModels, jsonSetting);
+
+                                        // subModels
+                                        var existingSubMenus = screen["subMenus"]?.ToObject<List<ScreenSubMenu>>();
+                                        t.GenerateSubMenus(existingSubMenus, classes);
+                                        if (t.SubMenus != null)
+                                            screen["subMenus"] = JArray.FromObject(t.SubMenus, jsonSetting);
+
+                                        // columns
+                                        var existingColumns = screen["columns"]?.ToObject<List<ScreenColumn>>();
+                                        t.GenerateColumns(existingColumns, classes);
+                                        if (t.Columns != null)
+                                            screen["columns"] = JArray.FromObject(t.Columns, jsonSetting);
                                     }
-
-                                    // calendar
-                                    var calendar = json["ScreenConfig"]["Screens"][t.Name]["calendar"]?.ToObject<ScreenCalendar>();
-                                    if (t.IsCalendarActive || calendar != null) {
-                                        t.GenerateCalendar(calendar);
-                                        json["ScreenConfig"]["Screens"][t.Name]["calendar"] = JObject.FromObject(t.Calendar, jsonSetting);
-                                    }
-
-                                    // subModels
-                                    var existingSubModels = json["ScreenConfig"]["Screens"][t.Name]["subModels"]?.ToObject<List<ScreenSubModel>>();
-                                    t.GenerateSubModels(existingSubModels, classes);
-                                    if (t.SubModels != null)
-                                        json["ScreenConfig"]["Screens"][t.Name]["subModels"] = JArray.FromObject(t.SubModels, jsonSetting);
-
-                                    // subModels
-                                    var existingSubMenus = json["ScreenConfig"]["Screens"][t.Name]["subMenus"]?.ToObject<List<ScreenSubMenu>>();
-                                    t.GenerateSubMenus(existingSubMenus, classes);
-                                    if (t.SubMenus != null)
-                                        json["ScreenConfig"]["Screens"][t.Name]["subMenus"] = JArray.FromObject(t.SubMenus, jsonSetting);
-
-                                    // columns
-                                    var existingColumns = json["ScreenConfig"]["Screens"][t.Name]["columns"]?.ToObject<List<ScreenColumn>>();
-                                    t.GenerateColumns(existingColumns, classes);
-                                    if (t.Columns != null)
-                                        json["ScreenConfig"]["Screens"][t.Name]["columns"] = JArray.FromObject(t.Columns, jsonSetting);
-
                                     jsonWriter.WritePropertyName("assembly");
                                     jsonWriter.WriteValue(t.Assembly);
                                 }

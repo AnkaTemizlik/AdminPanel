@@ -18,7 +18,9 @@ const store = createStore(
 	createReducer(),
 	//preloadedState,
 	composeEnhancers(
-		applyMiddleware(thunk, createLogger())
+		applyMiddleware(thunk, createLogger({
+			predicate: () => process.env.NODE_ENV !== 'production'
+		}))
 	)
 );
 

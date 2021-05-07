@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using DNA.API.Module.Exceptions;
-using DNA.API.Module.Models;
-using DNA.API.Module.Resources;
-using DNA.API.Module.Services;
+﻿using AutoMapper;
 using DNA.Domain.Exceptions;
 using DNA.Domain.Models;
 using DNA.Domain.Models.Queries;
@@ -20,20 +11,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using S8.SmsModule.Exceptions;
+using S8.SmsModule.Models;
+using S8.SmsModule.Resources;
+using S8.SmsModule.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DNA.API.Module.Controllers {
-
+namespace S8.SmsModule.Controllers {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class ModuleController : ControllerBase {
+    public class SmsController : ControllerBase {
         private readonly IConfiguration _configuration;
-        private readonly ILogger<ModuleController> _logger;
-        private readonly IModuleService _service;
+        private readonly ILogger<SmsController> _logger;
+        private readonly ISmsService _service;
         private readonly IProcessService _processService;
         private readonly IMapper _mapper;
 
-        public ModuleController(IConfiguration configuration, ILogger<ModuleController> logger, IModuleService moduleService, IProcessService processService, IMapper mapper) {
+        public SmsController(IConfiguration configuration, ILogger<SmsController> logger, ISmsService moduleService, IProcessService processService, IMapper mapper) {
             _configuration = configuration;
             _logger = logger;
             _service = moduleService;
@@ -41,18 +40,19 @@ namespace DNA.API.Module.Controllers {
             _mapper = mapper;
         }
 
-        [HttpGet("products")]
-        [ProducesResponseType(typeof(QueryResultResponse<Product>), StatusCodes.Status200OK)]
+        [HttpPost("send/{config}")]
+        [ProducesResponseType(typeof(QueryResultResponse<Sms>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetProgramsByLicenseId([FromQuery] QueryResource queryResource) {
+        public async Task<IActionResult> SendSms(string config, [FromBody] SmsResource smsResource) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
             try {
-                var query = _mapper.Map<Query>(queryResource);
-                var queryResult = await _processService.QueryAsync<Product>(SqlQueries.SelectProducts);
-                return Ok(new QueryResultResponse<Product>(new Response(queryResult)));
+                //var query = _mapper.Map<Sms>(smsResource);
+                //var queryResult = await _processService.QueryAsync<Sms>(SqlQueries.SelectProducts);
+                await Task.CompletedTask;
+                return Ok(new Response());
             }
             catch (Exception ex) {
                 var alert = _logger.LogError(AlertCodes.GeneralError, ex);

@@ -236,7 +236,7 @@ namespace DNA.Domain.Utils {
             AddToMainConfig = addToMainConfig;
         }
 
-        public ScreenModel(string tableName, Type type, bool hasIdentityIncrement, bool addToMainConfig = false) 
+        public ScreenModel(string tableName, Type type, bool hasIdentityIncrement, bool addToMainConfig = false)
             : this(type, hasIdentityIncrement, addToMainConfig) {
             if (!string.IsNullOrWhiteSpace(tableName))
                 TableName = tableName;
@@ -330,7 +330,8 @@ namespace DNA.Domain.Utils {
                         roles = Editing.roles
                     }
                     : null;
-                Calendar.resources ??= existingCalendar.resources;
+                if (existingCalendar.resources != null)
+                    Calendar.resources = existingCalendar.resources;
             }
             else {
                 Calendar = existingCalendar;
@@ -364,7 +365,7 @@ namespace DNA.Domain.Utils {
                         SubModels.Add(subModel);
                     }
                     subModel.title ??= $"{refScreen.Name} Screen";
-                    subModel.type ??= refScreen.ViewType;
+                    subModel.type ??= refScreen.ViewType ?? "list";
                     subModel.icon ??= refScreen.Icon;
                     subModel.dxIcon ??= refScreen.DxIcon;
                     subModel.showIn ??= new string[] { "tab" };
@@ -665,7 +666,7 @@ namespace DNA.Domain.Utils {
 
         }
         public ScreenCalendarResource(Type type, string fieldExpr, string valueExpr = "Id", string displayExpr = "Name", string colorExpr = "Color") {
-            this.label = type.Name;
+            this.label = type.Name + " Resource";
             this.dataSource = new ScreenDataSource { type = "customStore", name = type.Name };
             this.fieldExpr = fieldExpr;
             this.displayExpr = displayExpr;

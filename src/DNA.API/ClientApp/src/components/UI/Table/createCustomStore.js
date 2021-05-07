@@ -4,7 +4,7 @@ import DataSource from 'devextreme/data/data_source'
 import ArrayStore from 'devextreme/data/array_store';
 import { toQueryString, isNotEmpty, addQueryFilter } from "../../../store/utils";
 
-const createCustomStore = (options, key, defaultFilter, lists) => {
+const createCustomStore = (options, key, defaultFilter, lists, onError) => {
 
 	return options.type == "simpleArray" // test amaçlı yaptım, henüz örneği yok. (editing enabled olmayanlarda kullanılabilir.)
 		? new DataSource({
@@ -40,8 +40,7 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 					params.filter = addQueryFilter(params.filter, defaultFilter)
 				}
 
-				console.warning("loadOptions", params, options, loadOptions)
-				console.info("loadOptions", params)
+				console.warning("loadOptions", options, loadOptions)
 				return options.load(toQueryString(params))
 					.then((status) => {
 						if (status.Success) {
@@ -54,13 +53,13 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 							}
 						} else {
 							console.error("ERROR from status", status)
-							options.onError && options.onError(status)
+							onError && onError(status)
 							throw status.Message
 						}
 					})
 					.catch((e) => {
 						console.error("ERROR from catch", e)
-						options.onError && options.onError(e)
+						onError && onError(e)
 						throw e
 					});
 			},
@@ -70,8 +69,8 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 					return true
 				} else {
 					console.error("DataTable insert ERROR", status)
-					options.onError && options.onError(status)
-					throw status.Message
+					onError && onError(status)
+					throw new Error(status.Message)
 				}
 			},
 			update: async (key, values) => {
@@ -80,8 +79,8 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 					return true
 				} else {
 					console.error("DataTable update ERROR", status)
-					options.onError && options.onError(status)
-					throw status.Message
+					onError && onError(status)
+					throw new Error(status.Message)
 				}
 			},
 			remove: async (key) => {
@@ -90,10 +89,11 @@ const createCustomStore = (options, key, defaultFilter, lists) => {
 					return true
 				} else {
 					console.error("DataTable remove ERROR", status)
-					options.onError && options.onError(status)
-					throw status.Message
+					onError && onError(status)
+					throw new Error(status.Message)
 				}
-			}
+			},
+			byKey: (x) => { }
 		})
 }
 
