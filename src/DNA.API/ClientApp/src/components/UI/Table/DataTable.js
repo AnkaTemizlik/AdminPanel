@@ -150,6 +150,7 @@ const DataTable = React.memo((props) => {
 
 	const imageCellRender = (data, c) => {
 		let style = { maxHeight: 42, margin: "-6px 0" }
+		console.success("imageCellRender", data, c)
 		return data.value
 			? <Avatar src={data.value} alt={data.value} style={style} />
 			: <div style={style}>

@@ -55,9 +55,9 @@ namespace DNA.API.Services {
         //Type GetEntityType(string name) => Type.GetType(_configuration[$"ScreenConfig:Screens:{name}:assembly"]) ?? Type.GetType("System.Object");
 
         public async Task<QueryResult<object>> ListAsync(EntityQuery query) {
-            if (!TryFindType(_configuration[$"ScreenConfig:Screens:{query.Name}:assembly"], out Type type))
-                type = typeof(object);
-            return await _entityRepository.QueryAsync(type, query, GetSelectQuery(query.Name), null, GetOrderBy(query.Name));
+            //if (!TryFindType(_configuration[$"ScreenConfig:Screens:{query.Name}:assembly"], out Type type))
+            //    type = typeof(object);
+            return await _entityRepository.QueryAsync(typeof(object), query, GetSelectQuery(query.Name), null, GetOrderBy(query.Name));
         }
 
         public async Task<QueryResult<T>> ListAsync<T>(EntityQuery query) {
@@ -162,7 +162,7 @@ namespace DNA.API.Services {
                         .Where(_ => _.GetCustomAttribute<Dapper.Contrib.Extensions.KeyAttribute>() == null)
                         .Where(_ => _.GetCustomAttribute<Dapper.Contrib.Extensions.ComputedAttribute>() == null)
                         .Select(_ => _.Name);
-                    var data = ((IDictionary<String, object>)obj).Keys.Where(_=> allKeys.Contains(_));
+                    var data = ((IDictionary<string, object>)obj).Keys.Where(_=> allKeys.Contains(_));
                     sql = sql.Replace("{Fields}", string.Join(",", data.Select(name => $"[{name}] = @{name}")));
                     if (sql.Contains("{InsertingFields}"))
                         sql = sql.Replace("{InsertingFields}", string.Join(",", data.Select(name => $"[{name}]")));

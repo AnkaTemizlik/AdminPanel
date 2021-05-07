@@ -302,6 +302,23 @@ namespace DNA.Domain.Models {
             base.Add(name, value);
             return this;
         }
+        public ConfigProperty AddAutoComplete<T>(string name, string value) {
+            FieldTemplates.Add(name, _config.Editing.AutoComplete(typeof(T).Name));
+            base.Add(name, value);
+            return this;
+        }
+
+        public ConfigProperty AddAutoComplete<T1, T2>(string name, string value) {
+            FieldTemplates.Add(name, _config.Editing.AutoComplete(null, null, typeof(T1).Name, typeof(T2).Name));
+            base.Add(name, value);
+            return this;
+        }
+
+        public ConfigProperty AddAutoComplete<T1, T2, T3>(string name, string value) {
+            FieldTemplates.Add(name, _config.Editing.AutoComplete(null, null, typeof(T1).Name, typeof(T2).Name, typeof(T3).Name));
+            base.Add(name, value);
+            return this;
+        }
 
         public ConfigProperty AddTextArray(string name, bool? restartRequired = false, params string[] values) {
             FieldTemplates.Add(name, _config.Editing.TextArray(null, restartRequired));

@@ -3,11 +3,13 @@ import { createSlice, createAsyncThunk, createSelector, current } from '@reduxjs
 import { appendMenusFromScreens, resetPanelMenu, addTokenToHangfireMenu } from './menuSlice'
 import { applyAppSettings } from './appsettingsSlice'
 import { showMessage } from './alertsSlice'
-
 import api from '../api'
 import i18next from 'i18next'
 import CustomStore from 'devextreme/data/custom_store';
+import DataSource from "devextreme/data/data_source";
 import { isNotEmpty, rolesAllowed, toQueryString } from '../utils';
+import { ApiURL } from '../axios';
+import { createStore as CreateStore } from 'devextreme-aspnet-data-nojquery';
 
 export const applyGlobalSettings = createAsyncThunk(
 	'panel/settings/applyGlobalSettings',
@@ -117,9 +119,9 @@ const configureColumns = (name, columns, config) => {
 		else
 			col.caption = i18next.t(col.title || `${col.name}`)
 
+		col.editorOptions = {}
 		col.dataField = col.name
 		col.hidden = col.hidden == true ? true : i > 14
-
 		col.editorType = "dxTextBox"
 
 		// 'string' | 'number' | 'date' | 'boolean' | 'object' | 'datetime'
@@ -133,9 +135,7 @@ const configureColumns = (name, columns, config) => {
 				col.format = formatData.format[i18next.language] ?? formatData.format.tr
 			col.dataType = "date"
 			if (col.withTimeEdit)
-				col.editorOptions = {
-					type: "datetime"
-				}
+				col.editorOptions.type = "datetime"
 			col.editorType = "dxDateBox"
 		}
 		else if (col.type == "check" || col.type == "boolean" || col.type == "bool") {
@@ -163,22 +163,23 @@ const configureColumns = (name, columns, config) => {
 		else if (col.type == "textArea") {
 			col.editorType = "dxTextArea"
 			col.dataType = "string"
-			col.editorOptions = {
-				autoResizeEnabled: true
-			}
+			col.editorOptions.autoResizeEnabled = true
 		}
 		else if (col.type == "color") {
 			col.editorType = "dxColorBox"
-			col.editorOptions = {
-				applyValueMode: "instantly"
-			}
+			col.editorOptions.applyValueMode = "instantly"
 		}
 		// else if (col.type == "image") {
 		// 	col.editorType = "dxColorBox"
 		// }
-		else
+		else {
 			col.dataType = "string"
+		}
 
+		if (col.stringLength > 0) {
+			//console.log("stringLength", col)
+			col.editorOptions.maxLength = col.stringLength
+		}
 		// LOOKUP kolon set et
 		if (col.autoComplete) {
 			// sabit bir liste (enum vb)
@@ -278,23 +279,41 @@ const createFullDataSource = (ds, n) => {
 	}
 }
 
-const createSelectDataSource = (ds, n) => {
-	return {
+const createStore = (ds, key) => {
+	let n = ds.name
+	let loadUrl = ApiURL.origin + (
+		ds.load
+			? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${'name=' + (ds.name || n)}`)
+			: `/api/entity?${'name=' + (ds.name || n)}`
+	)
+	console.success("createStore ", loadUrl)
+	return CreateStore({
+		key: key,
+		loadUrl: loadUrl,
+		//byKey: (key) => ApiURL.origin + (ds.byKey ? (`${ds.byKey}/${key}`) : `/api/entity/${n}/${key}`),
+		// insert: (values) => api.execute("POST", (ds.insert ? `${ds.insert}` : `/api/entity/${n}`), values),
+		// update: (key, values) => api.execute("PUT", (ds.update ? `${ds.update}/${key}` : `/api/entity/${n}/${key}`), values),
+		// delete: (key) => api.execute("DELETE", (ds.delete ? `${ds.delete}/${key}` : `/api/entity/${n}/${key}`)),
+	})
+}
+
+const createDataSource = (ds, n) => {
+	return new DataSource({
 		...ds,
-		load: (qs) => {
+		load: () => {
 			let url = ds.load
-				? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${qs || 'name=' + (ds.name || n)}`)
-				: `/api/entity?${qs || 'name=' + (ds.name || n)}`
-			console.purple("createSelectDataSource", url, ds, qs)
+				? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${'name=' + (ds.name || n)}`)
+				: `/api/entity?${'name=' + (ds.name || n)}`
+			console.purple("createSelectDataSource", url, ds)
 			return api.execute("GET", url)
 		},
 		byKey: (id) => {
-			return api.execute("GET", `/api/entity/${ds.name || n}/${id}`)
+			//return api.execute("GET", `/api/entity/${ds.name || n}/${id}`)
 		},
 		params: {
 			name: ds.name || n
 		}
-	}
+	})
 }
 
 const screenConfigSlice = createSlice({
@@ -336,11 +355,12 @@ const screenConfigSlice = createSlice({
 
 					s.dataSource = createFullDataSource(ds, n)
 
-					// Calendar Resources
+					//Calendar Resources
 					if (s.calendar) {
 						s.calendar.dataSource = createFullDataSource(s.calendar.dataSource, n)
 						s.calendar.resources && s.calendar.resources.map(r => {
-							r.dataSource = createSelectDataSource(r.dataSource)
+							r.label = i18next.t(r.label)
+							//r.dataSource = createDataSource(r.dataSource, r.dataSource.name)
 						})
 					}
 

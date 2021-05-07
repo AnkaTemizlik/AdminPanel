@@ -35,19 +35,19 @@ const createTheme = (Plugin) => {
 	LoadableDxTheme.preload();
 
 	let primary = '#318CE7'
-	let secondary = '#005376'
+	let secondary = '#fb8500'
 
 	if (ThemeName == "dark-blue") {
 		primary = '#005376'
-		secondary = '#19851f'
+		secondary = '#fb8500'
 	}
 	else if (ThemeName == "red") {
 		primary = '#8b0000'
-		secondary = '#005376'
+		secondary = '#fb8500'
 	}
 	else if (ThemeName == "green") {
 		primary = '#19851f'
-		secondary = '#005376'
+		secondary = '#fb8500'
 	}
 	else if (ThemeName == "orange") {
 		primary = '#D2691E'
