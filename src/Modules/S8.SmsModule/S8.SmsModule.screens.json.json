@@ -1,0 +1,36 @@
+{
+  "ScreenConfig": {
+    "Names": [
+
+    ],
+    "Lists": {
+
+    },
+    "Screens": {
+
+    },
+    "Cards": {
+      "Names": [
+        "LogSummary"
+      ],
+      "LogSummary": {
+        "title": "Log Summary",
+        "argumentField": "Day",
+        "noDataText": "No Data",
+        "series": [
+          {
+            "type": "bar",
+            "title": "Errors",
+            "valueField": "Count"
+          }
+        ]
+      }
+    },
+    "Queries": {
+
+    },
+    "CardQueries": {
+      "LogSummary": "SELECT CONVERT(VARCHAR, Logged, 104) AS [Day], COUNT(0) AS [Count], DAY(Logged) AS [Max] FROM dbo.DNA_NLOG l WHERE l.Logged > GETDATE() - 10 AND l.[Level] != 'Info' GROUP BY CONVERT(VARCHAR, Logged, 104), DAY(Logged)"
+    }
+  }
+}
