@@ -37,7 +37,7 @@ const Settings = (props) => {
 	}, [error, snack]);
 
 	useEffect(() => {
-		selectedSection && dispatch(changeSection(selectedSection.name));
+		selectedSection ? dispatch(changeSection(selectedSection.name)) : dispatch(changeSection(null));
 	}, [dispatch, selectedSection]);
 
 	return (
@@ -84,7 +84,10 @@ const Settings = (props) => {
 											<Icon>menu</Icon>
 										</IconButton>
 										<IconButton
-											onClick={() => dispatch(saveAppSettings())}
+											onClick={() => {
+												dispatch(saveAppSettings())
+												setSelectedSection(null)
+											}}
 											disabled={changeCount == 0 || loading}>
 											<Badge color="secondary" badgeContent={changeCount}>
 												<SaveIcon />

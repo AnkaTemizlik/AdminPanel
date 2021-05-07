@@ -20,6 +20,7 @@
 		"classnames": "^2.3.1",
 		"clsx": "^1.1.1",
 		"devextreme": "^20.2.4",
+		"devextreme-aspnet-data-nojquery": "^2.8.3",
 		"devextreme-react": "^20.2.3",
 		"humps": "^2.0.1",
 		"i18next": "^20.2.1",

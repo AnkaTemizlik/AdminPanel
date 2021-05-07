@@ -12,10 +12,9 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Box } from '@material-ui/core';
-
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -59,6 +58,7 @@ const useStyles = makeStyles(theme => ({
 
 
 const SnackMessage = React.forwardRef((props, ref) => {
+	const { t } = useTranslation()
 	const classes = useStyles();
 	const { closeSnackbar } = useSnackbar();
 	const [expanded, setExpanded] = useState(false);
@@ -103,7 +103,7 @@ const SnackMessage = React.forwardRef((props, ref) => {
 				{/* <AlertTitle>{message}</AlertTitle> */}
 				{data.Comment
 					? <>
-						<AlertTitle>{data.Message}</AlertTitle>
+						<AlertTitle>{t(data.Message)}</AlertTitle>
 						<Typography variant="subtitle2">{data.Comment}</Typography>
 						{data.Details &&
 							<Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -113,7 +113,7 @@ const SnackMessage = React.forwardRef((props, ref) => {
 							</Collapse>
 						}
 					</>
-					: <Typography variant="subtitle2">{data.Message || data.Resource}</Typography>
+					: <Typography variant="subtitle2">{t(data.Message || data.Resource)}</Typography>
 				}
 			</Alert>
 		</SnackbarContent>

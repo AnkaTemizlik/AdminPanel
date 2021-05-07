@@ -1,0 +1,39 @@
+﻿{
+  "ProviderId": "Microsoft.VisualStudio.ConnectedService.Wcf",
+  "Version": "15.0.40203.910",
+  "GettingStartedDocument": {
+    "Uri": "https://go.microsoft.com/fwlink/?linkid=858517"
+  },
+  "ExtendedData": {
+    "inputs": [
+      "../../../../../../VatanSMS/service.xml"
+    ],
+    "collectionTypes": [
+      "System.Collections.Generic.Dictionary`2",
+      "System.Collections.Generic.List`1"
+    ],
+    "internalTypeAccess": true,
+    "namespaceMappings": [
+      "*, OztekSmsWebService"
+    ],
+    "references": [
+      "AutoMapper, {AutoMapper, 10.1.1}",
+      "Dapper, {Dapper, 2.0.78}",
+      "Dapper.Contrib, {Dapper.Contrib, 2.0.78}",
+      "Microsoft.AspNetCore.Http.Abstractions, {Microsoft.AspNetCore.Http.Abstractions, 2.2.0}",
+      "Microsoft.AspNetCore.Http.Features, {Microsoft.AspNetCore.Http.Features, 2.2.0}",
+      "Microsoft.Extensions.Configuration.Abstractions, {Microsoft.Extensions.Configuration.Abstractions, 3.1.11}",
+      "Microsoft.Extensions.DependencyInjection.Abstractions, {Microsoft.Extensions.DependencyInjection.Abstractions, 3.1.11}",
+      "Microsoft.Extensions.Logging.Abstractions, {Microsoft.Extensions.Logging.Abstractions, 3.1.11}",
+      "Microsoft.Extensions.Options, {Microsoft.Extensions.Options, 3.1.11}",
+      "Microsoft.Extensions.Primitives, {Microsoft.Extensions.Primitives, 3.1.11}",
+      "Newtonsoft.Json, {Newtonsoft.Json, 13.0.1}",
+      "NLog, {NLog, 4.7.9}",
+      "System.Data.SqlClient, {System.Data.SqlClient, 4.8.2}",
+      "System.Text.Encodings.Web, {System.Text.Encodings.Web, 4.5.0}"
+    ],
+    "sync": true,
+    "targetFramework": "netcoreapp3.1",
+    "typeReuseMode": "All"
+  }
+}

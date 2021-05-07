@@ -61,6 +61,7 @@ const execute = (request) => {
 	return request
 		.then((response) => {
 			const status = check(response);
+			console.success("[API]", request.config, response);
 			if (!status.Success)
 				console.error("[API].error", status);
 			return Promise.resolve(status);
@@ -75,10 +76,11 @@ const execute = (request) => {
 const execute2 = async (request) => {
 	try {
 		var response = await request
+		console.success("[API]2", request.config, response);
 		const status = check(response);
 		return status
 	} catch (error) {
-		console.error("[API].error 2", error.response, error.message);
+		console.error("[API]2.error", error.response, error.message);
 		const status = check(error.response, error.message);
 		return status
 	}
@@ -239,7 +241,6 @@ const getNotifications = (query) => {
 };
 /** SCREEN ACTIONS */
 const run = (method, url, params) => {
-	console.info("getEntities run", method, url, params)
 	if (method == "GET") return execute(axios.get(url));
 	else if (method == "DELETE") return execute(axios.delete(url, params));
 	else if (method == "POST") return execute(axios.post(url, params));

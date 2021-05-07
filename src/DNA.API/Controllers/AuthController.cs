@@ -187,7 +187,7 @@ namespace DNA.API.Controllers {
 
             var user = await _userService.RecoveryAsync(resource.Email);
             if (user == null)
-                return BadRequest(Errors.AddErrorToModelState("password_recovery_failure", "İşlem tamamlanmadı.", ModelState));
+                return BadRequest(Errors.AddErrorToModelState("user_not_found", "Böyle bir kullanıcı sistemde kayıtlı değil.", ModelState));
 
             _valuerService.SetCurrentModel(user);
 

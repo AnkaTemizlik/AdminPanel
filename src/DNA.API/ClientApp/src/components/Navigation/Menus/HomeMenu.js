@@ -23,6 +23,10 @@ const HomeMenu = ({ menu, isAuthenticated }) => {
 	const classes = useStyles();
 
 	return menu.menus.map((m, index) => {
+
+		if (m.visible == false)
+			return null
+
 		if (m.isDivider) {
 			return <Divider key={index} orientation="vertical" flexItem className={classes.divider} />
 		}

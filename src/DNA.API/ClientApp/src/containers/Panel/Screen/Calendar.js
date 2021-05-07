@@ -3,11 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory, useParams, useRouteMatch, useLocation, Link } from "react-router-dom";
 import { Box, Grid, Icon, IconButton, Paper, Toolbar, Tooltip } from "@material-ui/core";
 import { useTranslation } from "../../../store/i18next";
+import { ApiURL } from "../../../store/axios";
 import { selectScreen, getById } from './store/screenSlice'
 import Scheduler, { Resource } from 'devextreme-react/scheduler';
 import createCustomStore from "../../../components/UI/Table/createCustomStore";
 import CustomStore from "devextreme/data/custom_store";
 import DataSource from "devextreme/data/data_source";
+import notify from "devextreme/ui/notify";
+import api from '../../../store/api'
+
 // import api from "../../../store/api";
 
 const views = ["day", "week", "month", "agenda"];
@@ -24,38 +28,43 @@ const CalendarWrapper = (props) => {
 	const [store, setStore] = useState(null)
 
 	//console.warning("CalendarView", calendar, data)
-
+	const onError = (e) => {
+		notify(typeof e == "string" ? e : e.Message, "error", 5000)
+	}
 	useEffect(() => {
 		setStore(() => {
-			return Array.isArray(currentScreen.dataSource)
-				? currentScreen.dataSource
-				: createCustomStore(currentScreen.dataSource, currentScreen.keyFieldName, null, null)
+			if (Array.isArray(currentScreen.dataSource))
+				return currentScreen.dataSource
+			else {
+				return createCustomStore(currentScreen.dataSource, currentScreen.keyFieldName, null, null, onError)
+			}
 		})
 	}, [currentScreen.dataSource, currentScreen.keyFieldName])
 
 	useEffect(() => {
-		setLoading(true)
 		if (name && currentScreen) {
 			if (currentScreen.calendar) {
 				var resourcesCopy = currentScreen.calendar.resources.map(r => { return { ...r } })
-				resourcesCopy.map((r, i) => {
-					let ds = Array.isArray(r.dataSource)
-						? r.dataSource
-						: new DataSource({ store: createCustomStore(r.dataSource, r.valueExpr), paginate: false })
-					r.dataSource = ds
-					console.success("CalendarView resourcesCopy", r)
+				resourcesCopy.map(async (r, i) => {
+					let ds = r.dataSource
+					if (!Array.isArray(r.dataSource)) {
+						let loadUrl = ds && ds.load
+							? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${'name=' + (ds.name)}`)
+							: `/api/entity?${'name=' + (ds.name)}`
+						let status = await api.execute("GET", loadUrl)
+						r.dataSource = status.Resource.Items
+					}
 				})
 				setResources(resourcesCopy)
 			}
 		}
-		setLoading(false)
 	}, [currentScreen, name])
 
 	return <>
 		<Grid container spacing={2} alignItems="stretch">
-			<Grid item xs={12} lg={10} xg={8}>
+			<Grid item xs={12}>
 				<Box pl={1} pr={1}>
-					{(!loading && currentScreen.calendar && resources)
+					{(!loading && currentScreen.calendar)
 						? <CalendarView
 							name={name}
 							keyFieldName={currentScreen.keyFieldName}
@@ -76,37 +85,19 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, res
 	const schedulerRef = React.useRef(null)
 
 	const onAppointmentAdding = (e) => {
-		// e.appointmentData
-		console.info("CalendarView onAppointmentAdding", e)
 		return e;
 	}
 
 	const onAppointmentDeleting = (e) => {
 		// e.appointmentData
-		console.info("CalendarView onAppointmentDeleting", e)
 		return e;
 	}
 
 	const onAppointmentUpdating = async (e) => {
-		// e.newData, e.oldData
-		// let data = { ...e.newData }
-		// let id = data[keyFieldName]
-		// delete data[keyFieldName]
-		// delete data.CreationTime
-		// delete data.UpdateTime
-		// delete data.UpdatedBy
-		// delete data.CreatedBy
-		// console.info("CalendarView onAppointmentUpdating", data, e)
-		// var status = await dataSource.update(id, data)
-		// console.success("CalendarView", status)
-		//setData(status.Resource)
 		return e;
 	}
 
 	const onAppointmentUpdated = (e) => {
-		// row: e.appointmentData
-		console.purple("CalendarView onAppointmentUpdated", e)
-
 		return e;
 	}
 
@@ -132,6 +123,20 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, res
 		// onAppointmentDeleting={onAppointmentDeleting}
 		// onAppointmentUpdating={onAppointmentUpdating}
 		// onAppointmentUpdated={onAppointmentUpdated}
+		onAppointmentFormOpening={(e) => {
+			const form = e.form;
+			let mainGroupItems = form.itemOption('mainGroup').items;
+			if (!mainGroupItems.find(function (i) { return i.dataField === "Note" })) {
+				mainGroupItems.push({
+					colSpan: 2,
+					label: { text: "Note" },
+					editorType: "dxTextBox",
+					dataField: "Note"
+				});
+			}
+			mainGroupItems[2].items.splice(1, 1)
+			form.itemOption('mainGroup', 'items', mainGroupItems);
+		}}
 		resources={resources}
 	>
 	</Scheduler>

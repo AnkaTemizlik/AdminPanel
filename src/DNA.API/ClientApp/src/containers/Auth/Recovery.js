@@ -14,7 +14,7 @@ const Recovery = ({ loading, error, onRecovery, resetError, history }) => {
 	let { t } = useTranslation();
 	const [email, setEmail] = React.useState(null)
 	const [isEmailValid, setIsEmailValid] = React.useState(true)
-	const [recaptcha, setRecaptcha] = React.useState(development ? true : null)
+	const [recaptcha, setRecaptcha] = React.useState(true) //React.useState(development ? true : null)
 
 	const handleRegister = event => {
 		event.preventDefault();
