@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { useTranslation } from '../../../store/i18next'
 import { ExpandLess, ExpandMore } from '@material-ui/icons'
 import { rolesAllowed } from '../../../store/utils';
+import Iconify from '../Icons/Iconify';
 
 const useStyles = makeStyles((theme) => ({
 	item: {
@@ -103,7 +104,10 @@ const Menu = ({ setOpened, menu, to, isAuthenticated, t, level, roles }) => {
 					activeClassName={classes.selectedSub}
 				>
 					{menu.icon
-						? <ListItemIcon><Icon>{menu.icon}</Icon></ListItemIcon>
+						? <ListItemIcon>
+							<Iconify icon={menu.icon} />
+						</ListItemIcon>
+						//? <ListItemIcon><Icon>{menu.icon}</Icon></ListItemIcon>
 						: null}
 					<ListItemText id={menu.label + to} primary={t(`${menu.label}`)} />
 					<ListItemSecondaryAction>
@@ -127,7 +131,7 @@ const Menu = ({ setOpened, menu, to, isAuthenticated, t, level, roles }) => {
 
 const Item = ({ setOpened, m, to, t, level }) => {
 	const classes = useStyles();
-	return <ListItem button style={{ paddingLeft: 24 }}
+	return <ListItem button style={{ paddingLeft: level > 1 ? 36 : 24 }}
 		onClick={() => { setOpened(false) }}
 		component={NavLink}
 		to={to + m.to}
@@ -135,7 +139,7 @@ const Item = ({ setOpened, m, to, t, level }) => {
 		activeClassName={classes.selected}>
 		{m.icon
 			? <ListItemIcon>
-				<Icon>{m.icon}</Icon>
+				<Iconify icon={m.icon} />
 			</ListItemIcon>
 			: null}
 		<ListItemText primaryTypographyProps={{

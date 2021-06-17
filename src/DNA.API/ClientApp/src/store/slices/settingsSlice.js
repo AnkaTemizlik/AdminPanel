@@ -7,9 +7,8 @@ import api from '../api'
 import i18next from 'i18next'
 import CustomStore from 'devextreme/data/custom_store';
 import DataSource from "devextreme/data/data_source";
-import { isNotEmpty, rolesAllowed, toQueryString } from '../utils';
+import { isNotEmpty, rolesAllowed, supplant, toQueryString } from '../utils';
 import { ApiURL } from '../axios';
-import { createStore as CreateStore } from 'devextreme-aspnet-data-nojquery';
 
 export const applyGlobalSettings = createAsyncThunk(
 	'panel/settings/applyGlobalSettings',
@@ -31,17 +30,17 @@ export const getSettings = createAsyncThunk(
 	'panel/settings/getSettings',
 	async (params, { dispatch, getState }) => {
 		const status = await api.auth.getSettings()
-		console.info("getSettings", status)
 		dispatch(setSettings(status))
 		if (status.Success) {
 			let resource = { ...status.Resource }
+			console.purple("getSettings resource.configs", resource.configs)
 			dispatch(applyAppSettings(resource.configs))
 			dispatch(resetPanelMenu())
 			const state = getState();
-			dispatch(addTokenToHangfireMenu({ token: state.auth.token }))
+			dispatch(addTokenToHangfireMenu({ token: state.auth2.token }))
 			dispatch(appendMenusFromScreens({
 				screenConfig: resource.screenConfig,
-				user: state.auth.user
+				user: state.auth2.user
 			}))
 			// dispatch(appendMenusFromConfig({
 			// 	configs: resource.configs,
@@ -49,7 +48,7 @@ export const getSettings = createAsyncThunk(
 			// }))
 			dispatch(getScreenConfig({
 				screenConfig: resource.screenConfig,
-				roles: state.auth.user.Roles
+				roles: state.auth2.user.Roles
 			}))
 		}
 		else
@@ -89,9 +88,10 @@ const settingsSlice = createSlice({
 const createColumnCustomStore = (col, url, o) => {
 	var cs = new CustomStore({
 		key: col.data.key || "Id",
-		loadMode: col.data.loadMode || 'processed',
+		//loadMode: col.data.loadMode || 'processed',
 		cacheRawData: isNotEmpty(col.data.cacheRawData) ? col.data.cacheRawData == true : false,
 		load: (loadOptions) => {
+			console.purple("createColumnCustomStore load", loadOptions)
 			let filter = (o && o.data && col.data.filter) ? [col.data.filter[0], col.data.filter[1], _.get(o.data, col.data.filter[2])] : null
 			let path = filter ? toQueryString({ filter: filter }, url) : url;
 			return api.execute("GET", path).then(status => {
@@ -102,7 +102,11 @@ const createColumnCustomStore = (col, url, o) => {
 			return []
 		}
 	})
-	return cs
+	return new DataSource({
+		store: cs,
+		paginate: true,
+		pageSize: 10
+	})
 }
 
 const configureColumns = (name, columns, config) => {
@@ -120,6 +124,8 @@ const configureColumns = (name, columns, config) => {
 			col.caption = i18next.t(col.title || `${col.name}`)
 
 		col.editorOptions = {}
+		col.editorOptions.showClearButton = col.showClearButton
+
 		col.dataField = col.name
 		col.hidden = col.hidden == true ? true : i > 14
 		col.editorType = "dxTextBox"
@@ -137,6 +143,7 @@ const configureColumns = (name, columns, config) => {
 			if (col.withTimeEdit)
 				col.editorOptions.type = "datetime"
 			col.editorType = "dxDateBox"
+			col.editorOptions.dateSerializationFormat = col.dateSerializationFormat || "yyyy-MM-ddTHH:mm:ss"
 		}
 		else if (col.type == "check" || col.type == "boolean" || col.type == "bool") {
 			col.dataType = "boolean"
@@ -178,8 +185,9 @@ const configureColumns = (name, columns, config) => {
 
 		if (col.stringLength > 0) {
 			//console.log("stringLength", col)
-			col.editorOptions.maxLength = col.stringLength
+			col.editorOptions = { ...col.editorOptions, maxLength: col.stringLength }
 		}
+
 		// LOOKUP kolon set et
 		if (col.autoComplete) {
 			// sabit bir liste (enum vb)
@@ -194,6 +202,23 @@ const configureColumns = (name, columns, config) => {
 		else if (col.data) {
 			col.data.valueExpr = col.data.valueExpr || "Id"
 			col.data.displayExpr = col.data.displayExpr || "Name"
+			let displayExpr = _.clone(col.data.displayExpr)
+			col.getFilter = (searchValue) => {
+				if (searchValue) {
+					let f = []
+					if (Array.isArray(displayExpr)) {
+						displayExpr.map((d, i) => {
+							f.push([d, "contains", searchValue])
+							if (i != displayExpr.length - 1)
+								f.push("or")
+						})
+					}
+					else {
+						f = [displayExpr, "contains", searchValue]
+					}
+					return f
+				}
+			}
 
 			// ön tanımlı listeler ile doldur
 			if (col.data.type == "simpleArray") {
@@ -232,9 +257,10 @@ const configureColumns = (name, columns, config) => {
 			}
 			// api'den kolon verisi yükler (henüz örneği yok, simpleArray ile çözüldü)
 			else if (col.data.type == "customStore") {
-				col.editorType = "dxSelectBox"
+
 				col.data.url = col.data.url || '/api/entity?name=' + col.data.name
-				if (col.data.filter) {
+				if (col.data && col.data.filter) {
+					col.editorType = "dxSelectBox"
 					col.customStore = (o) => createColumnCustomStore(col, col.data.url, o)
 					// diğer kolon değeri değiştiğinde bu kolon değerini boşalt
 					let cascadeColumn = columns.find(e => e.name == col.data.filter[2])
@@ -247,21 +273,50 @@ const configureColumns = (name, columns, config) => {
 					}
 				}
 				else {
+					col.editorType = "dxLookup"
 					col.customStore = new CustomStore({
 						key: col.data.key || "Id",
 						loadMode: col.data.loadMode || 'raw',
-						cacheRawData: isNotEmpty(col.data.cacheRawData) ? col.data.cacheRawData == true : false,
-						load: () => api.execute("GET", col.data.url).then(status => status.Success ? status.Resource.Items : [])
+						cacheRawData: isNotEmpty(col.data.cacheRawData) ? col.data.cacheRawData == true : true,
+						load: (loadOptions) => {
+							//console.purple("col customStore load", loadOptions)
+							let url = col.data.url;
+							if (loadOptions && loadOptions.take) {
+								let params = {
+									page: loadOptions.skip / loadOptions.take,
+									take: loadOptions.take,
+									requireTotalCount: false,
+								}
+								let filter = col.getFilter(loadOptions.searchValue)
+								if (filter) params.filter = filter
+								url = toQueryString(params, url)
+							}
+							//console.purple("col customStore load", loadOptions, col, params)
+							return api.execute("GET", url)
+								.then(status => {
+									return status.Success ? status.Resource.Items : []
+								})
+						},
+						byKey: (k) => {
+							//console.purple("col customStore byKey", k)
+							return api.execute("GET", "api/entity/" + col.data.name + "/" + k)
+								.then(status => {
+									return status.Success ? status.Resource : null
+								})
+						}
 					})
 				}
 			}
 
-			// display için birden fazla kolon kullanımı
-			let colNames = _.clone(col.data.displayExpr)
-			if (Array.isArray(colNames)) {
-				col.data.displayExpr = (r) => colNames.map(f => isNotEmpty(r[f]) ? r[f] : f).join('')
+			//displayExpr
+			if (Array.isArray(displayExpr)) {
+				col.data.displayExpr = (r) => {
+					return r ? displayExpr.map(f => isNotEmpty(r[f]) ? r[f] : f).join('') : ''
+				}
 			}
+
 		}
+
 	})
 }
 
@@ -277,24 +332,6 @@ const createFullDataSource = (ds, n) => {
 			name: n
 		},
 	}
-}
-
-const createStore = (ds, key) => {
-	let n = ds.name
-	let loadUrl = ApiURL.origin + (
-		ds.load
-			? (`${ds.load}${ds.load.indexOf('?') > -1 ? '&' : '?'}${'name=' + (ds.name || n)}`)
-			: `/api/entity?${'name=' + (ds.name || n)}`
-	)
-	console.success("createStore ", loadUrl)
-	return CreateStore({
-		key: key,
-		loadUrl: loadUrl,
-		//byKey: (key) => ApiURL.origin + (ds.byKey ? (`${ds.byKey}/${key}`) : `/api/entity/${n}/${key}`),
-		// insert: (values) => api.execute("POST", (ds.insert ? `${ds.insert}` : `/api/entity/${n}`), values),
-		// update: (key, values) => api.execute("PUT", (ds.update ? `${ds.update}/${key}` : `/api/entity/${n}/${key}`), values),
-		// delete: (key) => api.execute("DELETE", (ds.delete ? `${ds.delete}/${key}` : `/api/entity/${n}/${key}`)),
-	})
 }
 
 const createDataSource = (ds, n) => {
@@ -340,6 +377,8 @@ const screenConfigSlice = createSlice({
 
 				config.names.map((n) => {
 					var s = config.screens[n];
+					if (!isNotEmpty(s.newRowDefaultValues))
+						s.newRowDefaultValues = {}
 
 					//data source
 					let ds = s.dataSource || {};
@@ -355,15 +394,6 @@ const screenConfigSlice = createSlice({
 
 					s.dataSource = createFullDataSource(ds, n)
 
-					//Calendar Resources
-					if (s.calendar) {
-						s.calendar.dataSource = createFullDataSource(s.calendar.dataSource, n)
-						s.calendar.resources && s.calendar.resources.map(r => {
-							r.label = i18next.t(r.label)
-							//r.dataSource = createDataSource(r.dataSource, r.dataSource.name)
-						})
-					}
-
 					// columns order
 					s.columns = _
 						.orderBy(s.columns, ['index'], ['asc'])
@@ -375,9 +405,28 @@ const screenConfigSlice = createSlice({
 						if (c.editWith && c.editWith.type == "table") {
 							configureColumns(c.data.name, c.editWith.columns, config)
 							c.editWith.columns = _.orderBy(c.editWith.columns, ['index'], ['asc'])
-							console.log("configureColumns", c.editWith.columns)
+							//console.log("configureColumns", c.editWith.columns)
+						}
+						if (isNotEmpty(c.defaultValue)) {
+							// eslint-disable-next-line no-eval
+							s.newRowDefaultValues[c.name] = eval(c.defaultValue)
 						}
 					})
+
+					//Calendar Resources
+					if (s.calendar) {
+						s.calendar.dataSource = createFullDataSource(s.calendar.dataSource, n)
+						s.calendar.resources && s.calendar.resources.map(r => {
+							r.label = i18next.t(r.label)
+							var resourceColumn = s.columns.find(c => c.name == r.fieldExpr)
+							if (resourceColumn) {
+								console.info("resourceColumn", resourceColumn)
+								r.dataSource = new DataSource({
+									store: resourceColumn.customStore || resourceColumn.dataSource || resourceColumn.lookup.dataSource
+								})
+							}
+						})
+					}
 
 				});
 				config.names.map((n) => {

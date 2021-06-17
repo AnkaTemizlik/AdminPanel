@@ -12,5 +12,6 @@ namespace Dapper.Contrib.Extensions {
         public bool Hidden { get; set; }
         public bool Color { get; set; }
         public bool Image { get; set; }
+        public string Currency { get; set; }
     }
 }

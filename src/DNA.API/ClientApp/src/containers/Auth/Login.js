@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { connect, useSelector } from 'react-redux'
+import { connect, useSelector, useDispatch } from 'react-redux'
 import { Link as RouteLink, useHistory, useLocation } from "react-router-dom";
 import { Grid, Button, Link, Box, FormControlLabel, Switch } from "@material-ui/core";
 // import ReCAPTCHA from "react-google-recaptcha";
 import * as actions from '../../store/actions'
 import withSnack from '../../store/snack'
+import { login } from '../../store/slices/authSlice'
 import { useTranslation, Tr, Trans } from '../../store/i18next'
 import FormWrapper from '../../components/UI/FormContainer';
 import TextField from '../../components/UI/TextField';
@@ -15,14 +16,17 @@ const development = (process.env && process.env.NODE_ENV === "development")
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
 }
+
 const Login = (props) => {
-	const { loading, isAuthenticated, error } = props
+	const { loading } = props
 	const { snack } = props
 	const { AppId, Plugin } = useSelector((state) => state.settings)
+	const { isAuthenticated, token, user, expirationDate, error } = useSelector((state) => state.auth2)
 	let history = useHistory();
 	let location = useLocation();
 	let query = useQuery();
 	let { t } = useTranslation();
+	let dispatch = useDispatch();
 
 	//console.write("[Login].from", query.get("redirect"), location.state)
 
@@ -32,8 +36,9 @@ const Login = (props) => {
 	useEffect(() => {
 		if (isAuthenticated) {
 			history.replace(from);
+			props.onAuth(user, token, expirationDate)
 		}
-	})
+	}, [expirationDate, from, history, isAuthenticated, props, token, user])
 
 	// useEffect(() => {
 	//     if (from.pathname !== '/') {
@@ -56,13 +61,15 @@ const Login = (props) => {
 
 	const loginHandler = (event) => {
 		event.preventDefault();
-		props.onAuth(values.email, values.password, AppId).then((response) => {
-			if (response.Success) {
-				if (response.Resource.IsInitialPassword) {
-					history.replace("/auth/changePassword/" + response.Resource.PasswordConfirmationCode);
-				}
-			}
-		})
+		dispatch(login({ username: values.email, password: values.password, key: AppId }))
+		// props.onAuth(values.email, values.password, AppId)
+		// .then((response) => {
+		// 	if (response.Success) {
+		// 		if (response.Resource.IsInitialPassword) {
+		// 			history.replace("/auth/changePassword/" + response.Resource.PasswordConfirmationCode);
+		// 		}
+		// 	}
+		// })
 	}
 
 	function usernameHandler(event) {
@@ -156,7 +163,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
 	return {
-		onAuth: (email, password, key) => dispatch(actions.auth(email, password, key)),
+		onAuth: (user, token, expirationDate) => dispatch(actions.auth2(user, token, expirationDate)),
 		onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
 	};
 };

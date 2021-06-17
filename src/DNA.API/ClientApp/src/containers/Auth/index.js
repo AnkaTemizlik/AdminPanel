@@ -46,10 +46,6 @@ const Auth = (props) => {
 							<HomeIcon />
 						</IconButton>}
 
-					<Hidden xsDown>
-						<HomeMenu menu={menus.home} isAuthenticated={props.isAuthenticated} />
-					</Hidden>
-
 					<Box flexGrow="1" />
 
 					<Hidden smDown>
@@ -57,11 +53,6 @@ const Auth = (props) => {
 					</Hidden>
 
 					<LanguageChanger />
-					{/* {props.isAuthenticated
-                        ? null
-                        : <AuthButton isAuthenticated={props.isAuthenticated} />} */}
-
-					<SidebarTrigger secondary />
 
 				</Header>
 

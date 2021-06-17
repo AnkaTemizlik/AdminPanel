@@ -543,7 +543,11 @@ namespace DNA.API.Services {
                     // Names
                     jsonWriter.WritePropertyName("Names");
                     {
-                        jsonWriter.WriteToken(JArray.FromObject(classes.OrderBy(_ => _.Index).Select(_ => _.Name)).CreateReader());
+                        // mevcut ekran sıralamasını değiştirmemesi için Except ile yenilerini ekliyoruz
+                        var existingNames = json["ScreenConfig"]["Names"].ToObject<List<string>>();
+                        var names = classes.OrderBy(_ => _.Index).Select(_ => _.Name).ToList();
+                        existingNames.AddRange(names.Except(existingNames));
+                        jsonWriter.WriteToken(JArray.FromObject(existingNames).CreateReader());
                     }
 
                     // AutoCompleteLists
@@ -642,11 +646,9 @@ namespace DNA.API.Services {
 
                                         // calendar
                                         var calendar = screen["calendar"]?.ToObject<ScreenCalendar>();
-                                        if (t.IsCalendarActive) {
-                                            t.GenerateCalendar(calendar);
-                                            if (t.Calendar != null)
-                                                screen["calendar"] = JObject.FromObject(t.Calendar, jsonSetting);
-                                        }
+                                        t.GenerateCalendar(calendar);
+                                        if (t.Calendar != null)
+                                            screen["calendar"] = JObject.FromObject(t.Calendar, jsonSetting);
 
                                         // subModels
                                         var existingSubModels = screen["subModels"]?.ToObject<List<ScreenSubModel>>();
@@ -740,6 +742,7 @@ namespace DNA.API.Services {
                                     jsonWriter.WriteStartArray();
                                     jsonWriter.WriteValue($"INSERT INTO {t.TableName} ({{Fields}})");
                                     jsonWriter.WriteValue($"VALUES ({{Parameters}})");
+                                    jsonWriter.WriteValue($"SELECT CAST(ISNULL(SCOPE_IDENTITY(), 0) AS INT)");
                                     jsonWriter.WriteEndArray();
                                     jsonWriter.WriteEndObject();
                                 }
@@ -830,6 +833,7 @@ namespace DNA.API.Services {
                     if (!t.Type.IsEnum) {
                         values.Add(t.Name + " Screen", t.Name + "s");
                         values.Add("Edit " + t.Name, "Edit " + t.Name);
+                        values.Add("New " + t.Name, "New " + t.Name);
                     }
                     var fields = t.Type.IsEnum
                         ? t.Type.GetFields().Where(_ => !_.IsSpecialName).Select(_ => _.Name).ToDictionary(_ => _, _ => _.ToTitleCase())

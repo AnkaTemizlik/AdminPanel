@@ -22,7 +22,7 @@ namespace DNA.Persistence.Repositories {
             if (parameters != null)
                 dynParams.AddDynamicParams(parameters);
             using var connection = Context.Connection;
-            return await connection.ExecuteAsync(Context.SetTablePrefix(sql), dynParams);
+            return await connection.QueryFirstOrDefaultAsync<int>(Context.SetTablePrefix(sql), dynParams);
         }
 
         //public async Task<int> ExecuteAsync(string sql, object parameters = null) {

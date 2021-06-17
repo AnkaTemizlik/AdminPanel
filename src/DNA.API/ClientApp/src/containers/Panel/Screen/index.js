@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { Switch, Link, useHistory, useParams, useRouteMatch, useLocation, Route } from "react-router-dom";
 //import { Switch, Link, useRouteMatch, useHistory, Redirect, Route } from "react-router-dom";
-import { Grid, Toolbar, Box, IconButton, Badge, Paper, Typography, Hidden, Tabs, Tab, Collapse, Icon } from "@material-ui/core";
+import { Grid, Toolbar, Box, IconButton, Badge, Paper, Typography, Hidden, Tabs, Tab, Collapse } from "@material-ui/core";
 import { Tooltip } from "@material-ui/core";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import Plugin from "../../../plugins";
@@ -15,6 +15,7 @@ import ActionsView from "./components/ActionsView";
 import View from "./View";
 import Calendar from "./Calendar";
 import { Button } from "devextreme-react";
+import Iconify from "../../../components/UI/Icons/Iconify";
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -40,6 +41,7 @@ const Screen = React.memo((props) => {
 	const ActionsComponent = Plugin.Actions ? Plugin.Actions[name] : null;
 
 	const refresh = () => {
+		console.info("grid.refresh")
 		grid && grid.refresh();
 	};
 
@@ -54,12 +56,12 @@ const Screen = React.memo((props) => {
 		}
 	}, [snack, error]);
 
-	function focusedRowChanged(focused) {
+	const focusedRowChanged = (focused) => {
 		if (focused != row || (focused && focused[currentScreen.keyFieldName] != row[currentScreen.keyFieldName]))
 			dispatch(setRow(focused || null))
 	}
 
-	function setLoadStatus(e) {
+	const setLoadStatus = (e) => {
 		dispatch(setLoading(e))
 	}
 
@@ -87,7 +89,8 @@ const Screen = React.memo((props) => {
 									{t(currentScreen.title)}
 								</Typography>
 
-								{query.get("title") && <Typography variant="h6" gutterBottom>
+								{subMenu && subMenu.defaultFilter && query.get("title") && <Typography variant="body1" style={{ display: 'flex', alignItems: 'center' }}>
+									<span>{query.get("title")}</span>
 									<span>
 										<Button
 											onClick={() => history.push("/panel/screen/" + name)}
@@ -95,16 +98,16 @@ const Screen = React.memo((props) => {
 											stylingMode="text"
 											hint={t("Clear")}
 											type="back"
+											style={{ padding: 2 }}
 										/>
 									</span>
-									<span>{query.get("title")}</span>
 								</Typography>}
 							</Box>
 
 							<Box flexGrow={1} />
 
 							<Box pt={1} pl={2}>
-								<Icon style={{ fontSize: 64, opacity: "0.20" }}>{currentScreen.icon}</Icon>
+								<Iconify fontSize={64} style={{ opacity: "0.20" }}>{currentScreen.icon}</Iconify>
 							</Box>
 
 						</Toolbar>
@@ -120,8 +123,16 @@ const Screen = React.memo((props) => {
 								</Route>
 							}
 
-							<Route path={`${url}/:id`} exact>
-								<View name={name} />
+							<Route path={`/panel/screen/${name}/new`}>
+								<View name={name} action="new" onInsert={(d) => {
+									var u = "/panel/screen/" + name + "/edit/" + d
+									console.purple("onInsert", u)
+									history.push(u)
+								}} />
+							</Route>
+
+							<Route path={`/panel/screen/${name}/edit/:id`}>
+								<View name={name} action="edit" />
 							</Route>
 
 							<Route>
@@ -143,6 +154,7 @@ const Screen = React.memo((props) => {
 											defaultFilter={(filter && subMenu && subMenu.defaultFilter) ? [filter, "and", subMenu.defaultFilter] : (filter ? filter : subMenu ? subMenu.defaultFilter : null)}
 											editing={currentScreen.editing}
 											actions={currentScreen.actions}
+											defaultValue={currentScreen.newRowDefaultValues}
 											actionsTemplate={() => (currentScreen.actions)
 												? <ActionsView
 													actions={currentScreen.actions}
