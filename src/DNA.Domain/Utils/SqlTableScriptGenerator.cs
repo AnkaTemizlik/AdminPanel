@@ -118,8 +118,8 @@ namespace DNA.Domain.Utils {
                 var jsonProperty = p.GetCustomAttribute<JsonPropertyAttribute>();
                 var required = p.GetCustomAttribute<RequiredAttribute>() != null;
                 var stringLengthAttr = p.GetCustomAttribute<StringLengthAttribute>();
-                var stringLengthValue = stringLengthAttr?.MaximumLength ?? 50;
-                var stringLength = stringLengthValue >= 4000 ? "MAX" : stringLengthValue == 0 ? "50" : stringLengthValue.ToString();
+                var stringLengthValue = stringLengthAttr?.MaximumLength ?? 500;
+                var stringLength = stringLengthValue >= 4000 ? "MAX" : stringLengthValue == 0 ? "500" : stringLengthValue.ToString();
 
                 // if (p.PropertyType.IsClass) { }
                 // if (p.PropertyType.IsGenericType) { }
@@ -148,7 +148,7 @@ namespace DNA.Domain.Utils {
                         columns.Add($"\t [{p.Name}] {propertyType}");
                     }
                     else if (!p.PropertyType.IsGenericType)
-                        columns.Add($"\t [{p.Name}] {propertyType} {(required ? "NOT NULL" : "")}");
+                        columns.Add($"\t [{p.Name}] {propertyType} {((required && !propertyType.Contains("NULL")) ? "NOT NULL" : "")}");
                     else
                         throw new NotImplementedException($"{Table.TableName} {p.Name} {p.PropertyType}");
                 }

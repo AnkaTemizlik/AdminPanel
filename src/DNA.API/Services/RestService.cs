@@ -38,6 +38,7 @@ namespace DNA.API.Services {
             _client = new RestClient(_baseUrl) {
                 RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true
             };
+            _client.UseSerializer<RestSharp.Serializers.NewtonsoftJson.JsonNetSerializer>();
             return this;
         }
 
@@ -101,4 +102,7 @@ namespace DNA.API.Services {
             return _mapper.Map<Response<T>>(queryResult);
         }
     }
+
+
+
 }

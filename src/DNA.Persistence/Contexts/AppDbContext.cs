@@ -25,8 +25,7 @@ namespace DNA.Persistence.Contexts {
             }
         }
 
-        SqlConnection IAppDbContext.NetsisConnection
-        {
+        SqlConnection IAppDbContext.NetsisConnection {
             get {
                 var conStr = _configuration.GetConnectionString("Netsis");
                 if (string.IsNullOrWhiteSpace(conStr))

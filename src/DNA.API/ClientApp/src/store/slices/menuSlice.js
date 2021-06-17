@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import i18next from '../i18n';
 import _ from 'lodash'
 
 const menusSlice = createSlice({
@@ -38,10 +39,11 @@ const menusSlice = createSlice({
 
 					s.subMenus && s.subMenus.map((sm) => {
 						if (sm.showInSidebar == true) {
+							var title = sm.title ? i18next.t(sm.title) : i18next.t(sm.name)
 							newMenu.menus.push({
-								label: sm.title ?? sm.name,
-								title: sm.title ?? sm.name,
-								to: "/" + sm.name + "?title=" + sm.title,
+								name: sm.name,
+								label: title,
+								to: ("/" + sm.defaultFilter[0] + "/" + sm.defaultFilter[2]) + "?title=" + title,
 								icon: sm.icon,
 								isHeaderVisible: true,
 								roles: sm.roles,
@@ -50,7 +52,6 @@ const menusSlice = createSlice({
 							})
 						}
 					})
-
 					state.panel.menus.splice(index++, 0, newMenu);
 				}
 

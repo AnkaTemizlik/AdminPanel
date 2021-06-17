@@ -62,15 +62,5 @@ namespace DNA.Persistence.Repositories {
             return await connection.UpdateAsync<T>(row);
         }
 
-        //public async Task<bool> BulkMergeAsync<T>(List<T> rows) where T : class {
-        //    using var connection = Context.Connection;
-        //    connection.UseBulkOptions(o => {
-        //        o.InsertIfNotExists = true;
-        //        o.ColumnPrimaryKeyNames = new List<string> { "ProductCode" };
-        //        // o.ColumnPrimaryKeyExpression
-        //    })
-        //        .BulkMerge<T>(rows);
-        //    return await Task.FromResult(true);
-        //}
     }
 }
