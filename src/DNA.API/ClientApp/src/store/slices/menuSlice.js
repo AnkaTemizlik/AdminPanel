@@ -40,7 +40,8 @@ const menusSlice = createSlice({
 						if (sm.showInSidebar == true) {
 							newMenu.menus.push({
 								label: sm.title ?? sm.name,
-								to: "/" + sm.name,
+								title: sm.title ?? sm.name,
+								to: "/" + sm.name + "?title=" + sm.title,
 								icon: sm.icon,
 								isHeaderVisible: true,
 								roles: sm.roles,
@@ -82,6 +83,7 @@ const menusSlice = createSlice({
 					name: "Logs",
 					to: "/logs",
 					icon: "adb",
+					roles: ["Admin"],
 					menus: []
 				});
 			}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
-import { Box, Typography, Toolbar, Grid, Container, Tooltip } from '@material-ui/core';
+import { Box, Typography, Toolbar, Grid, Container, Tooltip, AppBar } from '@material-ui/core';
 import { Tr } from '../../store/i18next'
 import { HomeMenu } from '../../components/Navigation/Menus';
 import logo from '../../assets/logo6432.png'
@@ -73,9 +73,11 @@ const Welcome = (props) => {
 				</Grid>
 				<Box flexGrow="1"></Box>
 				<Grid item style={{ width: "100%" }}>
-					<Toolbar>
-						<HomeMenu menu={homeMenu} isAuthenticated={isAuthenticated} />
-					</Toolbar>
+					<AppBar position="relative" style={{ backgroundColor: 'rgba(0, 0, 0, 0.50)' }}>
+						<Toolbar>
+							<HomeMenu menu={homeMenu} isAuthenticated={isAuthenticated} />
+						</Toolbar>
+					</AppBar>
 					<Toolbar>
 						<Box flexGrow="1"></Box>
 						<Typography variant="caption" style={{ color: "lightgray", display: "flex", alignItems: "center" }}>

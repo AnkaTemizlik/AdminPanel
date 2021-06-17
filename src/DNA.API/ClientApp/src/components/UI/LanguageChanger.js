@@ -82,7 +82,7 @@ const LanguageChanger = () => {
 	const { i18n } = useTranslation();
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const classes = useStyles();
-	const { Plugin } = useSelector((state) => state.settings)
+	const { MultiLanguage } = useSelector((state) => state.settings)
 
 	const changeLanguage = useCallback(
 		(lng) => {
@@ -110,9 +110,9 @@ const LanguageChanger = () => {
 		changeLanguage(lng);
 	}, [changeLanguage, i18n.language]);
 
-	return Plugin.Languages && Plugin.Languages.length > 1 ? (
+	return MultiLanguage.Enabled && MultiLanguage.Languages && MultiLanguage.Languages.length > 1 ? (
 		<>
-			<IconButton edge="end" onClick={handleClick}>
+			<IconButton onClick={handleClick}>
 				<Avatar alt="Language" className={classes.small}>
 					{i18n.language == "tr" && <TrIcon style={{ width: 22, height: 22 }} />}
 					{i18n.language == "en" && <EnIcon style={{ width: 22, height: 22 }} />}
@@ -135,7 +135,7 @@ const LanguageChanger = () => {
 					horizontal: "center",
 				}}
 			>
-				{Plugin.Languages.map((l, i) => (
+				{MultiLanguage.Languages.map((l, i) => (
 					<MenuItem dense onClick={() => changeLanguage(l)} key={i}>
 						<ListItemIcon>
 							{l == "tr" && <TrWideIcon />}

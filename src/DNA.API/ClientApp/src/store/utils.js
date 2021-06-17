@@ -13,6 +13,9 @@ export const splitCamelCase = (s) => {
 	//return s.split(/([A-Z][a-z]+)/).join(' ');
 	return capitalize(sentense);
 }
+export const isEmpty = (value) => {
+	return !isNotEmpty(value);
+}
 
 export const isNotEmpty = (value) => {
 	return value !== undefined && value !== null && value !== '';

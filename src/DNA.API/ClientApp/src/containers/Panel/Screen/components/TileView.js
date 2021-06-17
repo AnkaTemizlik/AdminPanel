@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { ApiURL } from "../../../../store/axios";
 import { supplant } from "../../../../store/utils";
-import { Grid, Icon } from "@material-ui/core";
+import { Grid, Icon, Typography } from "@material-ui/core";
 import Modal from "../../../../components/UI/Modal";
 import Popup from "../../../../components/UI/Popup";
 import FileUploader from "../../../../components/UI/FileUploader";
@@ -144,7 +144,7 @@ const TileViewComponent = ({ row, model }) => {
 				}
 				if (item.type == "button") {
 					return <div style={defaultStyle}>
-						<Grid container justify="center" alignItems="center"
+						<Grid container justify="center" alignItems="center" direction="column"
 							style={{
 								cursor: "pointer",
 								height: "100%"
@@ -152,6 +152,7 @@ const TileViewComponent = ({ row, model }) => {
 							onClick={item.onClick}
 						>
 							<Icon style={{ fontSize: 48, opacity: "0.7" }}>upload</Icon>
+							<Typography style={{ paddingTop: 12 }}>{t("Upload")}</Typography>
 						</Grid>
 					</div>
 				}

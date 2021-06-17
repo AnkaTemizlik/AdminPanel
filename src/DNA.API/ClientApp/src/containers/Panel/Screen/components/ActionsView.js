@@ -9,8 +9,9 @@ import Modal from "../../../../components/UI/Modal";
 import { useTranslation } from "../../../../store/i18next";
 import { Button } from 'devextreme-react/button';
 import PopupView from "./PopupView";
+import Iconify from "../../../../components/UI/Icons/Iconify";
 
-const ActionsView = ({ renderActions, actions, refresh }) => {
+const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonText }) => {
 	const { panel, screenConfig } = useSelector(state => state)
 	const { currentScreen: screen, row } = panel.screen
 	const { url } = useRouteMatch()
@@ -54,9 +55,13 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 		console.purple("runAction", url, row, preparedUrl, currentAction)
 		api.actions.run(method, preparedUrl, params)
 			.then(status => {
-
 				if (status.Success) {
-					dispatch(showMessage({ Success: true, Message: ((onSuccess && t(onSuccess.text)) || "İşlem Başarılı.") }))
+					if (onSuccess) {
+						dispatch(showMessage({ Success: true, Message: ((onSuccess && t(onSuccess.text)) || "İşlem Başarılı.") }))
+						if (onSuccess.route) {
+							history.push(supplant(onSuccess.route, row))
+						}
+					}
 					if (refreshAfterSuccess == true)
 						refresh && refresh()
 				}
@@ -113,16 +118,20 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 				disabled = true
 		}
 
-		return <Tooltip title={action.text} key={i}>
+		return <Tooltip title={t(action.text)} key={i}>
 			<span>
 				<Button key={i}
 					disabled={disabled}
 					onClick={() => executeApi(action)}
 					style={{ marginRight: 5 }}
-					icon={action.dxIcon}
+					icon={action.dxIcon || undefined}
+					type="normal"
+					stylingMode="outlined"
 				>
-					{action.icon
-						&& <Icon style={{ fontSize: "1.125rem" }}>{action.icon}</Icon>}
+					<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
+						{action.icon && <Iconify icon={action.icon} fontSize="1.125rem" />}
+						{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(action.text)}</span> : undefined}
+					</span>
 				</Button>
 			</span>
 		</Tooltip>
@@ -131,16 +140,20 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 	const renderEvalAction = (action, i) => {
 		let disabled = isDisable(action.dependsOnSelected)
 
-		return <Tooltip title={action.text} key={i}>
+		return <Tooltip title={t(action.text)} key={i}>
 			<span>
 				<Button key={i}
 					disabled={disabled}
 					onClick={() => executeEval(action)}
 					style={{ marginRight: 5 }}
-					icon={action.dxIcon}
+					icon={action.dxIcon || undefined}
+					text={showButtonText ? action.text : undefined}
+					stylingMode="outlined"
 				>
-					{action.icon
-						&& <Icon style={{ fontSize: "1.125rem" }}>{action.icon}</Icon>}
+					<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
+						{action.icon && <Iconify icon={action.icon} fontSize="1.125rem" />}
+						{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(action.text)}</span> : undefined}
+					</span>
 				</Button>
 			</span>
 		</Tooltip>
@@ -148,8 +161,7 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 
 	const renderRouteAction = (action, i) => {
 		let disabled = isDisable(action.dependsOnSelected)
-
-		return <Tooltip title={action.text} key={i} >
+		return <Tooltip title={t(action.text)} key={i} >
 			<span >
 				<Button key={i}
 					disabled={disabled}
@@ -159,9 +171,12 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 					}}
 					style={{ marginRight: 5 }}
 					icon={action.dxIcon}
+					stylingMode="outlined"
 				>
-					{action.icon
-						&& <Icon style={{ fontSize: "1.125rem" }}>{action.icon}</Icon>}
+					<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
+						{action.icon && <Iconify icon={action.icon} fontSize="1.125rem" />}
+						{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(action.text)}</span> : undefined}
+					</span>
 				</Button>
 			</span>
 		</Tooltip>
@@ -206,8 +221,11 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 						icon={m.dxIcon}
 						onClick={(e) => setPopupViewOpen(m)}
 					>
-						{m.icon
-							&& <Icon style={{ fontSize: "1.125rem" }}>{m.icon}</Icon>}
+						<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
+							{m.icon && <Iconify icon={m.icon} fontSize="1.125rem" />}
+							{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(m.name)}</span> : undefined}
+						</span>
+
 					</Button>
 					: <Button key={i}
 						hint={t(m.title)}
@@ -217,8 +235,10 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 						style={{ marginRight: 5 }}
 						icon={m.dxIcon}
 					>
-						{m.icon
-							&& <Icon style={{ fontSize: "1.125rem" }}>{m.icon}</Icon>}
+						<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
+							{m.icon && <Iconify icon={m.icon} fontSize="1.125rem" />}
+							{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(m.name)}</span> : undefined}
+						</span>
 					</Button>
 			}
 
@@ -229,7 +249,7 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 			return renderActionButton(a, i)
 		})}
 
-		{renderActions()}
+		{renderActions && renderActions()}
 
 		<Modal
 			open={modalOpen}
@@ -250,6 +270,6 @@ const ActionsView = ({ renderActions, actions, refresh }) => {
 
 	</Box>
 	)
-}
+})
 
 export default ActionsView;

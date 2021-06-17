@@ -1,25 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "../../store/i18next";
 import { Popup, ToolbarItem } from 'devextreme-react/popup';
 import { Button } from 'devextreme-react/button';
 import Box, { Item } from 'devextreme-react/box';
 import { isNotEmpty } from "../../store/utils";
 import ResponsiveBox, { Row, Col, Item as ResponsiveItem, Location } from 'devextreme-react/responsive-box';
-import ModalComponent from "./Modal";
 
-const PopupComponent = ({ children, visible, toolbarItems, title, onClose, ok, cancel, okText, cancelText, params, loading = false, ...rest }) => {
+const PopupComponent = (props) => {
+	const {
+		children,
+		visible,
+		toolbarItems,
+		onClose,
+		ok,
+		cancel,
+		okText,
+		cancelText,
+		params,
+		loading = false, ...rest } = props
+
 	const { t } = useTranslation();
+	const [open, setOpen] = useState(false)
+
+	const onHiding = () => {
+		setOpen(false)
+		onClose && onClose({ ...params, open: false })
+	}
+
+	useEffect(() => {
+		console.success("PopupComponent", visible)
+		setOpen(visible)
+	}, [visible])
+
 	function screen(width) {
 		return (width < 700) ? 'sm' : 'lg';
 	}
 	return <Popup
-		visible={visible}
-		showTitle={isNotEmpty(title)}
-		title={t(title)}
-		onHiding={() => onClose({ ...params, open: false })}
+		{...rest}
+		visible={open}
+		showTitle={rest.showTitle || true}
+		title={t(props.title)}
+		onHiding={onHiding}
 		dragEnabled={true}
 		closeOnOutsideClick={true}
-		{...rest}
+		maxWidth={props.maxWidth || 700}
+		height={props.height || 525}
 	>
 		{toolbarItems && toolbarItems.map((item, i) => {
 			return <ToolbarItem key={i} {...item} />

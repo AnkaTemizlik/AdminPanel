@@ -58,10 +58,12 @@ const check = (response, errorMessage) => {
 };
 
 const execute = (request) => {
+	const token = localStorage.getItem('token');
+	axios.defaults.headers.common["Authorization"] = "Bearer " + token
 	return request
 		.then((response) => {
 			const status = check(response);
-			console.success("[API]", request.config, response);
+			console.success("[API] " + (response.config ? response.config.method + " " + response.config.url : ""), response, response.config.data);
 			if (!status.Success)
 				console.error("[API].error", status);
 			return Promise.resolve(status);
@@ -74,9 +76,11 @@ const execute = (request) => {
 };
 
 const execute2 = async (request) => {
+	const token = localStorage.getItem('token');
+	axios.defaults.headers.common["Authorization"] = "Bearer " + token
 	try {
 		var response = await request
-		console.success("[API]2", request.config, response);
+		console.success("[API] 2 " + (response.config ? response.config.method + " " + response.config.url : ""), response, response.config.data);
 		const status = check(response);
 		return status
 	} catch (error) {

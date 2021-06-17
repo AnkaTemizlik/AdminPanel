@@ -3,6 +3,7 @@ export {
 	init,
 	tryInit,
 	auth,
+	auth2,
 	register,
 	confirm,
 	recovery,

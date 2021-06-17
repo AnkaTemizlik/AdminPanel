@@ -8,7 +8,7 @@ import { Trans, useTranslation } from '../../../store/i18next'
 const useStyles = makeStyles((theme) => ({
 	divider: {
 		margin: theme.spacing(2.4, 2),
-		backgroundColor: theme.palette.common.white
+		//backgroundColor: theme.palette.common.white
 	},
 	button: {
 		textTransform: "none",
@@ -41,8 +41,8 @@ const HomeMenu = ({ menu, isAuthenticated }) => {
 				component={Link}
 				to={m.to}
 				target={m.target || "_self"}
-				style={{ color: "white" }}
 				startIcon={m.icon ? <Icon>{m.icon}</Icon> : undefined}
+				color="inherit"
 			>
 				<Trans>{m.label}</Trans>
 			</Button>
@@ -51,7 +51,8 @@ const HomeMenu = ({ menu, isAuthenticated }) => {
 					<IconButton component={Link} edge="start"
 						to={m.to}
 						target={m.target || "_self"}
-						style={{ color: "white" }} >
+						color="inherit"
+					>
 						<Icon>{m.icon}</Icon>
 					</IconButton>
 				</span>
