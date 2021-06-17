@@ -143,6 +143,8 @@ namespace PointmentApp.Controllers {
             try {
                 resource.UpdatedBy = Convert.ToInt32(User.Identity.Name);
                 resource.UpdateTime = DateTime.Now;
+                var x = resource.StartDate;
+                var y = resource.EndDate;
                 var response = await _appointmentService.UpdateAppointmentAsync(id, resource);
                 if (!response.Success)
                     return BadRequest(response);
@@ -153,5 +155,39 @@ namespace PointmentApp.Controllers {
             }
         }
 
+        [HttpPut("plan/{id}")]
+        [Authorize(Roles = "Admin, Writer")]
+        [ProducesResponseType(typeof(Response<bool>), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        public async Task<IActionResult> UpdateAppointment(int id) {
+            try {
+                var updatedBy = Convert.ToInt32(User.Identity.Name);
+                var response = await _appointmentService.PlanAppointmentAsync(id, updatedBy);
+                if (!response.Success)
+                    return BadRequest(response);
+                return Ok(response);
+            }
+            catch (Exception ex) {
+                return BadRequest(new Response(ex));
+            }
+        }
+
+
+        [HttpPost("{id}/custom-sms")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(Response<int>), 200)]
+        [ProducesResponseType(typeof(Response), 400)]
+        public async Task<IActionResult> AddSms(int id) {
+            try {
+                var updatedBy = Convert.ToInt32(User.Identity.Name);
+                var response = await _appointmentService.AddCustomSmsAsync(id, updatedBy);
+                if (!response.Success)
+                    return BadRequest(response);
+                return Ok(response);
+            }
+            catch (Exception ex) {
+                return BadRequest(new Response(ex));
+            }
+        }
     }
 }

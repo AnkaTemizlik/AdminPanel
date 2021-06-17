@@ -1,6 +1,6 @@
 ﻿
 # Set-ExecutionPolicy -Scope CurrentUser
-# ExecutionPolicy: RemoteSigned
+## ExecutionPolicy: RemoteSigned
 
 param([string]$clientApp, [string]$projectName)
 

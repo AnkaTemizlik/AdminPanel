@@ -61,8 +61,9 @@ namespace PointmentApp {
 
             _menuService.Root["home"].menus.Find(_ => _.name == "Swagger").visible = false;
             _menuService.Root["home"].menus.Find(_ => _.name == "Files").visible = false;
-            _menuService.Root["home"].menus.Find(_ => _.name == "Jobs").visible = false;
+            //_menuService.Root["home"].menus.Find(_ => _.name == "Jobs").visible = false;
             _menuService.Root["home"].menus.Find(_ => _.name == "Help").visible = false;
+            _menuService.Root["help"].visible = false;
 
             _menuService.Root["social"].menus
                 .Add(new DNA.Domain.Models.Pages.Menu {
@@ -83,10 +84,10 @@ namespace PointmentApp {
                 )
                 .Set("SmsSettings", template.Property()
                     .Set("StateChangeMessage", template.Property()
-                        .Add("Enabled", true)
+                        .Add("Enabled", false)
                         .AddSelect("State", AppointmentState.Assigned)
                         .AddAutoComplete<Customer>("PhoneNumber", "{Customer.PhoneNumber}")
-                        .AddAutoComplete<Appointment, Service>("Text", "Konu: {Appointment.Title}. Tarih: {Appointment.StartDate}. Hizmet: {Service.Name}")
+                        .AddAutoComplete<Appointment, Service>("Text", "Değerli müşterimiz, {Service.Name} randevunuz {Appointment.StartDate} olarak belirlenmiştir.")
                         .Add("SendPreviousDayAtThisHour", 18)
                         .Add("SendBeforeThisHour", 3)
                         .Add("DeleteUnsentIfStatusNotAvailable", true)
@@ -95,8 +96,13 @@ namespace PointmentApp {
                         .Add("Enabled", true)
                         .AddSelect("State", AppointmentState.Assigned)
                         .AddAutoComplete<Customer>("PhoneNumber", "{Customer.PhoneNumber}")
-                        .AddAutoComplete<Appointment, Service>("Text", "{Appointment.StartDate} tarihine {Service.Name} kaydı oluşturuldu.")
+                        .AddAutoComplete<Appointment, Service>("Text", "Değerli müşterimiz, {Appointment.StartDate} tarihindeki {Service.Name} randevunuzu hatırlatırız.")
                         .Add("SendInMinutes", 10)
+                        )
+                    .Set("CustomSms", template.Property()
+                        .AddAutoComplete<Customer>("PhoneNumber", "{Customer.PhoneNumber}")
+                        .AddAutoComplete<Appointment, Service>("Text", "Değerli müşterimiz, {Appointment.StartDate} tarihindeki {Service.Name} randevunuzu hatırlatırız.")
+                        .Add("SendInMinutes", 5)
                         )
                     )
                 .Set("SocialMediaLinks", false, template.Property()
@@ -135,8 +141,9 @@ namespace PointmentApp {
                 new ScreenModel(typeof(Appointment), true)
                     .Visibility(true)
                     .Editable(true)
-                    .CalendarView("Title","AllDay", "StartDate", "EndDate", "Note",
+                    .CalendarView("Title","AllDay", "StartDate", "EndDate", "Note", "RecurrenceRule", "RecurrenceException",
                         new ScreenCalendarResource(typeof(Service), "ServiceId") { useColorAsDefault = true },
+                        new ScreenCalendarResource(typeof(DNA.API.Models.User), "AssignTo","Id", "FullName"),
                         new ScreenCalendarResource(typeof(Customer), "CustomerId")
                      )
                     .Emblem("event_available"),

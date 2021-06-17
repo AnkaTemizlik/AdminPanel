@@ -15,6 +15,7 @@ namespace PointmentApp {
         #region Module Queries
         public static string SelectSmsForPlaning => GetByName(nameof(SelectSmsForPlaning));
         public static string SelectSmsForCreation => GetByName(nameof(SelectSmsForCreation));
+        public static string SelectSmsCustom => GetByName(nameof(SelectSmsCustom));
         public static string DeleteSms => GetByName(nameof(DeleteSms));
         public static string CheckOneDayAppointmentCount => GetByName(nameof(CheckOneDayAppointmentCount));
 

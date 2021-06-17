@@ -44,6 +44,9 @@
     <None Update="SqlQueries\CheckOneDayAppointmentCount.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="SqlQueries\SelectSmsCustom.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="SqlQueries\SelectSmsForPlaning.sql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

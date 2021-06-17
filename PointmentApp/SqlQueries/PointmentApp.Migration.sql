@@ -37,12 +37,46 @@ BEGIN
 	ALTER TABLE [dbo].[PA_Appointment] ADD AllDay BIT NOT NULL DEFAULT(0);
 END
 
-
 /* PA_Appointment > Title ****************************/
 IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
 	WHERE t.name = 'PA_Appointment' AND c.name = 'Title')
 BEGIN
 	ALTER TABLE [dbo].[PA_Appointment] ADD Title NVARCHAR(500) NOT NULL DEFAULT('');
+END
+
+/* PA_Appointment > Amount ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = 'PA_Appointment' AND c.name = 'Amount')
+BEGIN
+	ALTER TABLE [dbo].[PA_Appointment] ADD Amount float NULL;
+END
+
+/* PA_Appointment > RecurrenceRule ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = 'PA_Appointment' AND c.name = 'RecurrenceRule')
+BEGIN
+	ALTER TABLE [dbo].[PA_Appointment] ADD RecurrenceRule NVARCHAR(500) NULL;
+END
+
+/* PA_Appointment > RecurrenceRule ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = 'PA_Appointment' AND c.name = 'RecurrenceException')
+BEGIN
+	ALTER TABLE [dbo].[PA_Appointment] ADD RecurrenceException NVARCHAR(500) NULL;
+END
+
+/* PA_Appointment > AssignTo ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = 'PA_Appointment' AND c.name = 'AssignTo')
+BEGIN
+	ALTER TABLE [dbo].[PA_Appointment] ADD AssignTo int NULL;
+END
+
+/* PA_Appointment > AssignTo ****************************/
+IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+	WHERE t.name = 'PA_Appointment' AND c.name = 'IsPlanned')
+BEGIN
+	ALTER TABLE [dbo].[PA_Appointment] ADD IsPlanned bit NOT NULL DEFAULT(0);
 END
 
 
@@ -191,11 +225,11 @@ BEGIN
 		 [PhoneNumber] NVARCHAR(16) NOT NULL,
 		 [Corporate] BIT DEFAULT(0) ,
 		 [Title] NVARCHAR(500) ,
-		 [Email] NVARCHAR(50) NOT NULL,
+		 [Email] NVARCHAR(50) NULL,
 		 [LandlinePhoneNumber] NVARCHAR(16) ,
 		 [MobilePhoneNumber] NVARCHAR(16) ,
 		 [Address] NVARCHAR(500) ,
-		 [CityId] INT NOT NULL DEFAULT(0) ,
+		 [CityId] INT NULL ,
 		 [TaxNumber] NVARCHAR(11) ,
 		 [TaxAdministration] NVARCHAR(50) ,
 		 [BillingAddress] NVARCHAR(500) ,

@@ -22,6 +22,8 @@ namespace PointmentApp.Services {
         Task<Response> UploadDocumentAsync(int id, Microsoft.AspNetCore.Http.IFormFileCollection files);
         Task<Response> InsertAppointmentAsync(Appointment appointment);
         Task<Response> UpdateAppointmentAsync(int id, dynamic appointment);
+        Task<Response> PlanAppointmentAsync(int id, int updatedBy);
+        Task<Response> AddCustomSmsAsync(int id, int updatedBy);
     }
 
     [Service(typeof(IAppointmentService), Lifetime.Scoped)]
@@ -69,7 +71,10 @@ namespace PointmentApp.Services {
                 if (jObject.ContainsKey("StartDate"))
                     await CheckOneDayAppointmentCount(jObject.ToObject<Appointment>());
                 await _entityService.UpdateAsync("Appointment", id, appointment);
-                await AddMessage(await _processService.GetAsync<Appointment>(id));
+                var data = await _processService.GetAsync<Appointment>(id);
+                if (data == null)
+                    throw new Exception("Kayıt bulunamadı.");
+                await AddMessage(data);
                 return new Response();
             }
             catch (Exception ex) {
@@ -81,9 +86,17 @@ namespace PointmentApp.Services {
         public async Task<Response> InsertAppointmentAsync(Appointment appointment) {
             try {
                 await CheckOneDayAppointmentCount(appointment);
-                appointment.Id = await _processService.InsertAsync(appointment);
-                await AddMessage(appointment);
-                return new Response();
+
+                if (appointment.AllDay) {
+                    if (appointment.StartDate.HasValue)
+                        if (!appointment.EndDate.HasValue)
+                            appointment.EndDate = appointment.StartDate;
+                }
+
+                var id = await _processService.InsertAsync(appointment);
+                var result = await _processService.GetAsync<Appointment>(id);
+                await AddMessage(result);
+                return new Response(id);
             }
             catch (Exception ex) {
                 var alert = _logger.LogError(ex);
@@ -91,39 +104,57 @@ namespace PointmentApp.Services {
             }
         }
 
-        async Task<int> CheckOneDayAppointmentCount(Appointment appointment) {
-            var result = await _processService.FirstAsync<DNA.Domain.Models.KeyValue>(SqlQueries.CheckOneDayAppointmentCount, appointment);
-            if (result.Key > 0) {
-                var section = _configuration.GetSection("Config:AppointmentSettings");
+        public async Task<Response> PlanAppointmentAsync(int id, int updatedBy) {
+            var appointment = await _processService.GetAsync<Appointment>(id);
+            appointment.IsPlanned = true;
+            appointment.UpdatedBy = updatedBy;
+            appointment.UpdateTime = DateTime.Now;
+            await _processService.UpdateAsync(appointment);
+            return new Response();
+        }
+
+        public async Task<Response> AddCustomSmsAsync(int id, int updatedBy) {
+            var appointment = await _processService.GetAsync<Appointment>(id);
+            if (appointment == null) {
+                throw new Exception("Kayıt bulunamadı.");
+            }
+            appointment.UpdatedBy = updatedBy;
+            appointment.CreatedBy = updatedBy;
+            appointment.UpdateTime = DateTime.Now;
+            var smsId = await AddCustomSmsAsync(appointment);
+            return new Response(smsId);
+        }
+
+        async Task CheckOneDayAppointmentCount(Appointment appointment) {
+            var section = _configuration.GetSection("Config:AppointmentSettings");
+            if (!string.IsNullOrWhiteSpace(section["NumberOfAppointmentsAllowedPerDay"])) {
                 var numberOfAppointmentsAllowedPerDay = section.GetValue<int>("NumberOfAppointmentsAllowedPerDay");
-                if (result.Key >= numberOfAppointmentsAllowedPerDay) {
-                    throw new Exception("İzin verilen günlük randevu sayısı aşıldı.");
+                if (numberOfAppointmentsAllowedPerDay > 0) {
+                    var result = await _processService.FirstAsync<DNA.Domain.Models.KeyValue>(SqlQueries.CheckOneDayAppointmentCount, appointment);
+                    if (result.Key >= numberOfAppointmentsAllowedPerDay) {
+                        throw new Exception("İzin verilen günlük randevu sayısı aşıldı.");
+                    }
                 }
             }
-            return result.Key;
         }
 
         async Task AddMessage(Appointment appointment) {
+            if (!appointment.IsPlanned)
+                return;
             // for filling gaps
             var customer = await _processService.GetAsync<Customer>(appointment.CustomerId);
-            var service = await _processService.GetAsync<Service>(appointment.ServiceId);
+            var service = await _processService.GetAsync<Service>(appointment.ServiceId.Value);
             _valuerService.SetCurrentModel(appointment);
             _valuerService.SetCurrentModel(customer);
             _valuerService.SetCurrentModel(service);
-
-            await AddCreationInfoMessage(appointment);
-            await AddCheckStateChangeMessage(appointment);
-        }
-
-        async Task AddCreationInfoMessage(Appointment appointment) {
             var sectionAppointmentPlaningInformationMessage = _configuration.GetSection("Config:SmsSettings:AppointmentPlaningInformationMessage");
             var appointmentPlaningInformationMessageEnabled = sectionAppointmentPlaningInformationMessage.GetValue<bool>("Enabled");
-
             if (appointmentPlaningInformationMessageEnabled) {
                 if (appointment.Id > 0 && appointment.State == sectionAppointmentPlaningInformationMessage.GetValue<AppointmentState>("State")) {
                     await AddCreationSmsAsync(appointment);
                 }
             }
+            await AddCheckStateChangeMessage(appointment);
         }
 
         async Task AddCheckStateChangeMessage(Appointment appointment) {
@@ -185,25 +216,24 @@ namespace PointmentApp.Services {
 
         // StateChangeMessage ************
         async Task<int> AddRememberSmsAsync(Appointment appointment) {
+            var sectionStateChangeMessage = _configuration.GetSection("Config:SmsSettings:StateChangeMessage");
 
             // başlama zamanı henüz gelmemişse ekleme yapma, sadece ileri tarihli ilerde sms planla
             if (appointment.StartDate > DateTime.Now) {
 
-                var sectionStateChangeMessage = _configuration.GetSection("Config:SmsSettings:StateChangeMessage");
-
                 var sendPreviousDayAtThisHour = sectionStateChangeMessage.GetValue<int>("SendPreviousDayAtThisHour");
                 var sendBeforeThisHour = sectionStateChangeMessage.GetValue<int>("SendBeforeThisHour");
                 var scheduledSendingTime = sendPreviousDayAtThisHour > 0
-                    ? new DateTime(appointment.StartDate.Year, appointment.StartDate.Month, appointment.StartDate.Day).AddDays(-1).AddHours(sendPreviousDayAtThisHour)
+                    ? new DateTime(appointment.StartDate.Value.Year, appointment.StartDate.Value.Month, appointment.StartDate.Value.Day).AddDays(-1).AddHours(sendPreviousDayAtThisHour)
                     : sendBeforeThisHour > 0
-                        ? appointment.StartDate.AddHours(sendBeforeThisHour)
+                        ? appointment.StartDate.Value.AddHours(sendBeforeThisHour)
                         : (DateTime?)null;
 
                 // add Sms
 
                 // planlanan sms zamanı şimdiden daha küçükse SendBeforeThisHour kullan
                 if (scheduledSendingTime < DateTime.Now)
-                    scheduledSendingTime = appointment.StartDate.AddHours(sendBeforeThisHour);
+                    scheduledSendingTime = appointment.StartDate.Value.AddHours(sendBeforeThisHour);
 
                 // hata planlanan sms zamanı şimdiden daha küçükse 15 dakika sonra göndermeye kur
                 if (scheduledSendingTime > appointment.StartDate)
@@ -229,6 +259,36 @@ namespace PointmentApp.Services {
                 }
             }
             return 0;
+        }
+
+        // Custom Sms ********
+        async Task<int> AddCustomSmsAsync(Appointment appointment) {
+            var customer = await _processService.GetAsync<Customer>(appointment.CustomerId);
+            var service = await _processService.GetAsync<Service>(appointment.ServiceId.Value);
+            _valuerService.SetCurrentModel(appointment);
+            _valuerService.SetCurrentModel(customer);
+            _valuerService.SetCurrentModel(service);
+            var sectionCustomSms = _configuration.GetSection("Config:SmsSettings:CustomSms");
+            var to = _valuerService.Get(sectionCustomSms.GetValue<string>("PhoneNumber"));
+            var text = _valuerService.Get(sectionCustomSms.GetValue<string>("Text"));
+            var sendInMinutes = sectionCustomSms.GetValue<int>("SendInMinutes");
+
+            // check if exists not sent sms for this appointment
+            var customSms = await _processService.FirstAsync<AppointmentSms>(SqlQueries.SelectSmsCustom, appointment);
+            if (customSms != null) {
+                throw new Exception("Henüz gönderilmemiş bir SMS zaten mevcut.");
+            }
+            else {
+                // add AppointmentSms
+                var smsId = await _smsService.InsertAsync(to, text, DateTime.Now.AddMinutes(sendInMinutes), 4);
+                if (smsId > 0) {
+                    await _processService.InsertAsync(new AppointmentSms {
+                        AppointmentId = appointment.Id,
+                        SmsId = smsId
+                    });
+                }
+                return smsId;
+            }
         }
 
         public async Task<Response> UploadDocumentAsync(int id, Microsoft.AspNetCore.Http.IFormFileCollection files) {
@@ -376,6 +436,8 @@ namespace PointmentApp.Services {
             }
             return actialSize;
         }
+
+
 
         // Class definition for the class used in the method above
         public class TargetSize {
