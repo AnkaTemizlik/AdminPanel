@@ -267,7 +267,7 @@ namespace DNA.Domain.Utils {
             return this;
         }
 
-        public ScreenModel CalendarView(string textExpr, string allDayExpr, string startDateExpr, string endDateExpr, string descriptionExpr, params ScreenCalendarResource[] resources) {
+        public ScreenModel CalendarView(string textExpr, string allDayExpr, string startDateExpr, string endDateExpr, string descriptionExpr, string recurrenceRuleExpr, string recurrenceExceptionExpr, params ScreenCalendarResource[] resources) {
             this.ViewType = "calendar";
             IsCalendarActive = true;
             this.Calendar = new ScreenCalendar() {
@@ -276,6 +276,8 @@ namespace DNA.Domain.Utils {
                 allDayExpr = allDayExpr,
                 textExpr = textExpr,
                 descriptionExpr = descriptionExpr,
+                recurrenceRuleExpr = recurrenceRuleExpr,
+                recurrenceExceptionExpr = recurrenceExceptionExpr,
                 resources = resources.ToList()
             };
             return this;
@@ -313,12 +315,27 @@ namespace DNA.Domain.Utils {
         }
 
         public void GenerateCalendar(ScreenCalendar existingCalendar) {
+            if (existingCalendar == null)
+                existingCalendar = Calendar;
             if (IsCalendarActive) {
-                Calendar.startDateExpr = string.IsNullOrWhiteSpace(existingCalendar.startDateExpr) ? Calendar.startDateExpr : existingCalendar.startDateExpr;
-                Calendar.endDateExpr = string.IsNullOrWhiteSpace(existingCalendar.endDateExpr) ? Calendar.endDateExpr : existingCalendar.endDateExpr;
-                Calendar.textExpr = string.IsNullOrWhiteSpace(existingCalendar.textExpr) ? Calendar.textExpr : existingCalendar.textExpr;
-                Calendar.allDayExpr = string.IsNullOrWhiteSpace(existingCalendar.allDayExpr) ? Calendar.allDayExpr : existingCalendar.allDayExpr;
-                Calendar.descriptionExpr = string.IsNullOrWhiteSpace(existingCalendar.descriptionExpr) ? Calendar.descriptionExpr : existingCalendar.descriptionExpr;
+                var calendar = JObject.FromObject(Calendar ?? new ScreenCalendar());
+                calendar.Merge(JObject.FromObject(existingCalendar ?? new ScreenCalendar()));
+                existingCalendar = calendar.ToObject<ScreenCalendar>();
+
+                existingCalendar.startDateExpr ??= Calendar.startDateExpr;
+                existingCalendar.endDateExpr ??= Calendar.endDateExpr;
+                existingCalendar.textExpr ??= Calendar.textExpr;
+                existingCalendar.allDayExpr ??= Calendar.allDayExpr;
+                existingCalendar.descriptionExpr ??= Calendar.descriptionExpr;
+                existingCalendar.recurrenceRuleExpr ??= Calendar.recurrenceRuleExpr;
+                existingCalendar.recurrenceExceptionExpr ??= Calendar.recurrenceExceptionExpr;
+                
+                //Calendar.startDateExpr = string.IsNullOrWhiteSpace(existingCalendar.startDateExpr) ? Calendar.startDateExpr : existingCalendar.startDateExpr;
+                //Calendar.endDateExpr = string.IsNullOrWhiteSpace(existingCalendar.endDateExpr) ? Calendar.endDateExpr : existingCalendar.endDateExpr;
+                //Calendar.textExpr = string.IsNullOrWhiteSpace(existingCalendar.textExpr) ? Calendar.textExpr : existingCalendar.textExpr;
+                //Calendar.allDayExpr = string.IsNullOrWhiteSpace(existingCalendar.allDayExpr) ? Calendar.allDayExpr : existingCalendar.allDayExpr;
+                //Calendar.descriptionExpr = string.IsNullOrWhiteSpace(existingCalendar.descriptionExpr) ? Calendar.descriptionExpr : existingCalendar.descriptionExpr;
+                //Calendar.recurrenceRuleExpr = string.IsNullOrWhiteSpace(existingCalendar.recurrenceRuleExpr) ? Calendar.recurrenceRuleExpr : existingCalendar.recurrenceRuleExpr;
                 Calendar.editing ??= Editing != null
                     ? new ScreenCalendarEditing {
                         enabled = Editing.enabled,
@@ -330,18 +347,48 @@ namespace DNA.Domain.Utils {
                         roles = Editing.roles
                     }
                     : null;
-                if (existingCalendar.resources != null)
-                    Calendar.resources = existingCalendar.resources;
+
+                existingCalendar.resources = existingCalendar.resources
+                    .Concat(Calendar.resources ?? new List<ScreenCalendarResource>())
+                    .GroupBy(_ => _.fieldExpr)
+                    .Select(_ => _.Last())
+                    .ToList();
+
+                //var jArray = JArray.FromObject(result);
+                //var stringResult = jArray.ToString();
+
+                //if (existingCalendar.resources != null)
+                //    Calendar.resources = ;
             }
-            else {
-                Calendar = existingCalendar;
-            }
+            Calendar = existingCalendar;
         }
 
         public void GenerateSubMenus(List<ScreenSubMenu> existing, ScreenModelCollection parent) {
             if (existing != null)
                 SubMenus = existing;
         }
+
+        //IEnumerable<T> ArrayMergeByKey<T>(IEnumerable<T> a1, IEnumerable<T> a2, string key = "key") {
+        //    if (a1 == null)
+        //        return a2;
+        //    if (a2 == null)
+        //        return a1;
+        //    var jarray1 = JArray.FromObject(a1);
+        //    var jarray2 = JArray.FromObject(a2);
+
+        //    if (jarray1.Count == 0)
+        //        return a2;
+        //    if (jarray2.Count == 0)
+        //        return a1;
+            
+        //    var list = new List<T>();
+
+        //    foreach (var item in jarray1) {
+
+        //    }
+
+        //    return ;
+        //}
 
         public void GenerateSubModels(List<ScreenSubModel> existingSubModels, ScreenModelCollection parent) {
             SubModels = existingSubModels ?? new List<ScreenSubModel>();
@@ -449,6 +496,12 @@ namespace DNA.Domain.Utils {
                     if (col.allowEditing == null)
                         col.allowEditing = true;
                 }
+                // currency
+                if (col.type == "numeric" || col.type == "number") {
+                    if (!string.IsNullOrWhiteSpace(columnsAttr?.Currency)) {
+                        col.currency ??= columnsAttr?.Currency;
+                    }
+                }
             }
         }
 
@@ -540,6 +593,8 @@ namespace DNA.Domain.Utils {
 
     public class ScreenSubMenu {
         public string name { get; set; }
+        public string title { get; set; }
+        public string icon { get; set; }
         public string type { get; set; }
         public string[] defaultFilter { get; set; }
         public bool showInSidebar { get; set; }
@@ -580,6 +635,9 @@ namespace DNA.Domain.Utils {
         /// </summary>
         public string type { get; set; }
         public string format { get; set; }
+
+        // default: yyyy-MM-ddTHH:mm:ss
+        public string dateSerializationFormat { get; set; }
         public string currency { get; set; }
         public string autoComplete { get; set; }
         public bool? withTimeEdit { get; set; }
@@ -593,6 +651,9 @@ namespace DNA.Domain.Utils {
         public bool? allowEditing { get; set; }
         public bool? allowFiltering { get; set; }
         public string helpText { get; set; }
+        public object defaultValue { get; set; }
+        public bool? showClearButton { get; set; }
+        public bool? addNewShortcut { get; set; }
         public ScreenColumnData data { get; set; }
         public ScreenColumnEditWith editWith { get; set; }
 
@@ -612,6 +673,7 @@ namespace DNA.Domain.Utils {
         public string type { get; set; }
         public string name { get; set; }
         public string url { get; set; }
+        public string currency { get; set; }
         public string valueExpr { get; set; }
         public object displayExpr { get; set; }
         public string key { get; set; }
@@ -631,14 +693,32 @@ namespace DNA.Domain.Utils {
         public List<ScreenColumn> columns { get; set; }
     }
 
+    /// <summary>
+    /// https://js.devexpress.com/Documentation/ApiReference/UI_Components/dxScheduler/Configuration
+    /// </summary>
     public class ScreenCalendar {
         public string[] dateRageFields { get; set; }
         public ScreenCalendarEditing editing { get; set; }
+        public object filter { get; set; }
         public string startDateExpr { get; set; }
         public string endDateExpr { get; set; }
         public string allDayExpr { get; set; }
         public string textExpr { get; set; }
         public string descriptionExpr { get; set; }
+        public string recurrenceRuleExpr { get; set; }
+        public string recurrenceExceptionExpr { get; set; }
+        public string[] displayExpr { get; set; }
+        public string[] tooltipDisplayExpr { get; set; }
+        public int? startDayHour { get; set; }
+        public bool? showAllDayPanel { get; set; }
+        public int? maxAppointmentsPerCell { get; set; }
+        public int? endDayHour { get; set; }
+        public int? height { get; set; }
+        public int? cellDuration { get; set; }
+        /// <summary>
+        /// 'agenda' | 'day' | 'month' | 'timelineDay' | 'timelineMonth' | 'timelineWeek' | 'timelineWorkWeek' | 'week' | 'workWeek'
+        /// </summary>
+        public string defaultCurrentView { get; set; }
         public List<ScreenCalendarResource> resources { get; set; }
     }
 
@@ -654,6 +734,7 @@ namespace DNA.Domain.Utils {
     }
 
     public class ScreenCalendarResource {
+        public int? index { get; set; }
         public string fieldExpr { get; set; }
         public string displayExpr { get; set; }
         public string valueExpr { get; set; }

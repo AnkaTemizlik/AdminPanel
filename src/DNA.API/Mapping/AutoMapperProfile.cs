@@ -85,7 +85,10 @@ namespace DNA.API.Mapping {
         class ResponseConverter<T, K> : ITypeConverter<Response<T>, Response<K>> {
             public Response<K> Convert(Response<T> sourceMember, Response<K> destination, ResolutionContext context) {
                 if (sourceMember.Success) {
-                    return new Response<K>(context.Mapper.Map<K>(sourceMember.Resource));
+                    return new Response<K>(context.Mapper.Map<K>(sourceMember.Resource)) {
+                        Message = sourceMember.Message,
+                        Comment = sourceMember.Comment
+                    };
                 }
                 else {
                     return new Response<K>() {

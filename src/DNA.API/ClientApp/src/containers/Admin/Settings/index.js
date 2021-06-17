@@ -32,6 +32,8 @@ const Settings = (props) => {
 	const [open, setOpen] = useState(true);
 	const [selectedSection, setSelectedSection] = useState(null);
 
+	console.info("appsettings Settings", sectionNames)
+
 	useEffect(() => {
 		if (error) snack.error(error);
 	}, [error, snack]);

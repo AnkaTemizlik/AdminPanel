@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -26,7 +25,7 @@ const LoadableApp = Loadable.Map({
 			.then((status) => {
 				if (status.Success) return status.Resource; else throw status.Message
 			}),
-		settingsStatus: () => api.actions.run("GET", `/api/settings`)
+		settingsStatus: () => api.actions.run("GET", `/api/auth/settings`)
 			.then((status) => {
 				if (status.Success) {
 					const { Plugin, LicenseStatus } = status.Resource.configs
@@ -39,12 +38,14 @@ const LoadableApp = Loadable.Map({
 				else
 					throw new Error(status.Message)
 			}),
-		menusStatus: () => api.actions.run("GET", `/api/menus`)
-			.then((status) => {
-				if (status.Success)
-					return status;
-				else throw new Error(status.Message)
-			}),
+		menusStatus: () => {
+			return api.actions.run("GET", `/api/menus`)
+				.then((status) => {
+					if (status.Success)
+						return status;
+					else throw new Error(status.Message)
+				})
+		}
 	},
 	loading: Fallback,
 	//timeout: 10000,
@@ -67,7 +68,7 @@ const LoadableApp = Loadable.Map({
 		// i18n ****************
 		if (locales && locales.Translations) {
 			i18n.addResourceBundle('tr', 'common', locales.Translations.tr)
-			if (locales.Translations.en)
+			if (MultiLanguage.Enabled && locales.Translations.en)
 				i18n.addResourceBundle('en', 'common', locales.Translations.en)
 		}
 		console.success('i18n', i18n.language, MultiLanguage.Languages)

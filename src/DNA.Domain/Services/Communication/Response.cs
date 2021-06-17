@@ -119,7 +119,7 @@ namespace DNA.Domain.Services.Communication {
                         int.TryParse(errorCode.Replace("Hata Kodu : ", ""), out code);
                 }
                 if (string.IsNullOrWhiteSpace(Message))
-                    Message = Details != null ? string.Join(". ", Details.Where(_=>!_.StartsWith("Detay")&&!_.StartsWith("Hata Kodu"))) : $"{errorDesc}";
+                    Message = Details != null ? string.Join(". ", Details.Where(_ => !_.StartsWith("Detay") && !_.StartsWith("Hata Kodu"))) : $"{errorDesc}";
             }
             if (code > 0)
                 Code = code + 9000;
@@ -154,7 +154,7 @@ namespace DNA.Domain.Services.Communication {
                 return _exception;
             _exception = Success
                 ? null
-                : new Exception($"{Message} {Comment}", new Exception(string.Join(Environment.NewLine, Details)));
+                : new Exception($"{Message} {Comment}", new Exception(string.Join(Environment.NewLine, Details ?? new List<string>())));
             return _exception;
         }
     }

@@ -35,6 +35,8 @@ const config = {
 const Home = (props) => {
 	const { Plugin } = useSelector((state) => state.settings)
 	const menus = useSelector((state) => state.menus)
+	const { user, isAuthenticated } = useSelector((state) => state.auth2)
+
 	return <Layout config={config}>
 		{(args) => {
 			const { footerStyles, setSecondaryOpened } = args
@@ -52,9 +54,9 @@ const Home = (props) => {
 					</Box>
 
 					{menus ?
-						(props.isAuthenticated
+						(isAuthenticated
 							? null
-							: <AuthButton menu={menus.user} isAuthenticated={props.isAuthenticated} />)
+							: <AuthButton menu={menus.user} isAuthenticated={isAuthenticated} />)
 						: null}
 
 					<SidebarTrigger secondary />
@@ -62,7 +64,7 @@ const Home = (props) => {
 				</Header>
 
 				{menus
-					? <HomeSidebar setOpened={setSecondaryOpened} menus={menus} user={props.user} />
+					? <HomeSidebar setOpened={setSecondaryOpened} menus={menus} user={user} />
 					: null}
 
 				<div>
@@ -78,9 +80,4 @@ const Home = (props) => {
 	</Layout>
 }
 
-const mapStateToProps = (state) => ({
-	user: state.auth.user,
-	isAuthenticated: state.auth.token != null
-})
-
-export default connect(mapStateToProps)(Home)
+export default Home

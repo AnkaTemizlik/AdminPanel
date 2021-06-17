@@ -11,8 +11,7 @@ import AdminRoute from '../components/Route/AdminRoute'
 import withSnack from "../store/snack";
 import * as actions from "../store/actions";
 import { Alert, AlertTitle } from "@material-ui/lab";
-import EmailView from "./Home/EmailView";
-import Main from "./Home/Main";
+import { authCheckState } from '../store/slices/authSlice'
 
 const Root = (props) => {
 	let dispatch = useDispatch();
@@ -26,13 +25,11 @@ const Root = (props) => {
 	}, [dispatch, props.snack, alerts.message]);
 
 	useEffect(() => {
+		dispatch(authCheckState())
 		onTryAutoSignup()
-	}, [onTryAutoSignup]);
-
-	console.info("EmailView", settings)
+	}, [dispatch, onTryAutoSignup]);
 
 	return <>
-
 		{settings && settings.WarningMessage && settings.WarningMessage.Enabled &&
 			<div id="warning-message">
 				<Alert style={{ width: 360, border: "1px solid #ddd" }}

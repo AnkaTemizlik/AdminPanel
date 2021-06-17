@@ -16,7 +16,9 @@ code {
 	width: 10px;
 	height: 10px;
 }
-
+.dx-icon {
+	font-size: 18px !important;
+}
 .dx-icon,
 .dx-dropdowneditor-icon {
 	color: rgba(0, 0, 0, 0.64) !important;

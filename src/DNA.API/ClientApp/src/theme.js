@@ -50,14 +50,15 @@ const createTheme = (Plugin) => {
 		secondary = '#fb8500'
 	}
 	else if (ThemeName == "orange") {
-		primary = '#D2691E'
-		secondary = '#005376'
+		primary = '#FF9800'
+		secondary = '#318CE7'
 	}
 
 	document.querySelector('meta[name="theme-color"]').setAttribute('content', primary);
 
 	//const dark = '#323545'
 	//const dark2 = '#272a3a'
+	//const dark2 = 'rgba(0, 0, 0, 0.87)'
 	Theme = styles.createMuiTheme({
 		typography: {
 			fontFamily: ["Quicksand", "sans-serif"],
@@ -98,9 +99,10 @@ const createTheme = (Plugin) => {
 			//     black: dark,
 			//     white: white
 			// },
+			contrastThreshold: 3,
 			primary: {
 				main: primary,
-				//contrastText: dark
+				contrastText: '#FFFFFF'
 			},
 			secondary: {
 				main: secondary,
@@ -154,7 +156,7 @@ const createTheme = (Plugin) => {
 		},
 		MuiListItemIcon: {
 			root: {
-				minWidth: 32,
+				minWidth: 28,
 			},
 		},
 		MuiIcon: {
@@ -249,6 +251,8 @@ const createTheme = (Plugin) => {
 		// 	}
 		// }
 	}
+	console.log("Theme", Theme)
+	window.theme = Theme
 	return Theme
 };
 

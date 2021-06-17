@@ -22,7 +22,7 @@ namespace DNA.Persistence.Repositories {
             if (parameters != null)
                 dynParams.AddDynamicParams(parameters);
             using var connection = Context.Connection;
-            return await connection.ExecuteAsync(Context.SetTablePrefix(sql), dynParams);
+            return await connection.QueryFirstOrDefaultAsync<int>(Context.SetTablePrefix(sql), dynParams);
         }
 
         //public async Task<int> ExecuteAsync(string sql, object parameters = null) {
@@ -62,15 +62,5 @@ namespace DNA.Persistence.Repositories {
             return await connection.UpdateAsync<T>(row);
         }
 
-        //public async Task<bool> BulkMergeAsync<T>(List<T> rows) where T : class {
-        //    using var connection = Context.Connection;
-        //    connection.UseBulkOptions(o => {
-        //        o.InsertIfNotExists = true;
-        //        o.ColumnPrimaryKeyNames = new List<string> { "ProductCode" };
-        //        // o.ColumnPrimaryKeyExpression
-        //    })
-        //        .BulkMerge<T>(rows);
-        //    return await Task.FromResult(true);
-        //}
     }
 }

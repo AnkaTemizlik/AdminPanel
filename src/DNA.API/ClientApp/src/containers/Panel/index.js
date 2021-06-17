@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { Switch, Link, useRouteMatch } from "react-router-dom";
 import { useTranslation } from "../../store/i18next";
-import { CssBaseline, Box, Toolbar, Hidden, IconButton, Divider, Typography, Tooltip } from "@material-ui/core";
+import { CssBaseline, Box, Toolbar, Hidden, IconButton, Divider, Typography, Tooltip, Avatar } from "@material-ui/core";
 import DashboardIcon from "@material-ui/icons/DashboardTwoTone";
 import HomeIcon from "@material-ui/icons/HomeTwoTone";
 import * as Treasury from "@mui-treasury/layout";
@@ -121,6 +121,15 @@ const Panel = (props) => {
 
 						{menus ? (
 							<Treasury.Sidebar>
+								{settings.Plugin.Panel &&
+									<div style={{ display: "flex", justifyContent: "center", paddingTop: 12 }}>
+										<img
+											src={settings.Plugin.Panel.Logo ? settings.Plugin.Panel.Logo : null}
+											alt=""
+											height="84"
+										/>
+									</div>
+								}
 								<SidebarMenu setOpened={setOpened} menu={menus.panel} />
 								<Divider />
 								<SidebarMenu setOpened={setOpened} menu={menus.help} />
@@ -158,9 +167,10 @@ const Panel = (props) => {
 												);
 											}
 
+
 											s.subMenus && s.subMenus.map((f, j) => {
 												routes.push(
-													<PrivateRoute path={`${url}/screen/${s.route}/:subMenuName`} exact key={f.name + j}>
+													<PrivateRoute path={`${url}/screen/${s.route}/:subMenuName`} key={f.name + j + "-subMenu"}>
 														<Screen name={n} />
 													</PrivateRoute>
 												);
@@ -170,7 +180,7 @@ const Panel = (props) => {
 											// 	let sms = screenConfig.screens[f.name]
 											// 	if (f.type == "list" && f.visible !== false) {
 											routes.push(
-												<PrivateRoute path={`${url}/screen/${n}/:field/:value`} key={n + i}>
+												<PrivateRoute path={`${url}/screen/${n}/:field/:value`} exact key={n + i}>
 													<Screen name={n} />
 												</PrivateRoute>
 											);

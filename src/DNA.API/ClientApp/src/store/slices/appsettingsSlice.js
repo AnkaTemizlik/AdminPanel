@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, createSelector, current } from '@reduxjs
 import { setSettings } from './settingsSlice'
 import api from '../api'
 import i18n from '../i18n';
+import { isNotEmpty } from '../utils';
 
 export const selectSystemSettings = createSelector(
 	[(state) => state.appSettings], (appSettings) => appSettings && appSettings.configs ? appSettings.configs[0] : {}
@@ -35,9 +36,7 @@ export const applyAppSettings = createAsyncThunk(
 			if (action)
 				configs._[key]["action"] = { ...action }
 		}
-
 		dispatch(getAppSettings(configs))
-
 		return configs
 	}
 )
@@ -48,12 +47,11 @@ export const prepareFieldOptions = (sectionName, config, values, parentName) => 
 	let objects = [];
 	let forms = [];
 
-
 	Object.keys(values).map(function (p) {
+
 		let fullname = parentName ? `${parentName}:${sectionName}:${p}` : `${sectionName}:${p}`;
 		var options = getFieldProps(config, p, fullname);
 		var { textArray, keyValue, visible, action } = options;
-
 		if (visible) {
 			let obj = { name: p, fullname, value: values[p], options };
 
@@ -64,11 +62,12 @@ export const prepareFieldOptions = (sectionName, config, values, parentName) => 
 				});
 			}
 			else if (typeof values[p] === "object") {
-				objects.push({
-					...obj,
-					type: "object",
-					_: prepareFieldOptions(p, config, values[p], parentName ? `${parentName}:${sectionName}` : `${sectionName}`)
-				});
+				if (isNotEmpty(values[p]))
+					objects.push({
+						...obj,
+						type: "object",
+						_: prepareFieldOptions(p, config, values[p], parentName ? `${parentName}:${sectionName}` : `${sectionName}`)
+					});
 			}
 			else {
 				fields.push({
@@ -171,15 +170,13 @@ const appsettingsSlice = createSlice({
 			state.changes = {}
 			state.restartWarn = false
 			state.changeCount = 0
-
-			let currentConfig = state.configs
+			let currentConfig = action.payload
 			state.sectionNames = Object.keys(currentConfig.values).map((sec) => {
 				let options = currentConfig.config.Fields[sec]
 				if (options && options.visible === false)
 					return null;
 				return { name: sec, caption: i18n.t(options.caption || sec) }
 			})
-			//state.currentSection = null
 		},
 		changeSection: (state, action) => {
 			state.currentSection = action.payload
@@ -209,8 +206,12 @@ const appsettingsSlice = createSlice({
 		}
 	},
 	extraReducers: {
-		// [changeSection.fulfilled]: (state, action) => {
-		// }
+		[applyAppSettings.fulfilled]: (state, action) => {
+		},
+		[applyAppSettings.rejected]: (state, action) => {
+			console.error("applyAppSettings.rejected", action.error)
+			state.error = action.payload
+		}
 	}
 });
 
