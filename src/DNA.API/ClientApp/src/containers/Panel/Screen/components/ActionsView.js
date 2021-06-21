@@ -117,69 +117,36 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 			else
 				disabled = true
 		}
-
-		return <Tooltip title={t(action.text)} key={i}>
-			<span>
-				<Button key={i}
-					disabled={disabled}
-					onClick={() => executeApi(action)}
-					style={{ marginRight: 5 }}
-					icon={action.dxIcon || undefined}
-					type="normal"
-					stylingMode="outlined"
-				>
-					<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
-						{action.icon && <Iconify icon={action.icon} fontSize="1.125rem" />}
-						{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(action.text)}</span> : undefined}
-					</span>
-				</Button>
-			</span>
-		</Tooltip>
+		return getButton(i, disabled, action.text, action.icon, action.dxIcon, () => executeApi(action));
 	}
 
 	const renderEvalAction = (action, i) => {
 		let disabled = isDisable(action.dependsOnSelected)
-
-		return <Tooltip title={t(action.text)} key={i}>
-			<span>
-				<Button key={i}
-					disabled={disabled}
-					onClick={() => executeEval(action)}
-					style={{ marginRight: 5 }}
-					icon={action.dxIcon || undefined}
-					text={showButtonText ? action.text : undefined}
-					stylingMode="outlined"
-				>
-					<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
-						{action.icon && <Iconify icon={action.icon} fontSize="1.125rem" />}
-						{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(action.text)}</span> : undefined}
-					</span>
-				</Button>
-			</span>
-		</Tooltip>
+		return getButton(i, disabled, action.text, action.icon, action.dxIcon, () => executeEval(action));
 	}
 
 	const renderRouteAction = (action, i) => {
 		let disabled = isDisable(action.dependsOnSelected)
-		return <Tooltip title={t(action.text)} key={i} >
-			<span >
-				<Button key={i}
-					disabled={disabled}
-					onClick={() => {
-						var url = supplant(action.route, row)
-						history.push(url)
-					}}
-					style={{ marginRight: 5 }}
-					icon={action.dxIcon}
-					stylingMode="outlined"
-				>
-					<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
-						{action.icon && <Iconify icon={action.icon} fontSize="1.125rem" />}
-						{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(action.text)}</span> : undefined}
-					</span>
-				</Button>
+		return getButton(i, disabled, action.text, action.icon, action.dxIcon, () => {
+			var url = supplant(action.route, row)
+			history.push(url)
+		});
+	}
+
+	const getButton = (i, disabled, text, icon, dxIcon, onClick) => {
+		return <Button key={i}
+			hint={t(text)}
+			disabled={disabled}
+			onClick={onClick}
+			style={{ marginRight: 5 }}
+			icon={dxIcon}
+			stylingMode="outlined"
+		>
+			<span style={{ marginBottom: -1.74, marginTop: 0, padding: 0 }}>
+				{icon && <Iconify icon={icon} fontSize="1.125rem" />}
+				{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(text)}</span> : undefined}
 			</span>
-		</Tooltip>
+		</Button>
 	}
 
 	const renderActionButton = (action, i) => {
@@ -214,19 +181,19 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 			if (Array.isArray(m.showIn) ? m.showIn.indexOf("toolbar") > -1 : m.showIn == "toolbar") {
 				console.info("popup", m)
 				return m.showIn.indexOf("popup") > -1
-					? <Button key={i}
-						hint={t(m.title)}
-						disabled={m.dependsOnSelected == true ? !row : false}
-						style={{ marginRight: 5 }}
-						icon={m.dxIcon}
-						onClick={(e) => setPopupViewOpen(m)}
-					>
-						<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
-							{m.icon && <Iconify icon={m.icon} fontSize="1.125rem" />}
-							{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(m.name)}</span> : undefined}
-						</span>
-
-					</Button>
+					? getButton(i, m.dependsOnSelected == true ? !row : false, m.name, m.icon, m.dxIcon, (e) => setPopupViewOpen(m))
+					// ? <Button key={i}
+					// 	hint={t(m.title)}
+					// 	disabled={m.dependsOnSelected == true ? !row : false}
+					// 	style={{ marginRight: 5 }}
+					// 	icon={m.dxIcon}
+					// 	onClick={(e) => setPopupViewOpen(m)}
+					// >
+					// 	<span style={{ display: "flex", alignItems: "center", marginBottom: -1.74, marginTop: 0, padding: 0 }}>
+					// 		{m.icon && <Iconify icon={m.icon} fontSize="1.125rem" />}
+					// 		{showButtonText ? <span style={{ paddingLeft: 4 }}>{t(m.name)}</span> : undefined}
+					// 	</span>
+					// </Button>
 					: <Button key={i}
 						hint={t(m.title)}
 						disabled={!row}

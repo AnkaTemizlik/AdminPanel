@@ -154,7 +154,7 @@ namespace DNA.Domain.Models {
                     )
 
             ;
-        }
+        } 
     }
 
     public class ConfigProperty : Dictionary<string, object> {

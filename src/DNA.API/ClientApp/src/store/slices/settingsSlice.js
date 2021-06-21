@@ -156,7 +156,7 @@ const configureColumns = (name, columns, config) => {
 				col.dataType = "currency"
 				col.format = {
 					style: "currency",
-					currency: col.currency
+					currency: col.currency || "TRY"
 				}
 			}
 		}
@@ -164,7 +164,7 @@ const configureColumns = (name, columns, config) => {
 			col.dataType = "currency"
 			col.format = {
 				style: "currency",
-				currency: col.currency
+				currency: col.currency || "TRY"
 			}
 		}
 		else if (col.type == "textArea") {

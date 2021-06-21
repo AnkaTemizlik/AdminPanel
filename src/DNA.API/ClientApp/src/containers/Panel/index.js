@@ -121,7 +121,7 @@ const Panel = (props) => {
 
 						{menus ? (
 							<Treasury.Sidebar>
-								{settings.Plugin.Panel &&
+								{settings.Plugin.Panel && settings.Plugin.Panel.Logo &&
 									<div style={{ display: "flex", justifyContent: "center", paddingTop: 12 }}>
 										<img
 											src={settings.Plugin.Panel.Logo ? settings.Plugin.Panel.Logo : null}

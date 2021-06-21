@@ -13,6 +13,7 @@ i18n
 		resources: {},
 		supportedLngs: ['tr', 'en'],
 		load: "languageOnly",
+		//lng: "tr",
 		lowerCaseLng: true,
 		fallbackLng: 'tr',
 		debug: process.env && process.env.NODE_ENV === "development",
@@ -21,7 +22,11 @@ i18n
 			caches: ['localStorage', 'cookie'],
 		},
 		ns: ["common"],
-		defaultNS: "common"
+		defaultNS: "common",
+		returnObjects: true,
+		returnedObjectHandler: (key, value, options) => {
+			console.info("i18n returnedObjectHandler", key, value, options)
+		}
 		// react: {
 		// 	wait: false,
 		// 	useSuspense: true,
