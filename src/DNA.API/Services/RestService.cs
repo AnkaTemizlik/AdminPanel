@@ -95,14 +95,19 @@ namespace DNA.API.Services {
             request.AddHeader("Content-Type", _contentType);
 
             if (body != null)
-                request.AddJsonBody(body is string ? body : JsonConvert.SerializeObject(body));
+                request.AddJsonBody(body);
+                //request.AddJsonBody(body is string ? body : JsonConvert.SerializeObject(body));
 
-            var queryResult = await _client.ExecuteAsync<T>(request);
+            var restResponse = _client.Execute<T>(request);
+            var queryResult = new Response<T> {
+                Code = (int)restResponse.StatusCode,
+                Success = restResponse.StatusCode == System.Net.HttpStatusCode.OK,
+                Comment = restResponse.StatusDescription,
+                Message = restResponse.ErrorException?.Message,
+                Resource = restResponse.Data
+            };
 
-            return _mapper.Map<Response<T>>(queryResult);
+            return await Task.FromResult(queryResult);
         }
     }
-
-
-
 }

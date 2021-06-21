@@ -272,7 +272,7 @@ const DataTable = React.memo((props) => {
 								colSpan={c.colSpan}
 								editorType={c.editorType}
 								helpText={c.helpText}
-								editorOptions={c.editorOptions}
+								editorOptions={{...c.editorOptions}}
 							/>
 							: null
 

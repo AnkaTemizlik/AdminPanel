@@ -96,42 +96,38 @@ const Dashboard = ({ snack }) => {
 	return (
 		<Container loading={loading}>
 			<Grid container spacing={2} >
-
-				<Grid item xs={12} style={{ margin: 4 }}>
-					<TileView
-						style={{ marginLeft: -16 }}
-						direction="horizontal"
-						itemMargin={16}
-						width='100%'
-						height={190}
-						baseItemWidth={160}
-						baseItemHeight={160}
-					>
-						{cardNames && cardNames.map((cardName, i) => {
-							let c = cards[cardName];
-							if (!c || c.type != "link")
-								return null
-
-							return <Item
-								onClick={() => history.push(c.route)}
-								key={i}
-							>
-								<div className={classes.tileItem}>
-									<Iconify className={classes.tileItemIcon} icon={`${c.icon}`} fontSize={56} />
-									<div style={{ display: "flex" }}>
-										{c.actionIcon && <span><Icon>{c.actionIcon}</Icon></span>}
-										<Typography>
-											{t(c.title)}
-										</Typography>
+				{cardNames && cardNames.filter(_ => _.type == "link").length > 0
+					? <Grid item xs={12} style={{ margin: 4 }}>
+						<TileView
+							style={{ marginLeft: -16 }}
+							direction="horizontal"
+							itemMargin={16}
+							width='100%'
+							height={190}
+							baseItemWidth={160}
+							baseItemHeight={160}
+						>
+							{cardNames.filter(_ => _.type == "link").map((cardName, i) => {
+								let c = cards[cardName];
+								return <Item
+									onClick={() => history.push(c.route)}
+									key={i}
+								>
+									<div className={classes.tileItem}>
+										<Iconify className={classes.tileItemIcon} icon={`${c.icon}`} fontSize={56} />
+										<div style={{ display: "flex" }}>
+											{c.actionIcon && <span><Icon>{c.actionIcon}</Icon></span>}
+											<Typography>
+												{t(c.title)}
+											</Typography>
+										</div>
 									</div>
-								</div>
 
-							</Item>
-						})}
-					</TileView>
-
-
-				</Grid>
+								</Item>
+							})}
+						</TileView>
+					</Grid>
+					: null}
 
 				{cardNames && cardNames.map((cardName, i) => {
 					let c = cards[cardName];
