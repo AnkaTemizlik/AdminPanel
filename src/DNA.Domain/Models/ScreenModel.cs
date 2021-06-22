@@ -605,6 +605,7 @@ namespace DNA.Domain.Utils {
         public string title { get; set; }
         public bool? visible { get; set; }
         public bool? dependsOnSelected { get; set; }
+        public bool? showInEditColumn { get; set; }
 
         /// <summary>
         /// list, property, gallery, files (not iplemented yet)

@@ -281,8 +281,6 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, col
 					columns.map(c => {
 
 						let editor = form.getEditor(c.name)
-						console.info("onAppointmentFormOpening", editor)
-
 						// defaultValue
 						// eslint-disable-next-line no-eval
 						let val = c.defaultValue ? eval(c.defaultValue) : undefined
@@ -361,7 +359,6 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, col
 					if (c.required == true) {
 						mainGroupItems.map(i => {
 							if (i.dataField == c.name) {
-								console.warning("onAppointmentFormOpening", c)
 								i.validationRules = [{ type: "required" }]
 							}
 						})
@@ -371,7 +368,6 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, col
 
 						// }
 
-
 						// var validationRules = editor.option("validationRules")
 						// validationRules.push({ type: "required" })
 						// console.info("onAppointmentFormOpening required", validationRules)
@@ -380,35 +376,34 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, col
 					}
 				})
 
-				// console.warning("onAppointmentFormOpening", form.getEditor("CustomerId"), e.appointmentData, mainGroupItems)
-				// let customerIdEditor = form.getEditor("CustomerId")
-				// customerIdEditor.option("editorType", "dxLookup")
-				// let serviceIdEditor = form.getEditor("ServiceId")
-
-				// if (!form.getEditor("PhoneNumber")) {
+				// daha sonra dinamik hale getirilebilir
+				// if (!mainGroupItems.find(function (i) { return i.dataField === "PhoneNumber" })) {
 				// 	mainGroupItems.push({
-				// 		label: { text: t("PhoneNumber") },
+				// 		//colSpan: 2,
+				// 		label: { text: t("Appointment.PhoneNumber") },
 				// 		editorType: "dxTextBox",
 				// 		editorOptions: { readOnly: true },
 				// 		dataField: "PhoneNumber"
 				// 	});
 				// }
-				// if (!mainGroupItems.find(function (i) { return i.dataField === "Note" })) {
-				// 	mainGroupItems.push({
-				// 		colSpan: 2,
-				// 		label: { text: "Note" },
-				// 		editorType: "dxTextBox",
-				// 		dataField: "Note"
-				// 	});
-				// }
-				form.itemOption('mainGroup', 'items', mainGroupItems);
+				
+				// daha sonra dinamik hale getirilebilir
+				if (columns.find(_ => _.name == "Amount")) {
+					if (!mainGroupItems.find(function (i) { return i.dataField === "Amount" })) {
+						mainGroupItems.push({
+							//colSpan: 2,
+							label: { text: t("Appointment.Amount") },
+							editorType: "dxTextBox",
+							dataField: "Amount"
+						});
+					}
+				}
+				let items = mainGroupItems.filter(i => i.itemType == "group" ? true : i.dataField != undefined)
+				form.itemOption('mainGroup', 'items', items);
 			}}
 			resources={resources}
 		>
 		</Scheduler>
-
-
-
 	</>
 })
 

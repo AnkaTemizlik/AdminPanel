@@ -43,7 +43,7 @@ const menusSlice = createSlice({
 							newMenu.menus.push({
 								name: sm.name,
 								label: title,
-								to: ("/" + sm.defaultFilter[0] + "/" + sm.defaultFilter[2]) + "?title=" + title,
+								to: sm.defaultFilter ? ("/" + sm.defaultFilter[0] + "/" + sm.defaultFilter[2]) : "/" + sm.name + "?title=" + title,
 								icon: sm.icon,
 								isHeaderVisible: true,
 								roles: sm.roles,
