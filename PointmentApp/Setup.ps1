@@ -16,11 +16,12 @@ Write-Output $host
 
 [string]$pluginSearh = "import Plugin from '\./\w+'"
 [string]$pluginReplace = [string]::Format("import Plugin from './{0}'", $pluginCode) 
-(Get-Content $rootIndex -Encoding "UTF8") | Foreach-Object {$_ -replace $pluginSearh, $pluginReplace} | Out-File $rootIndex "UTF8"
+(Get-Content $rootIndex -Raw) | Foreach-Object {$_ -replace $pluginSearh, $pluginReplace} | Out-File $rootIndex ASCII
 
 [string]$findHostLine = "const Host = [\'].*[\']" 
 [string]$newHostLine = [string]::Format("const Host = '{0}'", $host) 
 
-(Get-Content $axios -Encoding "UTF8") | Foreach-Object {$_ -replace $findHostLine, $newHostLine} | Out-File $axios "UTF8" 
+(Get-Content $axios -Raw) | Foreach-Object {$_ -replace $findHostLine, $newHostLine} | Out-File $axios ASCII 
+
 
 Write-Output "**************** Completed."
