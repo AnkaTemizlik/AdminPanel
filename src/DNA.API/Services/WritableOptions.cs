@@ -833,7 +833,9 @@ namespace DNA.API.Services {
                     if (!t.Type.IsEnum) {
                         values.Add(t.Name + " Screen", t.Name + "s");
                         values.Add("Edit " + t.Name, "Edit " + t.Name);
-                        values.Add("New " + t.Name, "New " + t.Name);
+                        values.Add(t.Name + " Model", t.Name + " Model");
+                        values.Add(t.Name + " Settings", t.Name + " Settings");
+                        values.Add(t.Name + " List", t.Name + " List");
                     }
                     var fields = t.Type.IsEnum
                         ? t.Type.GetFields().Where(_ => !_.IsSpecialName).Select(_ => _.Name).ToDictionary(_ => _, _ => _.ToTitleCase())

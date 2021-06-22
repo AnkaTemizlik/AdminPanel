@@ -132,20 +132,29 @@ namespace DNA.Domain.Models {
                         )
                     .Set("Panel", Property()
                         .Add("Logo", "")
-                        )
-                .Set("AuthSettings", false, "Auth Settings", Property()
-                    .Add("GoPanelOnStart", false)
-                    .Add("AllowPasswordChanging", false)
-                    .Add("AllowRegistration", false)
-                    .Set("ReCAPTCHA", Property()
-                        .Add("Enabled", false)
-                        .Add("SiteKey", "")
-                        .Add("DataTheme", "dark")
+                        )                        
+                    .Set("AuthSettings", false, "Auth Settings", Property()
+                        .Add("GoPanelOnStart", false)
+                        .Add("AllowPasswordChanging", false)
+                        .Add("AllowRegistration", false)
+                        .Set("ReCAPTCHA", Property()
+                            .Add("Enabled", false)
+                            .Add("SiteKey", "")
+                            .Add("DataTheme", "dark")
+                            )
                         )
                     )
-                )
+                .Set("SocialMediaLinks", false, Property()
+                    .AddTextArea("Twitter", "#")
+                    .AddTextArea("YouTube", "#")
+                    .AddTextArea("Facebook", "#")
+                    .AddTextArea("Instagram", "#")
+                    .AddTextArea("LinkedIn", "#")
+                    .AddTextArea("Email", "mailto:#")
+                    )
+
             ;
-        }
+        } 
     }
 
     public class ConfigProperty : Dictionary<string, object> {
@@ -194,7 +203,7 @@ namespace DNA.Domain.Models {
         }
 
         public ConfigProperty Set(string name, ConfigProperty value) {
-            FieldTemplates.Add(name, new FieldTemplate() { readOnly = value._readOnly });
+            FieldTemplates.Add(name, new FieldTemplate() { readOnly = value._readOnly, caption = name + " Settings" });
             base.Add(name, value);
             return this;
         }
@@ -248,6 +257,12 @@ namespace DNA.Domain.Models {
 
         public ConfigProperty Add(string name, bool value, bool? restartRequired = null) {
             FieldTemplates.Add(name, _config.Editing.Check(null, restartRequired));
+            base.Add(name, value);
+            return this;
+        }
+
+        public ConfigProperty Add(string name, string format, DateTime value, bool? restartRequired = null) {
+            FieldTemplates.Add(name, _config.Editing.DateTime(null, format, restartRequired));
             base.Add(name, value);
             return this;
         }
@@ -341,6 +356,7 @@ namespace DNA.Domain.Models {
             return this;
         }
     }
+
     public class ConfigEditingTemplate {
         public FieldTemplate Empty(string caption_ = null) {
             var template = new FieldTemplate().Empty(caption_);

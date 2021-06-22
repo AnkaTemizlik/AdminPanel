@@ -8,6 +8,7 @@ import RowFieldsView from "./RowFieldsView";
 import ModelView from "./ModelView";
 import TableView from "./TableView";
 import TileView from "./TileView";
+import Iconify from "../../../../components/UI/Icons/Iconify";
 import { rolesAllowed } from "../../../../store/utils";
 
 const FooterView = React.memo(({ row, screen, name }) => {
@@ -35,10 +36,10 @@ const FooterView = React.memo(({ row, screen, name }) => {
 			<Toolbar>
 				<Tabs value={tabIndex} onChange={tabChange}>
 					{models.map((m, i) => {
-						return <Tab key={i} icon={<Icon>{m.icon}</Icon>} label={t(m.title || m.name)} />
+						return <Tab key={i} icon={<Iconify icon={m.icon} />} label={t(m.title || m.name)} />
 					})}
 					{screen.hideDetails !== true &&
-						<Tab icon={<Icon>format_list_bulleted</Icon>} label={t("Details")} />}
+						<Tab icon={<Iconify icon={"format_list_bulleted"} />} label={t("Details")} />}
 				</Tabs>
 			</Toolbar>
 
