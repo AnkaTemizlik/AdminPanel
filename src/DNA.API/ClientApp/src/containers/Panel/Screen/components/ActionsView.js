@@ -212,7 +212,7 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 			return null
 		})}
 
-		{actions && actions.filter(a => a.visible !== false && a.type != "dx").map((a, i) => {
+		{actions && actions.filter(a => a.showInEditColumn !== true && a.visible !== false && a.type != "dx").map((a, i) => {
 			return renderActionButton(a, i)
 		})}
 

@@ -72,9 +72,9 @@ const DataTable = React.memo((props) => {
 	// 	onFocusedRowChanged && onFocusedRowChanged(dataRow, dataRowWithLabels)
 	// }
 
-	// useEffect(() => {
-	// 	console.purple("DataTable", newItem)
-	// }, [newItem])
+	useEffect(() => {
+		console.purple("DataTable", actions)
+	}, [actions])
 
 	useEffect(() => {
 		setStore(() => {
@@ -172,6 +172,7 @@ const DataTable = React.memo((props) => {
 	return <>
 
 		<DataGrid
+			style={{ touchAction: "manipulation" }}
 			id={props.id || "grid"}
 			keyExpr={keyFieldName || "Id"}
 			ref={getRef}
@@ -272,7 +273,7 @@ const DataTable = React.memo((props) => {
 								colSpan={c.colSpan}
 								editorType={c.editorType}
 								helpText={c.helpText}
-								editorOptions={{...c.editorOptions}}
+								editorOptions={{ ...c.editorOptions }}
 							/>
 							: null
 
@@ -326,6 +327,12 @@ const DataTable = React.memo((props) => {
 				<Column type="buttons" width={70}>
 					{props.editing.allowUpdating && <Button name="edit" />}
 					{props.editing.allowDeleting && <Button name="delete" />}
+					{actions.filter(a => a.showInEditColumn == true).map(a => {
+						return <Button hint={a.text} icon={a.icon} onClick={(e) => {
+							var url = supplant(a.route, e.row.data)
+							history.push(url)
+						}} />
+					})}
 				</Column>
 			}
 
