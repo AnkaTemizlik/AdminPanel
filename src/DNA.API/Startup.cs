@@ -162,7 +162,19 @@ namespace DNA.API {
             app.UseAuthorization();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            //app.UseSpaStaticFiles();
+            if (env.IsDevelopment()) {
+                app.UseSpaStaticFiles();
+            }
+            else {
+                app.UseSpaStaticFiles(new StaticFileOptions {
+                    OnPrepareResponse = context =>
+                    {
+                        context.Context.Response.Headers.Add("Cache-Control", "max-age=31536000");
+                        context.Context.Response.Headers.Add("Expires", "31536000");
+                    }
+                });
+            }
 
             app.UseHangfireDashboard("/hangfire", new DashboardOptions {
                 Authorization = new[] {
@@ -229,6 +241,15 @@ namespace DNA.API {
                         spa.Options.StartupTimeout = TimeSpan.FromSeconds(360);
                         //spa.UseReactDevelopmentServer(npmScript: "start");
                     }
+                    spa.Options.DefaultPageStaticFileOptions = new StaticFileOptions {
+                        OnPrepareResponse = context => {
+                            if (context.File.Name == "index.html") {
+                                context.Context.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                                context.Context.Response.Headers.Add("Expires", "-1");
+                                context.Context.Response.Headers.Add("Pragma", "no-cache");
+                            }
+                        }
+                    };
                 });
             });
 
