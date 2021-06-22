@@ -70,6 +70,8 @@ namespace PointmentApp.Services {
                 JObject jObject = JObject.FromObject(appointment);
                 if (jObject.ContainsKey("StartDate"))
                     await CheckOneDayAppointmentCount(jObject.ToObject<Appointment>());
+                if (string.IsNullOrWhiteSpace($"{appointment.Title}"))
+                    appointment.Title = string.Empty;
                 await _entityService.UpdateAsync("Appointment", id, appointment);
                 var data = await _processService.GetAsync<Appointment>(id);
                 if (data == null)
@@ -86,7 +88,8 @@ namespace PointmentApp.Services {
         public async Task<Response> InsertAppointmentAsync(Appointment appointment) {
             try {
                 await CheckOneDayAppointmentCount(appointment);
-
+                if (string.IsNullOrWhiteSpace(appointment.Title))
+                    appointment.Title = string.Empty;
                 if (appointment.AllDay) {
                     if (appointment.StartDate.HasValue)
                         if (!appointment.EndDate.HasValue)

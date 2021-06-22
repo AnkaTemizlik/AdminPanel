@@ -141,7 +141,7 @@ namespace PointmentApp {
                 new ScreenModel(typeof(Appointment), true)
                     .Visibility(true)
                     .Editable(true)
-                    .CalendarView("Title","AllDay", "StartDate", "EndDate", "Note", "RecurrenceRule", "RecurrenceException",
+                    .CalendarView("Title","AllDay", "StartDate", "EndDate", "", "RecurrenceRule", "RecurrenceException",
                         new ScreenCalendarResource(typeof(Service), "ServiceId") { useColorAsDefault = true },
                         new ScreenCalendarResource(typeof(DNA.API.Models.User), "AssignTo","Id", "FullName"),
                         new ScreenCalendarResource(typeof(Customer), "CustomerId")
