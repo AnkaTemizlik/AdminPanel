@@ -327,7 +327,7 @@ const DataTable = React.memo((props) => {
 				<Column type="buttons" width={70}>
 					{props.editing.allowUpdating && <Button name="edit" />}
 					{props.editing.allowDeleting && <Button name="delete" />}
-					{actions.filter(a => props.editing.allowEditing && a.showInEditColumn == true).map(a => {
+					{actions && actions.filter(a => props.editing.allowEditing && a.showInEditColumn == true).map(a => {
 						return <Button hint={a.text} icon={a.icon} onClick={(e) => {
 							var url = supplant(a.route, e.row.data)
 							history.push(url)

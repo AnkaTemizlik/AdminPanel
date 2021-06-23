@@ -13,9 +13,11 @@ export const selectScreen = createSelector(
 export const getById = createAsyncThunk(
 	'panel/screen/getById',
 	async ({ name, id }, { dispatch, getState }) => {
+		dispatch(setLoading(true))
 		let status = await api.entity.getById(name, id)
 		if (!status.Success)
 			dispatch(showMessage(status.Message))
+		dispatch(setLoading(false))
 		return status;
 	}
 )
@@ -33,7 +35,8 @@ export const setCurrentScreen = createAsyncThunk(
 
 let initialData = {
 	rows: [],
-	total: 0
+	total: 0,
+	loading: false
 }
 
 var initialQuery = {
@@ -79,6 +82,7 @@ const screenSlice = createSlice({
 		[getById.fulfilled]: (state, { payload }) => {
 			if (payload)
 				state.row = payload.Success ? payload.Resource : null
+			state.loading = false
 		}
 	}
 });
