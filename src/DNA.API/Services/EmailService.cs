@@ -219,15 +219,15 @@ namespace DNA.API.Services {
             _Password = _smtpConfig.GetValue<string>("Password");
             _ReplyTo = _valuer.Get(_smtpConfig.GetValue<string>("ReplyTo"));
             _EnableSsl = _smtpConfig.GetValue<bool>("EnableSsl");
-//#if DEBUG
-//            if (Environment.MachineName == "MAO") {
-//                _Address = "smtp.gmail.com";
-//                _Password = "T9czgYm%q7ZR";
-//                _UserName = "mehmet.orakci@dnaproje.com.tr";
-//                _Port = 587;
-//                _EnableSsl = true;
-//            }
-//#endif
+            //#if DEBUG
+            //            if (Environment.MachineName == "MAO") {
+            //                _Address = "smtp.gmail.com";
+            //                _Password = "T9czgYm%q7ZR";
+            //                _UserName = "mehmet.orakci@dnaproje.com.tr";
+            //                _Port = 587;
+            //                _EnableSsl = true;
+            //            }
+            //#endif
         }
 
         private async Task<bool> SendInternalAsync(string body, string subject, string toAddress, string toName, string[] attachments, params MailAddress[] cc) {
@@ -330,6 +330,9 @@ namespace DNA.API.Services {
         /// <returns></returns>
         public async Task<bool> SendAsync(string fullSectionPath, string[] attachments, params MailAddress[] cc) {
             var section = _config.GetSection(fullSectionPath);
+            if (section.GetSection("Enabled").Exists())
+                if (!section.GetValue<bool>("Enabled"))
+                    return true;
             if (!section.Exists()) {
                 section = _config.GetSection("Config:" + fullSectionPath);
                 if (!section.Exists()) {
@@ -348,7 +351,7 @@ namespace DNA.API.Services {
 
             var enabled = section.GetValue<bool>("Enabled");
             if (!enabled)
-                throw new Exception("Required E-mail Settings Section is not enabled.");
+                return true;
             var uniqueId = Guid.NewGuid().ToString();
             var bodySection = section.GetSection("Body");
             var comment = _valuer.Get(bodySection["Comment"]);
@@ -402,15 +405,14 @@ namespace DNA.API.Services {
                 .Replace("[HELP_TEXT_ROW]", helpTextVisible ? _helpTextRow : "")
                 .Replace("[SIGNATURE_ROW]", signatureVisible ? _signatureRow : "")
                 .Replace("[LINKS_ROW]", linksVisible ? _linksRow : "")
-                .Replace("[VIEW_IN_BROWSER_ROW]", viewInBrowserVisible ? _viewInBrowserRow : "")                
+                .Replace("[VIEW_IN_BROWSER_ROW]", viewInBrowserVisible ? _viewInBrowserRow : "")
                 .Replace("[ADDRESS_ROW]", addressVisible ? _addressRow : "")
                 .Replace("[SEND_DATE_ROW]", _sendDateRow).Replace("[SEND_DATE]", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss \"GMT\"zzz") + " " + Environment.MachineName)
                 ;
-            
-            if (!string.IsNullOrWhiteSpace(confirmationCode))
-                body = body.Replace("[UNSUBSCRIBE_ROW]", unsubscribeVisible ? _unsubscribeRow : "");
 
-                if (helpTextExVisible) {
+            body = body.Replace("[UNSUBSCRIBE_ROW]", unsubscribeVisible ? _unsubscribeRow : "");
+
+            if (helpTextExVisible) {
                 body = body
                     .Replace("[BLUE_TABLE]", _blueTable)
                     .Replace("[BLUE_TABLE_CONTENT]", "[HELP_TEXT_EX_ROW]")

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import api from "../../../../store/api";
 import { isNotEmpty, supplant } from "../../../../store/utils";
 import { showMessage } from '../../../../store/slices/alertsSlice'
+import { setLoading } from '../store/screenSlice'
 import { Box, Icon, IconButton, Tooltip, Typography } from "@material-ui/core";
 import Modal from "../../../../components/UI/Modal";
 import { useTranslation } from "../../../../store/i18next";
@@ -53,6 +54,7 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 		}
 		var preparedUrl = supplant(url, row);
 		console.purple("runAction", url, row, preparedUrl, currentAction)
+		dispatch(setLoading(true))
 		api.actions.run(method, preparedUrl, params)
 			.then(status => {
 				if (status.Success) {
@@ -67,9 +69,11 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 				}
 				else
 					dispatch(showMessage({ Success: false, Message: ((onError && t(onError.text)) || "İşlem Başarısız. ") + " " + (t(status.Message) || status.Error) }))
+				dispatch(setLoading(false))
 			})
 			.catch(e => {
 				dispatch(showMessage({ Success: false, Message: ((onError && t(onError.text)) || "İşlem Başarısız. ") + " " + e }))
+				dispatch(setLoading(false))
 			})
 	}
 
