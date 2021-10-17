@@ -11,6 +11,8 @@ const withSnack = (Component) => {
 
 		// https://iamhosseindhv.com/notistack/api#mutual
 		function show(m, v) {
+			if (v == "error")
+				console.error("Snackbar", m)
 			sb.enqueueSnackbar(null, {
 				content: (key) => <SnackMessage id={key} message={m} variant={v} />,
 				onClose: () => dispatch(hideMessage()),

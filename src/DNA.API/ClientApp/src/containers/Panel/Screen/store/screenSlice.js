@@ -75,7 +75,9 @@ const screenSlice = createSlice({
 		setQuery: (state, { payload }) => {
 			state.query = payload
 		},
-		setRow: (state, { payload }) => { state.row = payload },
+		setRow: (state, { payload }) => {
+			state.row = payload || null
+		},
 		setLoading: (state, { payload }) => { state.loading = payload },
 	},
 	extraReducers: {

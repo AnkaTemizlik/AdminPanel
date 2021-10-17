@@ -21,6 +21,8 @@ namespace DNA.API.Services {
 
         public void SetCurrentModel(params object[] models) {
             foreach (var model in models) {
+                if (model == null)
+                    continue;
                 var name = model.GetType().Name;
                 if (name == nameof(ApplicationUser))
                     Add("User", model);

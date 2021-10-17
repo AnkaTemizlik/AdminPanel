@@ -7,6 +7,8 @@ namespace DNA.Domain {
     public interface IAppDbContext : IDisposable {
         SqlConnection Connection { get; }
         SqlConnection NetsisConnection { get; }
+
+        void Set(string connectionString);
         string SetTablePrefix(string query);
     }
 }

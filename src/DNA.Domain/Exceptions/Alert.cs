@@ -9,13 +9,37 @@ using System.Text;
 namespace DNA.Domain.Exceptions {
     public static class LoggerEx {
 
+        public static Alert Log(this ILogger logger, string m, params (string name, object value)[] values) {
+
+            var list = values.ToList();
+            if (list.Count > 0) {
+                NLog.LogManager.Configuration.Variables["EntityName"] = $"{list[0].name}";
+                NLog.LogManager.Configuration.Variables["EntityKey"] = $"{list[0].value}";
+                list.RemoveAt(0);
+            }
+            var f = new Alert(new KeyValue(m), values.ToArray());
+            logger.LogInformation(message: f.Message);
+            return f;
+        }
+        public static Alert LogWarning(this ILogger logger, string m, params (string name, object value)[] values) {
+
+            var list = values.ToList();
+            if (list.Count > 0) {
+                NLog.LogManager.Configuration.Variables["EntityName"] = $"{list[0].name}";
+                NLog.LogManager.Configuration.Variables["EntityKey"] = $"{list[0].value}";
+                list.RemoveAt(0);
+            }
+            var f = new Alert(new KeyValue(m), values.ToArray());
+            logger.LogWarning(message: f.Message);
+            return f;
+        }
         public static Alert LogInformation(this ILogger logger, KeyValue alertCode, IModel model, params (string name, object value)[] values) {
+            Alert f;
             if (model != null) {
                 NLog.LogManager.Configuration.Variables["EntityName"] = $"{model.GetType().Name}";
                 NLog.LogManager.Configuration.Variables["EntityKey"] = $"{model.Id}";
-                var f = new Alert(alertCode.Value, values);
-                logger.LogInformation(f.Message);
-                return f;
+                f = new Alert(alertCode: alertCode, values);
+                logger.LogInformation(message: f.Message);
             }
             else {
                 var list = values.ToList();
@@ -24,10 +48,12 @@ namespace DNA.Domain.Exceptions {
                     NLog.LogManager.Configuration.Variables["EntityKey"] = $"{list[0].value}";
                     list.RemoveAt(0);
                 }
-                var f = new Alert(alertCode.Value, values.ToArray());
-                logger.LogInformation(f.Message);
-                return f;
+                f = new Alert(alertCode: alertCode, values);
+                logger.LogInformation(message: f.Message);
             }
+            NLog.LogManager.Configuration.Variables["EntityName"] = null;
+            NLog.LogManager.Configuration.Variables["EntityKey"] = null;
+            return f;
         }
 
         public static Alert Log(this ILogger logger, Response response, params (string name, object value)[] values) {
@@ -40,6 +66,7 @@ namespace DNA.Domain.Exceptions {
                 return (ex != null && ex is Alert) ? ex as Alert : new Alert(AlertCodes.GeneralError, ex, values);
             }
         }
+
         public static Alert Log(this ILogger logger, KeyValue alertCode, Response response, params (string name, object value)[] values) {
             if (response.Success) {
                 return LogInformation(logger, alertCode, null, values.ToArray());
@@ -69,7 +96,9 @@ namespace DNA.Domain.Exceptions {
                 }
             }
             var f = new Alert(alertCode, values);
-            logger.LogWarning(f.Message);
+            logger.LogWarning(message: f.Message);
+            NLog.LogManager.Configuration.Variables["EntityName"] = null;
+            NLog.LogManager.Configuration.Variables["EntityKey"] = null;
             return f;
         }
 
@@ -90,16 +119,20 @@ namespace DNA.Domain.Exceptions {
                     list.RemoveAt(0);
                 }
             }
-
+            Alert f;
             if (ex is Alert) {
                 logger.LogError(ex, ex.Message);
-                return ex as Alert;
+                f = ex as Alert;
             }
             else {
-                var f = new Alert(alertCode ?? AlertCodes.UndefinedError, ex, list.ToArray());
-                logger.LogError(f, f.Message);
-                return f;
+                f = new Alert(alertCode ?? AlertCodes.UndefinedError, ex, list.ToArray());
+                logger.LogError(f, message: f.Message);
             }
+
+            NLog.LogManager.Configuration.Variables["EntityName"] = null;
+            NLog.LogManager.Configuration.Variables["EntityKey"] = null;
+
+            return f;
         }
         public static Alert LogError(this ILogger logger, KeyValue alertCode, Exception ex, params (string name, object value)[] values) {
             return LogError(logger, alertCode, null, ex, values.ToArray());
@@ -113,10 +146,10 @@ namespace DNA.Domain.Exceptions {
     public class Alert : Exception {
         public int Code { get; set; }
 
-        public Alert(string message, params (string name, object value)[] values)
-            : base($"{message} | {string.Join(' ', values.Select(_ => $"[{_.name}={_.value}]"))}".Trim().Trim('|')) {
-            Code = 0;
-        }
+        //public Alert(string m, params (string name, object value)[] values)
+        //    : base(message: $"{m} | {string.Join(' ', values.Select(_ => $"[{_.name}={_.value}]"))}".Trim().Trim('|'), innerException: null) {
+        //    Code = 0;
+        //}
 
         public Alert(KeyValue alertCode, params (string name, object value)[] values)
             : base($"{alertCode.Value} | {string.Join(' ', values.Select(_ => $"[{_.name}={_.value}]"))}".Trim().Trim('|')) {

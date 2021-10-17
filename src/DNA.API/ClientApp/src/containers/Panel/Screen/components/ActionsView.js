@@ -24,6 +24,8 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 	const [confirmMessage, setConfirmMessage] = useState(null);
 	const [currentAction, setCurrentAction] = useState(null);
 
+	console.success("ActionsView", renderActions)
+	
 	const executeEval = (action) => {
 		setCurrentAction(action)
 		var command = supplant(action.eval, row)
@@ -62,6 +64,13 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 						dispatch(showMessage({ Success: true, Message: ((onSuccess && t(onSuccess.text)) || "İşlem Başarılı.") }))
 						if (onSuccess.route) {
 							history.push(supplant(onSuccess.route, row))
+						}
+						else if (onSuccess.blank) {
+							const a = document.createElement("a");
+							a.href =  supplant(onSuccess.blank, status.Resource);
+							a.target = "_blank";
+							document.body.appendChild(a);
+							a.click();
 						}
 					}
 					if (refreshAfterSuccess == true)

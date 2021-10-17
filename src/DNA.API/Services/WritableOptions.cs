@@ -254,6 +254,8 @@ namespace DNA.API.Services {
                 extraScreenLists.Add("NotificationTypes", pluginNotifyTypes);
 
                 var provider = _serviceProvider.CreateScope().ServiceProvider;
+
+                // önce modüller çalışsın
                 foreach (var manager in provider.GetServices<IPluginStartupManager>().OrderBy(_ => !_.IsModule)) {
 
                     // load models
@@ -271,10 +273,13 @@ namespace DNA.API.Services {
                             }
                         }
                     }
-
                     // change menus
                     manager.ApplyPluginMenus();
+                }
 
+                // önce modül olmayanlar çalışsın
+                
+                foreach (var manager in provider.GetServices<IPluginStartupManager>().OrderBy(_ => _.IsModule)) {
                     // config
                     if (manager.IsModule) {
                         pluginConfigTemplate.Merge(manager.GetDefaultConfig(new ConfigTemplate()), _jsonMergeSettings);
@@ -287,14 +292,19 @@ namespace DNA.API.Services {
                         pluginConfigTemplate.Merge(manager.GetDefaultConfig(new ConfigTemplate()), _jsonMergeSettings);
                         pluginSourcePath = manager.SourcePath;
                     }
+
+                    // TODO: lisans validasyonu başarısız ise job ve diğer özellikleri disable etmek gerek
+                    //if (manager is Mitochondrion.Guard.ILicensableModule) {
+                    //    var licensable = manager as Mitochondrion.Guard.ILicensableModule;
+                    //    if (licensable.IsLicensed)
+                    //        break;
+                    //}
                 }
 
                 ConfigMigration(pluginSourcePath, pluginConfigTemplate, models.Select(_ => _.Type).ToArray());
 
                 if (models.Count > 0) {
-#if DEBUG
-                    SqlTableScriptGenerator.Generate(pluginSourcePath, models, tablePrefix);
-#endif
+
                     AddModelsToPluginScreenConfig(pluginSourcePath, models, extraScreenLists, moduleScreenDefaults);
 
                     AddModelsToTranslation(pluginSourcePath, models.Where(_ => !_.AddToMainConfig).ToList());
@@ -307,6 +317,10 @@ namespace DNA.API.Services {
                 _configuration.Reload();
 
                 _menuService.Configure(_configuration);
+
+#if DEBUG
+                SqlTableScriptGenerator.Generate(pluginSourcePath, models, tablePrefix);
+#endif
 
                 //WriteMenus(menus);
             }

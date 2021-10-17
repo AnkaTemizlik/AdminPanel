@@ -92,7 +92,9 @@ namespace DNA.Domain.Models {
                     .AddPassword("Password", "")
                     .Add("ReplyTo", "")
                     .Add("EnableSsl", true)
-                    .Set("Body", Property())
+                    .Set("Body", Property()
+
+                    )
                     .SetAction("SMTPSettingsTestEmail", "Test SMTP Settings", "send", null, "api/auth/email/SMTPSettingsTestEmail", Property()
                         .Add("Enabled", true)
                         .Add("To", "{ApplicationUser.Email}")
@@ -132,7 +134,7 @@ namespace DNA.Domain.Models {
                         )
                     .Set("Panel", Property()
                         .Add("Logo", "")
-                        )                        
+                        )
                     .Set("AuthSettings", false, "Auth Settings", Property()
                         .Add("GoPanelOnStart", false)
                         .Add("AllowPasswordChanging", false)
@@ -154,7 +156,7 @@ namespace DNA.Domain.Models {
                     )
 
             ;
-        } 
+        }
     }
 
     public class ConfigProperty : Dictionary<string, object> {
@@ -233,6 +235,7 @@ namespace DNA.Domain.Models {
                 .Set("Body", new ConfigProperty(_config)
                     .AddTextArea("Title", "")
                     .AddTextArea("Comment", "")
+                    .AddTextArea("ConfirmationCode", "")
                     )
                 ;
 
@@ -325,7 +328,11 @@ namespace DNA.Domain.Models {
             base.Add(name, value);
             return this;
         }
-
+        public ConfigProperty AddAutoComplete<T>(string name, T value) {
+            FieldTemplates.Add(name, _config.Editing.AutoComplete(typeof(T).Name));
+            base.Add(name, value);
+            return this;
+        }
         public ConfigProperty AddAutoComplete<T1, T2>(string name, string value) {
             FieldTemplates.Add(name, _config.Editing.AutoComplete(null, null, typeof(T1).Name, typeof(T2).Name));
             base.Add(name, value);

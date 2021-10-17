@@ -1,11 +1,24 @@
+import React from 'react'
 import {
 	withTranslation,
-	useTranslation,
+	useTranslation as useT,
 	Trans
 } from 'react-i18next'
 
+const useTranslation = () => {
+	//return useT()
+	const { t } = useT()
+	let translate = (val) => {
+		let result = t(val)
+		if (typeof result == "object")
+			return val
+		return result
+	}
+	return { t: translate }
+}
+
 const Tr = (props) => {
-	const { t } = useTranslation()
+	const { t } = useT()
 	let options = {}
 	let newText = props.children
 	let i = 0

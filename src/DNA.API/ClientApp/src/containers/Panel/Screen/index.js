@@ -57,8 +57,9 @@ const Screen = React.memo((props) => {
 	}, [snack, error]);
 
 	const focusedRowChanged = (focused) => {
-		if (focused != row || (focused && focused[currentScreen.keyFieldName] != row[currentScreen.keyFieldName]))
-			dispatch(setRow(focused || null))
+		if (focused != row || ((focused && focused[currentScreen.keyFieldName]) != row[currentScreen.keyFieldName])) {
+			dispatch(setRow(focused))
+		}
 	}
 
 	const setLoadStatus = (e) => {
@@ -155,7 +156,7 @@ const Screen = React.memo((props) => {
 											editing={currentScreen.editing}
 											actions={currentScreen.actions}
 											defaultValue={currentScreen.newRowDefaultValues}
-											actionsTemplate={() => (currentScreen.actions)
+											actionsTemplate={() => (currentScreen.actions || ActionsComponent)
 												? <ActionsView
 													actions={currentScreen.actions}
 													refresh={refresh}

@@ -8,7 +8,7 @@ import i18next from 'i18next'
 import CustomStore from 'devextreme/data/custom_store';
 import DataSource from "devextreme/data/data_source";
 import { isNotEmpty, rolesAllowed, supplant, toQueryString } from '../utils';
-import { ApiURL } from '../axios';
+//import { ApiURL } from '../axios';
 
 export const applyGlobalSettings = createAsyncThunk(
 	'panel/settings/applyGlobalSettings',
@@ -176,9 +176,9 @@ const configureColumns = (name, columns, config) => {
 			col.editorType = "dxColorBox"
 			col.editorOptions.applyValueMode = "instantly"
 		}
-		// else if (col.type == "image") {
-		// 	col.editorType = "dxColorBox"
-		// }
+		else if (col.type == "connectionString") {
+			col.editorType = "dxTextArea"
+		}
 		else {
 			col.dataType = "string"
 		}
