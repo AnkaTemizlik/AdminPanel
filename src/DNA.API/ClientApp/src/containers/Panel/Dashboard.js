@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const Dashboard = ({ snack }) => {
+const Dashboard = React.memo(({ snack }) => {
 	const classes = useStyles();
 	const { t } = useTranslation();
 	const history = useHistory();
@@ -47,38 +47,38 @@ const Dashboard = ({ snack }) => {
 	const { cards, lists } = useSelector((state) => state.screenConfig)
 	console.info("Dashboard", cards)
 
-	var getCards = useCallback(
-		(names) => {
-			setLoading(true);
-			api.entity.getCards(names).then((status) => {
-				setLoading(false);
-				console.info("Dashboard", status.Resource)
-				if (status.Success) {
-					names.forEach((name) => {
-						let config = cards[name];
-						let newRows = [];
-						let cardData = status.Resource[name];
-						cardData.forEach((row) => {
-							row[config.argumentField + 'Desc'] = row[config.argumentField]
-							if (config.autoComplete) {
-								let newVal = lists[config.autoComplete].filter((l) => l.id === row[config.argumentField]);
-								if (newVal[0]) {
-									if (newVal[0].value) {
-										row[config.argumentField + 'Desc'] = t(newVal[0].value);
-									}
+
+	const getCards = useCallback((names) => {
+		if (loading)
+			return
+		setLoading(true);
+		api.entity.getCards(names).then((status) => {
+			setLoading(false);
+			console.info("Dashboard", status.Resource)
+			if (status.Success) {
+				names.forEach((name) => {
+					let config = cards[name];
+					let newRows = [];
+					let cardData = status.Resource[name];
+					cardData.forEach((row) => {
+						row[config.argumentField + 'Desc'] = row[config.argumentField]
+						if (config.autoComplete) {
+							let newVal = lists[config.autoComplete].filter((l) => l.id === row[config.argumentField]);
+							if (newVal[0]) {
+								if (newVal[0].value) {
+									row[config.argumentField + 'Desc'] = t(newVal[0].value);
 								}
 							}
-							newRows.push(row);
-						});
-						status.Resource[name] = newRows;
+						}
+						newRows.push(row);
 					});
-					setCardsData(status.Resource);
-				} else
-					snack.show(status);
-			});
-		},
-		[cards, snack, lists, t]
-	);
+					status.Resource[name] = newRows;
+				});
+				setCardsData(status.Resource);
+			} else
+				snack.show(status);
+		});
+	}, [cards, snack, lists]);
 
 	useEffect(() => {
 		if (cardNames && cardNames.length > 0) getCards(cardNames);
@@ -217,7 +217,7 @@ const Dashboard = ({ snack }) => {
 			</Grid>
 		</Container>
 	);
-};
+})
 
 
 export default withSnack(React.memo(Dashboard));

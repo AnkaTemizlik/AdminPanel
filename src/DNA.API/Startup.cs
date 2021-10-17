@@ -71,7 +71,7 @@ namespace DNA.API {
                 })
                 ;
 
-            services.AddSingleton<IAppDbContext>(o => {
+            services.AddTransient<IAppDbContext>(o => {
                 var appDbContext = new AppDbContext(Configuration);
                 Dapper.Contrib.Extensions.SqlMapperExtensions.TableNameMapper = (Type type) => {
                     var table = type.GetCustomAttribute<Dapper.Contrib.Extensions.TableAttribute>();

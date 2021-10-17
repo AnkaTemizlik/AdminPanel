@@ -16,11 +16,12 @@ namespace DNA.Persistence.Contexts {
 
         readonly IConfiguration _configuration;
         readonly string _defaultConnectionString;
+        string _connectionString;
         SqlConnection _connection;
         static bool Initialized = false;
         SqlConnection IAppDbContext.Connection {
             get {
-                _connection = new SqlConnection(_defaultConnectionString);
+                _connection = new SqlConnection(_connectionString ?? _defaultConnectionString);
                 return _connection;
             }
         }
@@ -34,7 +35,7 @@ namespace DNA.Persistence.Contexts {
                 return _connection;
             }
         }
-
+        
         public AppDbContext(IConfiguration configuration) {
             _configuration = configuration;
 
@@ -48,6 +49,10 @@ namespace DNA.Persistence.Contexts {
                     }
                 }
             }
+        }
+
+        public void Set(string connectionString) {
+            _connectionString = connectionString;
         }
 
         public void Dispose() {

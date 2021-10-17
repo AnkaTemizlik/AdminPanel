@@ -16,13 +16,14 @@ import withSnack from "../../../store/snack";
 import { Alert } from "@material-ui/lab";
 import Section from './Section';
 import { setCurrentConfig, changeSection, discardChanges, addChange, checkRestartWarn, saveAppSettings } from '../../../store/slices/appsettingsSlice'
+import { getSettings } from '../../../store/slices/settingsSlice'
 
 const Settings = (props) => {
 
 	let { t } = useTranslation();
 	let history = useHistory();
 	const dispatch = useDispatch();
-
+	const isAuthenticated = useSelector((state) => state.auth.token !== null)
 	const { configs: appsetting } = useSelector((state) => state.appsettings)
 	const { currentSection } = useSelector((state) => state.appsettings)
 	const { sectionNames } = useSelector((state) => state.appsettings)
@@ -32,7 +33,17 @@ const Settings = (props) => {
 	const [open, setOpen] = useState(true);
 	const [selectedSection, setSelectedSection] = useState(null);
 
-	console.info("appsettings Settings", sectionNames)
+	console.info("appsettings Settings", isAuthenticated, sectionNames)
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			console.info("Settings.", isAuthenticated, sectionNames)
+			if (sectionNames.length == 0) {
+				console.info("Settings..", isAuthenticated, sectionNames)
+				dispatch(getSettings())
+			}
+		}
+	}, [dispatch, isAuthenticated, sectionNames]);
 
 	useEffect(() => {
 		if (error) snack.error(error);

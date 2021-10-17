@@ -13,5 +13,6 @@ namespace Dapper.Contrib.Extensions {
         public bool Color { get; set; }
         public bool Image { get; set; }
         public string Currency { get; set; }
+        public bool ConnectionString { get; set; }
     }
 }

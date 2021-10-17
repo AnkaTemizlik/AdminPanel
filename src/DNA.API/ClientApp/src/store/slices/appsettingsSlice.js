@@ -175,7 +175,7 @@ const appsettingsSlice = createSlice({
 				let options = currentConfig.config.Fields[sec]
 				if (options && options.visible === false)
 					return null;
-				return { name: sec, caption: i18n.t(options.caption || sec) }
+				return { name: sec, caption: i18n.t((options&&options.caption) || sec) }
 			})
 		},
 		changeSection: (state, action) => {
