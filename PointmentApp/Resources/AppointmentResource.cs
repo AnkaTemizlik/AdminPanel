@@ -17,5 +17,6 @@ namespace PointmentApp.Resources {
         public string Note { get; set; }
         public bool IsPlanned { get; set; }
         public string RecurrenceRule { get; set; }
+        public double? Amount { get; set; }
     }
 }
