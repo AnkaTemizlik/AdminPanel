@@ -40,7 +40,7 @@ const FooterView = React.memo(({ row, screen, name }) => {
 					{models.map((m, i) => <Tab key={i} icon={<Iconify icon={m.icon} />} label={t(m.title || m.name)} />)}
 				</Tabs>
 			</Toolbar>
-
+                                                                                     
 			{screen.hideDetails !== true &&
 				<TabPanel value={tabIndex} index={0}>
 					<RowFieldsView row={row} columns={screen.columns || []} name={name} />

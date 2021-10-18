@@ -154,8 +154,15 @@ namespace DNA.Domain.Services.Communication {
                 return _exception;
             _exception = Success
                 ? null
-                : new Exception($"{Message} {Comment}", new Exception(string.Join(Environment.NewLine, Details ?? new List<string>())));
+                : new Exception($"{Message ?? "Unknown error message."} {Comment}", new Exception(string.Join(Environment.NewLine, Details ?? new List<string>())));
             return _exception;
+        }
+
+        public void Error(Exception ex, string comment = null) {
+            _exception = ex;
+            Success = ex == null;
+            Comment = comment; 
+            AddMessages(ex);
         }
     }
 

@@ -39,7 +39,7 @@ const RowFieldsView = React.memo(({ row, columns, name }) => {
 			else if (c.type == "check" || c.type == "bool")
 				return <Icon style={{ color: green[500], position: "absolute", marginTop: -12 }}>
 					check
-					</Icon>;
+				</Icon>;
 			else if (c.type == "number" || c.type == "numeric") {
 				if (c.currency) {
 					return <Box>
@@ -55,6 +55,10 @@ const RowFieldsView = React.memo(({ row, columns, name }) => {
 			}
 			else if (c.type == "code")
 				return <TextArea readOnly={true} value={value} autoResizeEnabled={true} style={{ font: "13px monospace" }} />
+			else if (c.type == "connectionString")
+				return <div style={{ font: "13px monospace", fontStyle: "italic" }} >
+					Hidden for security reasons
+				</div>
 
 			//return <pre style={{ whiteSpace: "pre-wrap" }}>{value}</pre>;
 			return value;

@@ -219,15 +219,15 @@ namespace DNA.API.Services {
             _Password = _smtpConfig.GetValue<string>("Password");
             _ReplyTo = _valuer.Get(_smtpConfig.GetValue<string>("ReplyTo"));
             _EnableSsl = _smtpConfig.GetValue<bool>("EnableSsl");
-//#if DEBUG
-//            if (Environment.MachineName == "MAO") {
-//                _Address = "smtp.gmail.com";
-//                _Password = "T9czgYm%q7ZR";
-//                _UserName = "mehmet.orakci@dnaproje.com.tr";
-//                _Port = 587;
-//                _EnableSsl = true;
-//            }
-//#endif
+            //#if DEBUG
+            //            if (Environment.MachineName == "MAO") {
+            //                _Address = "smtp.gmail.com";
+            //                _Password = "T9czgYm%q7ZR";
+            //                _UserName = "mehmet.orakci@dnaproje.com.tr";
+            //                _Port = 587;
+            //                _EnableSsl = true;
+            //            }
+            //#endif
         }
 
         private async Task<bool> SendInternalAsync(string body, string subject, string toAddress, string toName, string[] attachments, params MailAddress[] cc) {
@@ -280,8 +280,10 @@ namespace DNA.API.Services {
 
             var section = _smtpConfig.GetSection($"ExceptionEmailSettings");
             var bodySection = section.GetSection("Body");
-            var title = model == null ? bodySection.GetValue<string>("Title") : model.Format(bodySection.GetValue<string>("Title"));
-            var comment = model == null ? bodySection.GetValue<string>("Comment") : model.Format(bodySection.GetValue<string>("Comment"));
+            //var title = model == null ? bodySection.GetValue<string>("Title") : model.Format(bodySection.GetValue<string>("Title"));
+            var title = _valuer.Get(bodySection.GetValue<string>("Title"));
+            //var comment = model == null ? bodySection.GetValue<string>("Comment") : model.Format(bodySection.GetValue<string>("Comment"));
+            var comment = _valuer.Get(bodySection.GetValue<string>("Comment"));
 
             if (string.IsNullOrWhiteSpace(comment))
                 comment = "[EXCEPTION]";
@@ -305,7 +307,8 @@ namespace DNA.API.Services {
 
             var htmlBody = GetHtmlBody(title, comment.Replace("[EXCEPTION]", rows), null, null, null, uniqueId);
 
-            var subject = model == null ? section.GetValue<string>("Subject") : model.Format(section.GetValue<string>("Subject"));
+            //var subject = model == null ? section.GetValue<string>("Subject") : model.Format(section.GetValue<string>("Subject"));
+            var subject = _valuer.Get(bodySection.GetValue<string>("Subject"));
 
             var toAddress = section.GetValue<string>("To");
             var toName = section.GetValue<string>("ToName");
@@ -321,15 +324,13 @@ namespace DNA.API.Services {
             return await SendInternalAsync(htmlBody, subject, toAddress, toName, null);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fullSectionPath">example:  "Smtp:SMTPSettingsTestEmail"</param>
-        /// <param name="attachments"></param>
-        /// <param name="cc"></param>
-        /// <returns></returns>
         public async Task<bool> SendAsync(string fullSectionPath, string[] attachments, params MailAddress[] cc) {
+            return await SendAsync(fullSectionPath, confirmCode: null, attachments: attachments, cc: cc);
+        }
+
+        public async Task<bool> SendAsync(string fullSectionPath, string confirmCode, string[] attachments, params MailAddress[] cc) {
             var section = _config.GetSection(fullSectionPath);
+
             if (!section.Exists()) {
                 section = _config.GetSection("Config:" + fullSectionPath);
                 if (!section.Exists()) {
@@ -341,25 +342,33 @@ namespace DNA.API.Services {
                     }
                 }
             }
-            return await SendAsync(section, null, attachments, cc);
+
+            if (section.GetSection("Enabled").Exists())
+                if (!section.GetValue<bool>("Enabled"))
+                    return false;
+
+            return await SendAsync(section, model: null, confirmCode: confirmCode, attachments: attachments, cc: cc);
         }
 
         private async Task<bool> SendAsync(IConfigurationSection section, IModel model, string[] attachments, params MailAddress[] cc) {
+            return await SendAsync(section, model, null, attachments, cc);
+        }
+        private async Task<bool> SendAsync(IConfigurationSection section, IModel model, string confirmCode, string[] attachments, params MailAddress[] cc) {
 
             var enabled = section.GetValue<bool>("Enabled");
             if (!enabled)
-                throw new Exception("Required E-mail Settings Section is not enabled.");
+                return false;
             var uniqueId = Guid.NewGuid().ToString();
             var bodySection = section.GetSection("Body");
             var comment = _valuer.Get(bodySection["Comment"]);
             var subject = _valuer.Get(section["Subject"]);
             var title = _valuer.Get(bodySection["Title"]);
             var buttonText = _valuer.Get(bodySection["ButtonText"]);
-            var confirmationCode = _valuer.Get(bodySection["ConfirmationCode"]);
+            var confirmationCode = _valuer.Get(confirmCode ?? bodySection["ConfirmationCode"]);
             var urlPart = _valuer.Get(bodySection["Url"]);
             var htmlBody = GetHtmlBody(title, comment, buttonText, urlPart, confirmationCode, uniqueId);
-            var to = _valuer.Get(section["To"]);
-            var name = _valuer.Get(section["ToName"]);
+            var to = string.IsNullOrWhiteSpace(section["To"]) ? _valuer.Get("{ApplicationUser.Email}") : _valuer.Get(section["To"]);
+            var name = string.IsNullOrWhiteSpace(section["ToName"]) ? _valuer.Get("{ApplicationUser.FullName}") : _valuer.Get(section["ToName"]);
 
             List<MailAddress> address = new List<MailAddress>();
             if (cc != null)
@@ -402,15 +411,14 @@ namespace DNA.API.Services {
                 .Replace("[HELP_TEXT_ROW]", helpTextVisible ? _helpTextRow : "")
                 .Replace("[SIGNATURE_ROW]", signatureVisible ? _signatureRow : "")
                 .Replace("[LINKS_ROW]", linksVisible ? _linksRow : "")
-                .Replace("[VIEW_IN_BROWSER_ROW]", viewInBrowserVisible ? _viewInBrowserRow : "")                
+                .Replace("[VIEW_IN_BROWSER_ROW]", viewInBrowserVisible ? _viewInBrowserRow : "")
                 .Replace("[ADDRESS_ROW]", addressVisible ? _addressRow : "")
                 .Replace("[SEND_DATE_ROW]", _sendDateRow).Replace("[SEND_DATE]", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss \"GMT\"zzz") + " " + Environment.MachineName)
                 ;
-            
-            if (!string.IsNullOrWhiteSpace(confirmationCode))
-                body = body.Replace("[UNSUBSCRIBE_ROW]", unsubscribeVisible ? _unsubscribeRow : "");
 
-                if (helpTextExVisible) {
+            body = body.Replace("[UNSUBSCRIBE_ROW]", unsubscribeVisible ? _unsubscribeRow : "");
+
+            if (helpTextExVisible) {
                 body = body
                     .Replace("[BLUE_TABLE]", _blueTable)
                     .Replace("[BLUE_TABLE_CONTENT]", "[HELP_TEXT_EX_ROW]")
@@ -464,21 +472,6 @@ namespace DNA.API.Services {
             finally {
             }
         }
-
-        //public string CreateBodyForConfirmEmail(string confirmationCode) {
-        //    var section = _smtpConfig.GetSection("ConfirmationEmailSettings:Body");
-        //    return GetHtmlBody(section.GetValue<string>("Title"), section.GetValue<string>("Comment"), section.GetValue<string>("ButtonText"),
-        //        section.GetValue<string>("Url"), confirmationCode);
-        //}
-
-        //public string CreateBodyForRecoveryPassword(string confirmationCode) {
-        //    var section = _smtpConfig.GetSection("PasswordRecoveryEmailSettings:Body");
-        //    return GetHtmlBody(section.GetValue<string>("Title"),
-        //                       section.GetValue<string>("Comment"),
-        //                       section.GetValue<string>("ButtonText"),
-        //                       section.GetValue<string>("Url"),
-        //                       confirmationCode);
-        //}
 
     }
 }

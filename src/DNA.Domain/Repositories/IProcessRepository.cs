@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace DNA.Domain.Repositories {
     public interface IProcessRepository {
+        void Set(string connectionString);
         Task<int> ExecuteAsync(string sql, dynamic parameters );
         Task<IEnumerable<dynamic>> QueryAsync(string sql, object parameters = null);
         Task<IEnumerable<T>> QueryAsync<T>(string sql, object parameters = null);

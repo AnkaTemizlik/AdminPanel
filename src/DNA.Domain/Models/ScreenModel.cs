@@ -222,7 +222,8 @@ namespace DNA.Domain.Utils {
             HasInSidebar = false;
             TableName = type.GetCustomAttribute<Dapper.Contrib.Extensions.TableAttribute>()?.Name;
             Assembly = type.FullName;
-            Route = Regex.Replace(Name, @"[A-Z]", (m) => $"-{m.Value}").Trim('-').ToLower();
+            Route = Regex.Replace(Name, @"/[^\w ]+/g", (m) => $"{m.Value}");
+            Route = Regex.Replace(Route, @"/ +/g", (m) => $"{m.Value}").Trim('-').ToLowerInvariant();
             Title = Name + " Screen";
         }
 
@@ -329,7 +330,7 @@ namespace DNA.Domain.Utils {
                 existingCalendar.descriptionExpr ??= Calendar.descriptionExpr;
                 existingCalendar.recurrenceRuleExpr ??= Calendar.recurrenceRuleExpr;
                 existingCalendar.recurrenceExceptionExpr ??= Calendar.recurrenceExceptionExpr;
-                
+
                 //Calendar.startDateExpr = string.IsNullOrWhiteSpace(existingCalendar.startDateExpr) ? Calendar.startDateExpr : existingCalendar.startDateExpr;
                 //Calendar.endDateExpr = string.IsNullOrWhiteSpace(existingCalendar.endDateExpr) ? Calendar.endDateExpr : existingCalendar.endDateExpr;
                 //Calendar.textExpr = string.IsNullOrWhiteSpace(existingCalendar.textExpr) ? Calendar.textExpr : existingCalendar.textExpr;
@@ -380,7 +381,7 @@ namespace DNA.Domain.Utils {
         //        return a2;
         //    if (jarray2.Count == 0)
         //        return a1;
-            
+
         //    var list = new List<T>();
 
         //    foreach (var item in jarray1) {
@@ -517,6 +518,7 @@ namespace DNA.Domain.Utils {
             }
             string val;
             var columnAttribute = item.GetCustomAttribute<ColumnAttribute>();
+
             if (item.PropertyType == typeof(bool) || item.PropertyType == typeof(bool?)) {
                 val = col.type ?? "check";
             }
@@ -544,6 +546,12 @@ namespace DNA.Domain.Utils {
                     col.colSpan ??= 2;
                 if (stringLength > 0 && stringLength < 4000)
                     col.stringLength ??= stringLength;
+
+                if (columnAttribute?.ConnectionString == true) {
+                    val = "connectionString";
+                    col.roles = new string[] { "Admin" };
+                    col.hidden = true;
+                }
             }
             return val;
         }

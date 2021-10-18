@@ -47,6 +47,7 @@ namespace DNA.Domain.Exceptions {
         public static KeyValue NoResponseError = new KeyValue(101, nameof(NoResponseError));
         public static KeyValue DateIsNotInProperRange = new KeyValue(105, nameof(DateIsNotInProperRange));
         public static KeyValue TaxNoCanNotBe11111111111 = new KeyValue(106, nameof(TaxNoCanNotBe11111111111));
+        public static KeyValue TaxNumberIsNotProperFormat = new KeyValue(107, nameof(TaxNumberIsNotProperFormat));
         
         public static KeyValue ValueCanNotBeEmpty = new KeyValue(110, nameof(ValueCanNotBeEmpty));
         public static KeyValue ValueCanNotBeZeroOrLess = new KeyValue(111, nameof(ValueCanNotBeZeroOrLess));
