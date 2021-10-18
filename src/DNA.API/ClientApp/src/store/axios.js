@@ -1,4 +1,4 @@
-﻿import axios from 'axios'
+import axios from 'axios'
 
 const development = (process.env && process.env.NODE_ENV === "development")
 const Host = 'http://192.168.1.200:8800'
@@ -24,3 +24,9 @@ export { ApiURL }
 
 export default instance;
  
+
+
+
+
+
+
