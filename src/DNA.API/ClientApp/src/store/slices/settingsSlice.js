@@ -124,7 +124,8 @@ const configureColumns = (name, columns, config) => {
 			col.caption = i18next.t(col.title || `${col.name}`)
 
 		col.editorOptions = {}
-		col.editorOptions.showClearButton = col.showClearButton
+		if (isNotEmpty(col.showClearButton))
+			col.editorOptions.showClearButton = col.showClearButton
 
 		col.dataField = col.name
 		col.hidden = col.hidden == true ? true : i > 14

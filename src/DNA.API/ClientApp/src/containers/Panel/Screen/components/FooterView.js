@@ -35,26 +35,24 @@ const FooterView = React.memo(({ row, screen, name }) => {
 		<Paper>
 			<Toolbar>
 				<Tabs value={tabIndex} onChange={tabChange}>
-					{models.map((m, i) => {
-						return <Tab key={i} icon={<Iconify icon={m.icon} />} label={t(m.title || m.name)} />
-					})}
 					{screen.hideDetails !== true &&
 						<Tab icon={<Iconify icon={"format_list_bulleted"} />} label={t("Details")} />}
+					{models.map((m, i) => <Tab key={i} icon={<Iconify icon={m.icon} />} label={t(m.title || m.name)} />)}
 				</Tabs>
 			</Toolbar>
 
+			{screen.hideDetails !== true &&
+				<TabPanel value={tabIndex} index={0}>
+					<RowFieldsView row={row} columns={screen.columns || []} name={name} />
+				</TabPanel>}
+
 			{models.map((m, i) => {
-				return <TabPanel key={i} value={tabIndex} index={i}>
+				return <TabPanel key={i} value={tabIndex} index={i + (screen.hideDetails === true ? 0 : 1)}>
 					{row && m.type == "property" && <ModelView model={m} row={row} />}
 					{row && m.type == "list" && <TableView model={m} row={row} />}
 					{row && m.type == "gallery" && <TileView model={m} row={row} />}
 				</TabPanel>
 			})}
-
-			<TabPanel value={tabIndex} index={models.length}>
-				<RowFieldsView row={row} columns={screen.columns || []} name={name} />
-			</TabPanel>
-
 		</Paper>
 	</>
 	)

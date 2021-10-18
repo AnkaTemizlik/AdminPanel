@@ -277,10 +277,12 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, col
 					// EDIT
 				}
 				else {
+
 					// NEW ROW
 					columns.map(c => {
 
 						let editor = form.getEditor(c.name)
+
 						// defaultValue
 						// eslint-disable-next-line no-eval
 						let val = c.defaultValue ? eval(c.defaultValue) : undefined
@@ -354,26 +356,47 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, col
 
 				popup.option("toolbarItems", popupButtonItems)
 
-				console.info("onAppointmentFormOpening", mainGroupItems)
 				columns.map(c => {
-					if (c.required == true) {
-						mainGroupItems.map(i => {
-							if (i.dataField == c.name) {
+
+					// Amount için daha sonra dinamik hale getirilebilir
+					if (c.name == "Amount") {
+						if (!mainGroupItems.find(function (i) { return i.dataField === "Amount" })) {
+							mainGroupItems.push({
+								//colSpan: 2,
+								label: { text: t("Appointment.Amount") },
+								editorType: "dxNumberBox",
+								dataField: "Amount",
+								format: {
+									style: "currency",
+									currency: c.currency || "TRY"
+								}
+							});
+						}
+					}
+
+					mainGroupItems.map(i => {
+						if (i.dataField == c.name) {
+							// required
+							if (c.required == true) {
 								i.validationRules = [{ type: "required" }]
 							}
-						})
-						//if (editor) {
-						// if (!mainGroupItems.find(function (i) { return i.dataField === c.name })) {
-						// 	console.info("onAppointmentFormOpening required", c.name)
+							if (i.editorType == 'dxSelectBox') {
+								i.editorOptions.searchEnabled = true
+							}
+						}
+					})
+					//if (editor) {
+					// if (!mainGroupItems.find(function (i) { return i.dataField === c.name })) {
+					// 	console.info("onAppointmentFormOpening required", c.name)
 
-						// }
+					// }
 
-						// var validationRules = editor.option("validationRules")
-						// validationRules.push({ type: "required" })
-						// console.info("onAppointmentFormOpening required", validationRules)
-						// editor.option("validationRules", validationRules)
-						//}
-					}
+					// var validationRules = editor.option("validationRules")
+					// validationRules.push({ type: "required" })
+					// console.info("onAppointmentFormOpening required", validationRules)
+					// editor.option("validationRules", validationRules)
+					//}
+
 				})
 
 				// daha sonra dinamik hale getirilebilir
@@ -386,18 +409,7 @@ const CalendarView = React.memo(({ name, keyFieldName, dataSource, calendar, col
 				// 		dataField: "PhoneNumber"
 				// 	});
 				// }
-				
-				// daha sonra dinamik hale getirilebilir
-				if (columns.find(_ => _.name == "Amount")) {
-					if (!mainGroupItems.find(function (i) { return i.dataField === "Amount" })) {
-						mainGroupItems.push({
-							//colSpan: 2,
-							label: { text: t("Appointment.Amount") },
-							editorType: "dxTextBox",
-							dataField: "Amount"
-						});
-					}
-				}
+
 				let items = mainGroupItems.filter(i => i.itemType == "group" ? true : i.dataField != undefined)
 				form.itemOption('mainGroup', 'items', items);
 			}}
