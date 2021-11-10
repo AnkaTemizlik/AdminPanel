@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DNA.Domain.Models {
     public class KeyValue : KeyValue<int> {
-        public KeyValue() {
+        public KeyValue() : base(0, "GeneralInfo") {
         }
         public KeyValue(string value) : base(0, value) {
         }

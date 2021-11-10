@@ -12,6 +12,10 @@ namespace Dapper.Contrib.Extensions {
         public bool Hidden { get; set; }
         public bool Color { get; set; }
         public bool Image { get; set; }
+        /// <summary>
+        /// 0: Url, 1: Binary
+        /// </summary>
+        public int ImageType { get; set; }
         public string Currency { get; set; }
         public bool ConnectionString { get; set; }
     }
