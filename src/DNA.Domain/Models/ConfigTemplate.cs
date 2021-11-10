@@ -180,20 +180,29 @@ namespace DNA.Domain.Models {
             return this;
         }
 
-        public ConfigProperty SetGuard(Services.Communication.Response licenseValidationResponse) {
-            return Set("Guard", _config.Property()
-                    .Add("BaseUrl", "http://192.168.34.60:57001", restartRequired: true)
-                    .Add("PublicKey", "00000000-0000-0000-0000-000000000000", restartRequired: true)
-                    .Set("LicenseStatus", false, _config.Property(readOnly: true)
-                        .Add("Success", licenseValidationResponse.Success)
-                        .Add("LastTry", DateTime.Now.ToString("o"))
-                        .AddTextArea("Message", licenseValidationResponse.Message ?? "")
-                        .AddTextArea("Solution", licenseValidationResponse.Success ? "" : "Check logs and settings then try restarting the service.")
-                        .Add("ErrorCode", licenseValidationResponse.Code)
-                        .AddTextArea("Comment", $"{licenseValidationResponse.Comment}")
-                        .AddTextArray("Details", false, (licenseValidationResponse?.Details ?? new List<string>()).ToArray())
-                    )
-                );
+        public ConfigProperty SetGuard(Services.Communication.Response licenseValidationResponse, params string[] mudules) {
+            var moduleProp = _config.Property();
+            if (mudules.Length > 0) {
+                foreach (var item in mudules) {
+                    moduleProp.Add(item, "00000000-0000-0000-0000-000000000000");
+                }
+            }
+
+            var guard = _config.Property()
+                .Add("BaseUrl", "http://192.168.34.60:57001", restartRequired: true)
+                .Add("PublicKey", "00000000-0000-0000-0000-000000000000", restartRequired: true)
+                .Set("LicenseStatus", false, _config.Property(readOnly: true)
+                    .Add("Success", licenseValidationResponse.Success)
+                    .Add("LastTry", DateTime.Now.ToString("o"))
+                    .AddTextArea("Message", licenseValidationResponse.Message ?? "")
+                    .AddTextArea("Solution", licenseValidationResponse.Success ? "" : "Check logs and settings then try restarting the service.")
+                    .Add("ErrorCode", licenseValidationResponse.Code)
+                    .AddTextArea("Comment", $"{licenseValidationResponse.Comment}")
+                    .AddTextArray("Details", false, (licenseValidationResponse?.Details ?? new List<string>()).ToArray())
+                )
+                .Set("Modules", moduleProp);
+
+            return Set("Guard", guard);
         }
 
         public ConfigProperty SetGuardModule(string moduleName) {

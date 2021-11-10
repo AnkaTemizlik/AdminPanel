@@ -40,11 +40,14 @@ const FooterView = React.memo(({ row, screen, name }) => {
 					{models.map((m, i) => <Tab key={i} icon={<Iconify icon={m.icon} />} label={t(m.title || m.name)} />)}
 				</Tabs>
 			</Toolbar>
-			<TabPanel value={tabIndex} index={0}>
-				<RowFieldsView row={row} columns={screen.columns || []} name={name} />
-			</TabPanel>
+                                                                                     
+			{screen.hideDetails !== true &&
+				<TabPanel value={tabIndex} index={0}>
+					<RowFieldsView row={row} columns={screen.columns || []} name={name} />
+				</TabPanel>}
+
 			{models.map((m, i) => {
-				return <TabPanel key={i} value={tabIndex} index={i + 1}>
+				return <TabPanel key={i} value={tabIndex} index={i + (screen.hideDetails === true ? 0 : 1)}>
 					{row && m.type == "property" && <ModelView model={m} row={row} />}
 					{row && m.type == "list" && <TableView model={m} row={row} />}
 					{row && m.type == "gallery" && <TileView model={m} row={row} />}

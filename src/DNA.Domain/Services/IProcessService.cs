@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DNA.Domain.Services {
     public interface IProcessService {
+        void Set(string connectionString);
         Task<int> ExecuteAsync(string sql, object parameters = null);
         Task<IEnumerable<dynamic>> QueryAsync(string sql, object parameters = null);
         Task<IEnumerable<T>> QueryAsync<T>(string sql, object parameters = null);

@@ -42,6 +42,17 @@ namespace DNA.Domain.Exceptions {
     public class AlertCodes {
         public static AlertCodeGroups Groups { get; set; } = new AlertCodeGroups();
 
+        public static KeyValue SendInfo = new KeyValue(nameof(SendInfo));
+        public static KeyValue SendError = new KeyValue(10, nameof(SendError));
+        public static KeyValue UpdateInfo = new KeyValue(nameof(UpdateInfo));
+        public static KeyValue UpdateError = new KeyValue(11, nameof(UpdateError));
+        public static KeyValue InsertInfo = new KeyValue(nameof(InsertInfo));
+        public static KeyValue InsertError = new KeyValue(12, nameof(InsertError));
+        public static KeyValue DeleteInfo = new KeyValue(nameof(DeleteInfo));
+        public static KeyValue DeleteError = new KeyValue(13, nameof(DeleteError));
+        public static KeyValue GetInfo = new KeyValue(nameof(GetInfo));
+        public static KeyValue GetError = new KeyValue(14, nameof(GetError));
+
         public static KeyValue UndefinedError = new KeyValue(100, nameof(UndefinedError));
         public static KeyValue ControllerIncomingData = new KeyValue(nameof(ControllerIncomingData));
         public static KeyValue NoResponseError = new KeyValue(101, nameof(NoResponseError));
