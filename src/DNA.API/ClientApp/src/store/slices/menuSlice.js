@@ -23,6 +23,7 @@ const menusSlice = createSlice({
 			let { screenConfig, user } = action.payload
 			let definitions = []
 			let index = 0;
+
 			screenConfig.names.map((n, i) => {
 				var s = screenConfig.screens[n];
 				if (s.hideInSidebar !== true && s.isDefinitionModel !== true) {
@@ -52,6 +53,9 @@ const menusSlice = createSlice({
 							})
 						}
 					})
+
+					// birden fazla ana modul varsa, gruplandırılarak gösterilecek. ana model menüsü yetkise tabi olacak.
+
 					state.panel.menus.splice(index++, 0, newMenu);
 				}
 

@@ -133,7 +133,11 @@ const Screen = React.memo((props) => {
 							</Route>
 
 							<Route path={`/panel/screen/${name}/edit/:id`}>
-								<View name={name} action="edit" />
+								<View name={name} simple={true} action="edit" />
+							</Route>
+
+							<Route path={`/panel/screen/${name}/view/:id`}>
+								<View name={name} action="view" />
 							</Route>
 
 							<Route>
