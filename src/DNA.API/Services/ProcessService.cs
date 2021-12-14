@@ -17,6 +17,10 @@ namespace DNA.API.Services {
             _processRepository = processRepository;
         }
 
+        public void Set(string connectionString) {
+            _processRepository.Set(connectionString);
+        }
+
         System.Dynamic.ExpandoObject ParseParams(object parameters) {
             object p = parameters;
             if (parameters != null) {
@@ -57,8 +61,6 @@ namespace DNA.API.Services {
         public async Task<bool> UpdateAsync<T>(T row) where T : class {
             return await _processRepository.UpdateAsync<T>(row);
         }
-        //public async Task<bool> BulkMergeAsync<T>(List<T> rows) where T : class {
-        //    return await _processRepository.BulkMergeAsync<T>(rows);
-        //}
+
     }
 }

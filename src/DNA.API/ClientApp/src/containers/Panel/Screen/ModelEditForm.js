@@ -93,24 +93,17 @@ const ModelEditForm = React.memo((props) => {
 
 		<form onSubmit={handleSubmit}>
 			<Form formData={row}
-				//onSubmit={handleSubmit}
+				readOnly={(screen.editing && screen.editing.enabled  && screen.editing.allowUpdating ? false : true)}
 				id={`idFor-${name}-${action}-form`}
 			>
 				<GroupItem caption={showCaption ? t((data.id > 0 ? "Edit" : "New") + " " + name) : undefined}>
 					{screen.columns
-						.filter(c => c.allowEditing == true)
-						.filter(c => props.simple == true ? (c.required && c.allowEditing) : true)
+						// .filter(c => c.allowEditing == true)
+						.filter(c => props.simple == true ? c.allowEditing == true : true)
 						.map((c, i) => {
-							// if (props.simple ? (c.required && c.allowEditing) : false)
-							// 	return null
-							// if (c.allowEditing != true)
-							// 	return null
-							// if (c.hidden == true)
-							// 	return null
-
 							let editorOptions = {
 								...c.editorOptions,
-								readOnly: c.allowEditing != true,
+								readOnly: c.readOnly || c.allowEditing !== true,
 								dataType: c.dataType,
 								dataField: c.dataField,
 								editorType: c.editorType

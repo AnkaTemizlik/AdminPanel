@@ -5,7 +5,7 @@ import { Box, Grid, Paper } from "@material-ui/core";
 import ModelEditForm from "./ModelEditForm";
 
 const View = React.memo((props) => {
-	const { name, action } = props;
+	const { name, action, simple } = props;
 	const params = useParams();
 	const screen = useSelector(state => state.screenConfig.screens[name])
 
@@ -24,6 +24,7 @@ const View = React.memo((props) => {
 									simple={false}
 									onInsert={props.onInsert}
 									actions={screen.actions}
+									simple={simple}
 								/>
 							}
 						</Box>
