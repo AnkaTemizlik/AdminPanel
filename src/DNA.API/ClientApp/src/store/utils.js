@@ -31,12 +31,16 @@ export const supplant = (text, data, alternate) => {
 			let val = data[b] || (alternate && alternate[b])
 			return isNotEmpty(val) ? val : a;
 		})
-	console.log("ActionsView", result)
 	return result
 }
 
-export const toQueryString = (o, url) => {
+export const toQueryStringWithField = (field, value, url) => {
+	let o = {}
+	o[field] = value
+	return toQueryString(o, url)
+}
 
+export const toQueryString = (o, url) => {
 	let params = url ? (url.indexOf('?') > -1 ? '&' : '?') : ''
 	if (!!o) {
 		for (const key in o) {

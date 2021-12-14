@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import DataGrid, {
 	Column,
 	FilterRow,
@@ -9,12 +9,33 @@ import DataGrid, {
 } from 'devextreme-react/data-grid';
 import DropDownBox from 'devextreme-react/drop-down-box';
 
-const dropDownOptions = { width: 500 };
+const dropDownOptions = { minWidth: 360 };
 
 const DropDownBoxComponent = (props) => {
 
-	const [currentValue, setCurrentValue] = React.useState(props.data.value)
+	const [currentValue, setCurrentValue] = React.useState([props.data.value])
+	const [isGridBoxOpened, setGridBoxOpened] = React.useState(false)
 	let dropDownBoxRef = React.useRef(null);
+	const { editorOptions } = props.data.item
+
+	const dataGridOnSelectionChanged = (selectionChangedArgs) => {
+		setCurrentValue(selectionChangedArgs.selectedRowKeys);
+		setGridBoxOpened(false)
+	}
+
+	const syncDataGridSelection = (e) => {
+		setCurrentValue(e.value)
+	}
+
+	const onGridBoxOpened = (e) => {
+		if (e.name === 'opened') {
+			setGridBoxOpened(e.value)
+		}
+	}
+
+	useEffect(() => {
+		props.data.setValue(currentValue ? currentValue[0] : null);
+	}, [currentValue])
 
 	const contentRender = () => {
 		return (
@@ -23,11 +44,11 @@ const DropDownBoxComponent = (props) => {
 				remoteOperations={true}
 				keyExpr={props.edit.key}
 				height={250}
-				selectedRowKeys={[currentValue]}
+				selectedRowKeys={currentValue}
 				hoverStateEnabled={true}
-				onSelectionChanged={onSelectionChanged}
+				onSelectionChanged={dataGridOnSelectionChanged}
 				focusedRowEnabled={true}
-				defaultFocusedRowKey={currentValue}
+			//defaultFocusedRowKey={currentValue}
 			>
 
 				{props.edit.columns.map((c, i) => {
@@ -67,25 +88,22 @@ const DropDownBoxComponent = (props) => {
 		);
 	}
 
-	const onSelectionChanged = (selectionChangedArgs) => {
-		let val = selectionChangedArgs.selectedRowKeys[0]
-		setCurrentValue(val);
-		props.data.setValue(val);
-		if (selectionChangedArgs.selectedRowKeys.length > 0) {
-			dropDownBoxRef.current.instance.close();
-		}
-	}
 
 	return (
 		<DropDownBox
 			ref={dropDownBoxRef}
+			value={currentValue}
+			opened={isGridBoxOpened}
+			onValueChanged={syncDataGridSelection}
+			onOptionChanged={onGridBoxOpened}
 			dropDownOptions={dropDownOptions}
 			dataSource={props.data.column.lookup.dataSource}
-			value={currentValue}
 			displayExpr={props.edit.displayExpr}
 			valueExpr={props.edit.valueExpr}
 			contentRender={contentRender}
-			showClearButton={false}
+			deferRendering={false}
+			//showClearButton={false}
+			{...editorOptions}
 		>
 		</DropDownBox>
 	);
