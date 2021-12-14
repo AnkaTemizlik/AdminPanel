@@ -44,6 +44,7 @@ const Dashboard = React.memo(({ snack }) => {
 	const [loading, setLoading] = useState(false);
 	const [cardsData, setCardsData] = useState({});
 	const [cardNames, setCardNames] = useState([]);
+	const [cardList, setCardList] = useState([]);
 	const { cards, lists } = useSelector((state) => state.screenConfig)
 	console.info("Dashboard", cards)
 
@@ -85,7 +86,18 @@ const Dashboard = React.memo(({ snack }) => {
 	}, [cardNames, getCards]);
 
 	useEffect(() => {
-		if (cards) setCardNames(cards.Names);
+		console.log("cards", cards)
+		if (cards) {
+			setCardNames(cards.Names);
+			if (cards.Names) {
+				let c = []
+				cards.Names.map(n => {
+					var x = { ...cards[n], link: cards[n].type === "link", name: n }
+					c.push(x)
+				})
+				setCardList(c)
+			}
+		}
 	}, [cards]);
 
 	function getData(name) {
@@ -96,7 +108,7 @@ const Dashboard = React.memo(({ snack }) => {
 	return (
 		<Container loading={loading}>
 			<Grid container spacing={2} >
-				{cardNames && cardNames.filter(_ => _.type == "link").length > 0
+				{cardList && cardList.filter(_ => _.link).length > 0
 					? <Grid item xs={12} style={{ margin: 4 }}>
 						<TileView
 							style={{ marginLeft: -16 }}
@@ -107,8 +119,7 @@ const Dashboard = React.memo(({ snack }) => {
 							baseItemWidth={160}
 							baseItemHeight={160}
 						>
-							{cardNames.filter(_ => _.type == "link").map((cardName, i) => {
-								let c = cards[cardName];
+							{cardList.filter(_ => _.link).map((c, i) => {
 								return <Item
 									onClick={() => history.push(c.route)}
 									key={i}
@@ -129,13 +140,10 @@ const Dashboard = React.memo(({ snack }) => {
 					</Grid>
 					: null}
 
-				{cardNames && cardNames.map((cardName, i) => {
-					let c = cards[cardName];
-					if (!c || c.type == "link")
-						return null
+				{cardList && cardList.filter(_ => _.link == false).map((c, i) => {
 					// eslint-disable-next-line no-new-func
 					var customFunction = c.collection && c.collection.function ? new Function(c.collection.function)() : () => { };
-					let data = getData(cardName);
+					let data = getData(c.name);
 					return (
 						<Grid item xs={12} md={6} xl={4} key={i}>
 							<CollapsibleCard title={t(c.title)} header="h5" exp={true}>
