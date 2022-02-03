@@ -9,6 +9,7 @@ namespace DNA.API.Resources.Auth {
         public string Email { get; set; }
         public string FullName { get; set; }
         public string Role { get; set; }
+        public string MainModules { get; set; }
         public string Key { get; set; }
         public string PhoneNumber { get; set; }
         public bool LockoutEnabled { get; set; }

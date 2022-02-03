@@ -49,6 +49,9 @@ namespace DNA.Domain.Models {
         public static bool IsTCKN(string val, bool acceptIfAll1 = false, bool acceptIfAll2 = false) {
             int l = 11;
 
+            if (val == null)
+                return false;
+            
             if (string.IsNullOrWhiteSpace(val))
                 return false;
 

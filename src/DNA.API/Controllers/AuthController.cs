@@ -397,10 +397,15 @@ namespace DNA.API.Controllers {
         [HttpPost("auth/users")]
         [Authorize(Policy = Policies.WriteOnly)]
         [ProducesResponseType(typeof(Response<ApplicationUserResource>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SaveUserByIdAsync([FromBody] SaveUserResource resource) {
+        public async Task<IActionResult> InsertUserByIdAsync([FromBody] SaveUserResource resource) {
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
+
+            return await SaveUserByIdAsync(resource);
+        }
+
+        async Task<IActionResult> SaveUserByIdAsync(SaveUserResource resource) {
 
             try {
 

@@ -54,13 +54,20 @@ namespace DNA.Persistence.Repositories {
             var single = connection.Get<T>(id);
             return await Task.FromResult(single);
         }
+
         public async Task<int> InsertAsync<T>(T row) where T : class {
             using var connection = Context.Connection;
             return await connection.InsertAsync<T>(row);
         }
+
         public async Task<bool> UpdateAsync<T>(T row) where T : class {
             using var connection = Context.Connection;
             return await connection.UpdateAsync<T>(row);
+        }
+
+        public async Task<bool> DeleteAsync<T>(T row) where T : class {
+            using var connection = Context.Connection;
+            return await connection.DeleteAsync<T>(row);
         }
 
         public void Set(string connectionString) {

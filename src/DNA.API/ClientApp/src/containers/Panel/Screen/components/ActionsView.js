@@ -24,8 +24,6 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 	const [confirmMessage, setConfirmMessage] = useState(null);
 	const [currentAction, setCurrentAction] = useState(null);
 
-	console.success("ActionsView", renderActions)
-	
 	const executeEval = (action) => {
 		setCurrentAction(action)
 		var command = supplant(action.eval, row)
@@ -52,22 +50,37 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 		const { method, refreshAfterSuccess, url, data, onError, onSuccess } = req || currentAction.request
 		let params = {}
 		if (data) {
-			data.map(f => params[f] = row[f])
+			console.success("runAction", data)
+			if (Array.isArray(data)) {
+				data.map(f => params[f] = row[f])
+			}
+			else {
+				if (typeof data == "object") {
+					console.success("runAction 1", "object: " + typeof data == "object")
+					for (const key in data) {
+						console.success("runAction 2", key, data[key], supplant(data[key], row))
+						params[key] = supplant(data[key], row)
+					}
+				}
+			}
+			console.success("runAction", typeof data == "object", params)
 		}
 		var preparedUrl = supplant(url, row);
 		console.purple("runAction", url, row, preparedUrl, currentAction)
 		dispatch(setLoading(true))
 		api.actions.run(method, preparedUrl, params)
 			.then(status => {
-				if (status.Success) {
+				console.purple("runAction status", status, onSuccess)
+				if (status.Success == true) {
 					if (onSuccess) {
 						dispatch(showMessage({ Success: true, Message: ((onSuccess && t(onSuccess.text)) || "İşlem Başarılı.") }))
 						if (onSuccess.route) {
 							history.push(supplant(onSuccess.route, row))
 						}
 						else if (onSuccess.blank) {
+							var href = supplant(onSuccess.blank, status.Resource)
 							const a = document.createElement("a");
-							a.href =  supplant(onSuccess.blank, status.Resource);
+							a.href = href;
 							a.target = "_blank";
 							document.body.appendChild(a);
 							a.click();
@@ -76,8 +89,9 @@ const ActionsView = React.memo(({ renderActions, actions, refresh, showButtonTex
 					if (refreshAfterSuccess == true)
 						refresh && refresh()
 				}
-				else
-					dispatch(showMessage({ Success: false, Message: ((onError && t(onError.text)) || "İşlem Başarısız. ") + " " + (t(status.Message) || status.Error) }))
+				else {
+					dispatch(showMessage(status))
+				}
 				dispatch(setLoading(false))
 			})
 			.catch(e => {

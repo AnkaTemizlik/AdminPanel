@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect, useSelector } from 'react-redux'
-import { Link, Route, Switch } from 'react-router-dom'
-import { CssBaseline, Box, Typography, Tooltip, IconButton, Icon } from '@material-ui/core';
+import { Route, Switch } from 'react-router-dom'
+import { CssBaseline, Link, Box, Typography, Tooltip, IconButton, Button, Icon } from '@material-ui/core';
 import * as Treasury from "@mui-treasury/layout";
 import Header from '../../components/Navigation/Header'
 import Layout from '../../components/Layout'
@@ -44,6 +44,14 @@ const Home = (props) => {
 				<CssBaseline />
 
 				<Header style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}>
+
+					{Plugin && Plugin.ExternalLinks && Plugin.ExternalLinks.map((l, i) =>
+						<Typography variant="body1" >
+							<Link href={l.url} color="inherit" target="_blank" >
+								{l.caption}
+							</Link>
+						</Typography>
+					)}
 
 					<Box flexGrow="1" />
 

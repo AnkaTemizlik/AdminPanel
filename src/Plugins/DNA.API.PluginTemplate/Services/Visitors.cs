@@ -13,6 +13,7 @@ using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 
 namespace DNA.API.PluginTemplate.Services {
+    
     public class AddInvoiceVisitor : Visitable<IInvoiceService, InvoiceState> {
 
         readonly Invoice _invoice;
@@ -41,6 +42,7 @@ namespace DNA.API.PluginTemplate.Services {
             }
         }
     }
+    
     public class CheckStockVisitor : Visitable<IInvoiceService, InvoiceState> {
         public CheckStockVisitor(InvoiceState inputState, InvoiceState outputState) : base(inputState, outputState) { }
         public async override Task DoAsync() {
@@ -48,6 +50,7 @@ namespace DNA.API.PluginTemplate.Services {
             await Task.CompletedTask;
         }
     }
+    
     public class CheckCustomerVisitor : Visitable<IInvoiceService, InvoiceState> {
         public CheckCustomerVisitor(InvoiceState inputState, InvoiceState outputState) : base(inputState, outputState) { }
 

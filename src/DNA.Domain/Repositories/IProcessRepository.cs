@@ -14,6 +14,7 @@ namespace DNA.Domain.Repositories {
         Task<T> GetAsync<T>(int id) where T : class;
         Task<int> InsertAsync<T>(T row) where T : class;
         Task<bool> UpdateAsync<T>(T row) where T : class;
+        Task<bool> DeleteAsync<T>(T row) where T : class;
 
         //Task<bool> BulkMergeAsync<T>(List<T> rows) where T : class;
 

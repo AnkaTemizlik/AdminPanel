@@ -10,6 +10,7 @@ namespace DNA.Domain.Services {
     public interface IPluginStartupManager {
         string Name { get; }
         string SourcePath { get; }
+        string MainModuleName { get; }
         bool IsModule { get; }
         Task DoWork();
         List<ScreenModel> LoadModels();

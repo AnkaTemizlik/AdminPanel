@@ -83,6 +83,9 @@ namespace DNA.API.PluginTemplate.Controllers {
 
                 if (response == null)
                     throw new Alert(AlertCodes.NoResponseError);
+                
+                if (!response.Success)
+                    BadRequest(response);
 
                 return Ok(response);
             }

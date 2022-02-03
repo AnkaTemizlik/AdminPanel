@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, current } from '@reduxjs/toolkit'
 import i18next from '../i18n';
 import _ from 'lodash'
+import { isNotEmpty } from '../utils'
 
 const menusSlice = createSlice({
 	name: 'menus',
@@ -25,8 +26,11 @@ const menusSlice = createSlice({
 			let index = 0;
 
 			screenConfig.names.map((n, i) => {
+
 				var s = screenConfig.screens[n];
+
 				if (s.hideInSidebar !== true && s.isDefinitionModel !== true) {
+
 					const newMenu = {
 						label: s.title,
 						to: "/screen/" + s.route,
@@ -36,6 +40,7 @@ const menusSlice = createSlice({
 						roles: s.roles,
 						pluginPage: s.type == "customPage",
 						menus: [],
+						parent: s.parent
 					};
 
 					s.subMenus && s.subMenus.map((sm) => {
@@ -50,13 +55,28 @@ const menusSlice = createSlice({
 								roles: sm.roles,
 								pluginPage: s.type == "customPage",
 								menus: [],
+								parent: sm.parent
 							})
 						}
 					})
 
 					// birden fazla ana modul varsa, gruplandırılarak gösterilecek. ana model menüsü yetkise tabi olacak.
 
-					state.panel.menus.splice(index++, 0, newMenu);
+					if (isNotEmpty(newMenu.parent)) {
+						console.success("menuSlice", newMenu.parent, current(state.panel.menus))
+						var parentMenu = state.panel.menus.find(_ => _.name == newMenu.parent)
+						parentMenu.menus.push(newMenu)
+						let mainModules = user.MainModules
+						console.info("Menus", "Parent:" + newMenu.parent, "Screen:" + n, mainModules)
+						if (isNotEmpty(mainModules)) {
+							if (mainModules.split(',').indexOf(newMenu.parent) == -1) {
+								newMenu.visible = false
+								parentMenu.visible = false
+							}
+						}
+					}
+					else
+						state.panel.menus.splice(index++, 0, newMenu);
 				}
 
 				if (s.isDefinitionModel)

@@ -111,6 +111,12 @@ namespace DNA.Persistence.Contexts {
 			BEGIN
 				ALTER TABLE [dbo].[{TablePrefix}USER] ADD IsDeleted BIT NOT NULL DEFAULT(0);
 			END";
+		public const string User_AddColumn_MainModules = @"
+			IF NOT EXISTS( SELECT c.name FROM sys.columns c LEFT JOIN sys.tables t ON c.object_id = t.object_id 
+				WHERE t.name = '{TablePrefix}USER' AND c.name = 'MainModules')
+			BEGIN
+				ALTER TABLE [dbo].[{TablePrefix}USER] ADD MainModules NVARCHAR(500);
+			END";
 
         public const string User_Insert_Admin = @"
 			IF NOT EXISTS(SELECT * FROM [dbo].[{TablePrefix}USER] WHERE Email = 'bilgi@dna.com.tr')

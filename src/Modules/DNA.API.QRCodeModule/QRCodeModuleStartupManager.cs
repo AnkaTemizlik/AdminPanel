@@ -19,6 +19,7 @@ namespace DNA.API.Module {
         public string Name => nameof(QRCodeModuleStartupManager).ToTitleCase();
         public string SourcePath { get; set; } = @"D:\Develop\DNA\Source\DNA.API\Modules\DNA.API.QRCodeModule";
         public bool IsModule => true;
+        public string MainModuleName => null;
 
         private readonly ILogger<QRCodeModuleStartupManager> _logger;
         private readonly IConfiguration _configuration;

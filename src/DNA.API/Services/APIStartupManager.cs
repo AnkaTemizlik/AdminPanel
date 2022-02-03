@@ -23,7 +23,7 @@ namespace DNA.API.Services {
         public string Name => nameof(APIStartupManager).ToTitleCase();
         public string SourcePath => AppDomain.CurrentDomain.BaseDirectory;
         public bool IsModule => true;
-
+        public string MainModuleName => null;
         public APIStartupManager(IConfiguration configuration, ILogger<APIStartupManager> logger) {
             _configuration = configuration;
             _logger = logger;

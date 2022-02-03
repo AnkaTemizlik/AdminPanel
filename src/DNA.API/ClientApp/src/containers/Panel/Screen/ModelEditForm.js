@@ -108,6 +108,7 @@ const ModelEditForm = React.memo((props) => {
 								dataField: c.dataField,
 								editorType: c.editorType
 							}
+							
 							if (c.customStore) {
 
 								editorOptions.dataSource = new DataSource({

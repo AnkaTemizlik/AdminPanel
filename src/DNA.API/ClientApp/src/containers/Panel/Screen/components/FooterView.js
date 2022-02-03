@@ -37,7 +37,9 @@ const FooterView = React.memo(({ row, screen, name }) => {
 				<Tabs value={tabIndex} onChange={tabChange}>
 					{screen.hideDetails !== true &&
 						<Tab icon={<Iconify icon={"format_list_bulleted"} />} label={t("Details")} />}
-					{models.map((m, i) => <Tab key={i} icon={<Iconify icon={m.icon} />} label={t(m.title || m.name)} />)}
+					{models.map((m, i) => {
+						return <Tab key={i} icon={<Iconify icon={m.icon} />} label={t(m.title || m.name)} />
+					})}
 				</Tabs>
 			</Toolbar>
                                                                                      

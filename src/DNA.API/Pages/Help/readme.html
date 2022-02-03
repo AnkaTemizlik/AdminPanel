@@ -1,0 +1,372 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>2020-10-03</title>
+</head>
+<body>
+
+    <h3 id="section">2020-10-03</h3>
+<h4 id="apinin-dokuman-linki-swagger-ui-icinde-kullanc-bilgileriyle-deneme-imkan-vardr">-Apinin doküman linki swagger ui içinde kullanıcı bilgileriyle deneme imkanı vardır.</h4>
+<p>Apinin dokümanve deneme linki
+<a href="https://demomerkezapierp.pos.derinbilgi.com.tr/swagger/index.html">https://demomerkezapierp.pos.derinbilgi.com.tr/swagger/index.html</a></p>
+<p><strong>Api url</strong></p>
+<ul>
+<li><a href="https://demomerkezapierp.pos.derinbilgi.com.tr/">https://demomerkezapierp.pos.derinbilgi.com.tr/</a></li>
+</ul>
+<p>Bu bilgileri kullanabilirsiniz. (token - hem swagger arayüzü hemde api içindir)</p>
+<pre><code class="language-JSON">{
+&quot;grant_type&quot;:&quot;password&quot;,
+&quot;username&quot;: &quot;kasa&quot;,
+&quot;password&quot;: &quot;81dc9bdb52d04dc20036dbd8313ed055&quot;
+}
+
+</code></pre>
+<h4 id="merkez-portal-bilgileri-entegre-ettiginiz-urunleri-ve-satslar-kontrol-edebilirsiniz">-Merkez portal bilgileri entegre ettiğiniz ürünleri ve satışları kontrol edebilirsiniz.</h4>
+<p><strong>Merkez portal</strong></p>
+<ul>
+<li><a href="http://demomerkez.pos.derinbilgi.com.tr/">http://demomerkez.pos.derinbilgi.com.tr/</a>
+<ul>
+<li>demo@demo.com</li>
+<li>12345.a</li>
+</ul>
+</li>
+</ul>
+<p><strong>Ürün linki</strong>
+<a href="https://demomerkez.pos.derinbilgi.com.tr/Product/Index">https://demomerkez.pos.derinbilgi.com.tr/Product/Index</a></p>
+<p><strong>Batch aktarım için izleme sayfası</strong> (batch işleminde hatalı aktarım denemesı varken yeni aktarım yapılmasına izin verilmez. Merkezden hatalı aktarım onaylanması yeni aktarımlar için zorunludur.)
+<a href="https://demomerkez.pos.derinbilgi.com.tr/System/BatchMonitor">https://demomerkez.pos.derinbilgi.com.tr/System/BatchMonitor</a></p>
+<p><strong>Satış linki</strong>
+<a href="https://demomerkez.pos.derinbilgi.com.tr/Report/SalesTransactions">https://demomerkez.pos.derinbilgi.com.tr/Report/SalesTransactions</a></p>
+<p><strong>Kullanıcılar</strong> (Mağaza personeli, müdür, kasiyer vb.)
+<a href="https://demomerkez.pos.derinbilgi.com.tr/User/Index">https://demomerkez.pos.derinbilgi.com.tr/User/Index</a></p>
+<h1 id="general">General</h1>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Ayarlar tanımları için Windows uygulaması konusu</li>
+</ul>
+<blockquote>
+<p>Admin yetkisi ile web üzerinden yapılması daha az zaman alacak ve daha uygun olacak</p>
+</blockquote>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Netsis'ten okurken, Sql sorgusundan alınan verinin kolonları ayarlarda etiketlemeye otomatik gelmeli (ValuerService)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> SQL Sorgusuna Config'ten parametre gönderme özelliği ekle (ValuerService)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Döviz birimi eşleşmesini nerede yapacağız?</li>
+</ul>
+<h1 id="jobs">Jobs</h1>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" checked="checked" /> Job listesi ekranda görünecek</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" checked="checked" /> Job'lar ayarlardaki aktiflik durumuna göre Hangfire'da host edilecek.</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" checked="checked" /> Job periyotları ayarlardan değiştirilebilecek</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" checked="checked" /> Job ekrandan değiştirildiğinde RestartRequired parametresi ile kullanıcıya &quot;Servisi Restart et&quot; uyarısı verilecek</li>
+</ul>
+<h1 id="einvoice-tblefatcari">EInvoice (TBLEFATCARI)</h1>
+<blockquote>
+<p>E-fatura mükellefini eklemek için kullanılır.</p>
+</blockquote>
+<p><strong>MAP:</strong></p>
+<pre><code class="language-json">{
+  &quot;taxNumber&quot;: &quot;string&quot;,              &gt; IDENTIFIER
+  &quot;name&quot;: &quot;string&quot;,                   &gt; TITLE
+  &quot;address&quot;: &quot;string&quot;,                &gt; ALIAS
+  &quot;date&quot;: &quot;2020-10-03T10:44:17.270Z&quot;  &gt; TARIH
+}
+</code></pre>
+<pre><code>IDENTIFIER	ALIAS	TITLE	TARIH
+0010000145	urn:mail:defaultpk@ttk.com.tr	0338 SAYILI BUÐDAYLI TARIM KREDÝ KOOPERATÝFÝ	2015-12-31 00:00:00.000
+</code></pre>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" checked="checked" /> TBLEFATCARI'den al, <code>/api/Einvoice/add-bulk</code> ile .zip'leyip gönder (var olanları kendisi silecek)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Kasalara göndermek için <code>/api/Einvoice/send</code> metodunu kullan</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Kasalara hemen gönderilip gönderilmeyeceği ayarlardan parametrik olacak</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Elle seçilen kasaya gönderilebilmesi için ekran ekle.</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> json paketi için kayıt tut ve seçileni gönderebileceği <code>kasa numarasını</code> al, <code>send</code> metodunu çağır</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" checked="checked" /> 150 MB boyutunu aşmamalı (Aşması durumunda bu modülün zip uygulaması fşrmaya sorulacak)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" checked="checked" /> add-bulk işlemi için Job ekle.</li>
+</ul>
+<h4 id="job-islem-sras-taxpayerpackagestate-visitors">JOB İşlem sırası (TaxpayerPackageState &amp; Visitors)</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Process</th>
+<th>State</th>
+<th>Visitor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>create new packkage</td>
+<td>Prepared</td>
+<td>PreparationVisitor</td>
+</tr>
+<tr>
+<td>2</td>
+<td>get TBLEFATCARI</td>
+<td>Retrieved</td>
+<td>DataRetrievalVisitor</td>
+</tr>
+<tr>
+<td>3</td>
+<td>map, convert to json &amp; minify</td>
+<td>Mapped</td>
+<td>MappingVisitor</td>
+</tr>
+<tr>
+<td>4</td>
+<td>save file to local folder</td>
+<td>Saved</td>
+<td>SavingVisitor</td>
+</tr>
+<tr>
+<td>5</td>
+<td>post data to encore api</td>
+<td>Posted</td>
+<td>PostingVisitor</td>
+</tr>
+<tr>
+<td>6</td>
+<td>finish</td>
+<td>Completed</td>
+<td>CompleterVisitor</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Her turda tamamlanmamış varsa onu alır, update eder.</li>
+<li>Tamamlanmamış yoksa ve gün değişmişse yeni bir kayıt oluşur</li>
+<li>Tamamlanmamış varsa, işe ile State'ten başlar (baştan başlatır)</li>
+</ul>
+<h2 id="product">Product</h2>
+<h3 id="root">Root</h3>
+<pre><code class="language-sql">SELECT * FROM dbo.TBLSTSABIT t	
+	SELECT * FROM dbo.TBLESNYAPMAS t	-- Yapılandırma kodu varsa YAPACIK=Stok adı olmalı
+SELECT * FROM dbo.TBLESNSTMAS t	-- nonclustered, unique located on PRIMARY STOKKODU, YAPKOD 
+SELECT * FROM dbo.TBLSTSABITEK t	
+SELECT * FROM dbo.TBLSTSABITSAHATABLOESLEME t	
+SELECT * FROM TBLCARISTOK WHERE CARI_KOD IS NULL AND STOK_KODU IS NOT NULL 
+</code></pre>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Ayarlardan &quot;Yapılandırma kodu kullanılacak mı?&quot; sorulacak.</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Yapılandırma kullanılacak ise Netsis'ten &quot;Esnek Yapılandırma var mı &quot; parametresi okunup, pasif ise uyarı verilip kaydedilmeyecek. <code>c_yedek5=H</code> ise pasif.</li>
+</ul>
+<pre><code class="language-sql">SELECT s.SUBE_KODU,p.c_yedek5,p.* FROM dbo.TBLSTOKPARAM p
+INNER JOIN dbo.TBLSUBELER s ON p.ISLETME_KODU = s.ISLETME_KODU
+</code></pre>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> <code>SELECT t.YAPILANDIR, * FROM dbo.TBLSTSABIT t	WHERE STOK_KODU IN ('1001001','3000001')</code></p>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> TBLSTSABIT 'ten tüm kayıları al
+- <code>SELECT * FROM TBLESNYAPMAS WHERE YPLNDRSTOKKOD='3000002'</code> ile yapılandırma kayıtları var mı, kontrol et.
+- yapılandırılmış kodlar varsa, her birini ayrı stok olarak gönder</p>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> Supplier Id boş geçilecek (bizde int değil). SupplierName aşağıdaki sorgu ile alınacak (CARI_ISIM)</p>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> Ürün resimlerini nereye nasıl ve biz mi yükleyeceğiz?</p>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> Ürünler için ekran yapılacak, netsisteki ürünler listelenecek</p>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> kullanıcı seçtiği ürünü add metodu ile aktarabilecek</p>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> add işleminden sonra send edebilir.</p>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> Fiyatı güncellenenleri gönder!..... (İncelenecek)</p>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> add-zip işlemi TBLEFATCARI gönderimindeki gibi JOB'a bağlanacak. send (kasalara gönderim) yine aynı olacak</p>
+</li>
+</ul>
+<pre><code class="language-sql">SELECT SATICI_KODU,CARI_ISIM, * FROM TBLSTSABIT
+LEFT OUTER JOIN TBLCASABIT ON SATICI_KODU = CARI_KOD
+WHERE STOK_KODU='1001005'
+</code></pre>
+<pre><code class="language-json">  &quot;id&quot;: 0,
+  &quot;code&quot;: &quot;13245&quot;,
+  &quot;isActive&quot;: true,
+  &quot;shortName&quot;: &quot;string&quot;,
+  &quot;name&quot;: &quot;string&quot;,
+  &quot;unitCode&quot;: &quot;string&quot;,
+  &quot;vatPercent&quot;: {TBLSTSABIT.KDV_ORANI},
+  &quot;buyingVatPercent&quot;: {TBLSTSABIT.ALIS_KDV_KODU},
+  &quot;categoryName&quot;: &quot;string&quot;,
+  &quot;categoryId&quot;: 0,
+  &quot;brandId&quot;: 0,
+  &quot;brandName&quot;: &quot;string&quot;,
+  &quot;genericId&quot;: 0,
+  &quot;genericName&quot;: &quot;string&quot;,
+  &quot;supplierId&quot;: 0,
+  &quot;supplierName&quot;: &quot;{TBLCASABIT.CARI_ISIM}&quot;,
+  &quot;code1Id&quot;: 0,
+  &quot;code1Name&quot;: &quot;{TBLSTSABITSAHATABLOESLEME.XYZ}&quot;,
+  &quot;code2Id&quot;: 0,
+  &quot;code2Name&quot;: &quot;string&quot;,
+  &quot;code3Id&quot;: 0,
+  &quot;code3Name&quot;: &quot;string&quot;,
+  &quot;code4Id&quot;: 0,
+  &quot;code4Name&quot;: &quot;string&quot;,
+  &quot;code5Id&quot;: 0,
+  &quot;code5Name&quot;: &quot;string&quot;,
+  &quot;isGivesBonus&quot;: true,
+  &quot;bonusMultiplier&quot;: 0,
+  &quot;currneysTypeId&quot;: 0,
+  &quot;priceEntryType&quot;: 0,
+  &quot;returnType&quot;: 0,
+  &quot;quantityType&quot;: 0,
+  &quot;discountType&quot;: 0,
+  &quot;scaleType&quot;: 0,
+  &quot;productSalesmanType&quot;: {PRODUCT.productSalesmanType},
+
+ &quot;salesSalesInformationsId&quot;: 0,
+  &quot;isLunchVoucher&quot;: true,
+  &quot;installmentNumber&quot;: 0,
+  &quot;description&quot;: &quot;string&quot;,
+  &quot;productType&quot;: 0
+</code></pre>
+<h3 id="barcodes">Barcodes</h3>
+<pre><code class="language-json">  &quot;barcodes&quot;: [
+    {
+      &quot;barcode&quot;: &quot;{PRODUCT.BARKOD.BARKOD}&quot;, //Produ
+      &quot;unitCode&quot;: &quot;{PRODUCT.BARKOD.UNIT}&quot;,
+      &quot;priceId&quot;: 0, //sabit 0
+      &quot;quantity&quot;: 1 // sabit 1
+    }
+  ]
+</code></pre>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Barkod bilgisi dışarıdan sql dosyasından &quot;stok kodu&quot; ve &quot;yapılandırma var mı&quot; parametresi ile alınacak</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> &quot;Yapılandırma Var mı&quot; parametresi Config içinde (SQL Sorgusuna Config'ten parametre gönderme özelliği ekle.)</li>
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Öncelikle TBLSTOKBAR tablosundan yapılandırma durumuna göre kontrol yapılır, barkod ve OLCU_BR alınır.</li>
+</ul>
+<pre><code class="language-sql">SELECT * FROM dbo.TBLSTOKBAR t	--clustered, unique, primary key located on PRIMARY	STOK_KODU, BARKOD, YAPKOD
+</code></pre>
+<p>TBLSTOKBAR'da yoksa TBLSTSABIT tablosunda kayıt aranız.</p>
+<pre><code class="language-sql">SELECT STOK_KODU,BARKOD1,BARKOD2,BARKOD3 FROM dbo.TBLSTSABIT t	--clustered, unique, primary key located on PRIMARY	STOK_KODU
+</code></pre>
+<h3 id="pricess">Pricess</h3>
+<pre><code class="language-json">  &quot;prices&quot;: [                        
+    {                                
+      &quot;storeCode&quot;: &quot;string&quot;,         &gt; FIYATGRUBU
+      &quot;priceId&quot;: 0,                  &gt; sabit 0
+      &quot;price&quot;: {FIYAT},              &gt; FIYAT1,FIYAT2,FIYAT3,FIYAT4,SAT_DOV_TIP,DOV_SATIS_FIAT AS FIYAT1
+      &quot;isActive&quot;: true               &gt; 1
+    }
+  ],
+</code></pre>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Döviz birimi hangi field'a yazılacak</li>
+</ul>
+<p>-- SELECT FIAT_SISTEMI ,DETAYLI_FIAT_LISTESI FROM TBLPARAM</p>
+<p>/********* Netsis'te Stok Kartı Kayıtlarındaki</p>
+<p>SELECT SATIS_FIAT1,SATIS_FIAT2,SATIS_FIAT3,SATIS_FIAT4,SAT_DOV_TIP,DOV_SATIS_FIAT,'' AS FIYATGRUBU,* FROM TBLSTSABIT</p>
+<ul>
+<li><p>Aşağıdakilerden hangisi kullanılacağı seçilecek.
+(CASE WHEN DOV_SATIS_FIAT=0 THEN FIYAT1 ELSE DOV_SATIS_FIAT END) AS FIYAT1
+FIYAT2
+FIYAT3
+FIYAT4</p>
+</li>
+<li><p>Eğer dövizli ise SAT_DOV_TIP ile döviz eşleşmesi yapılacak ve DOV_SATIS_FIAT kolonu dikkate alınacak.</p>
+</li>
+<li><p>Önemli!!!!...... Mağaza bazında fiyat verilemez!...............
+********* Stok Kartı Kayıtlarındaki****/</p>
+</li>
+</ul>
+<p>/****************** Netsis Stok Parametrleri: Özel Fiyat Sistemi ******************
+SELECT * FROM TBLSTOKFIAT
+--WHERE STOKKODU='1001011'
+WHERE INCKEYNO = DBO.GUNCELFIYATSATIRGETIR('1001011','2020-10-03','A','S320-34-275','H')</p>
+<pre><code class="language-sql">SELECT * FROM ESNSTFIYAT WHERE STOK_KODU=@StokKodu AND YAPKOD=@YapKod_
+</code></pre>
+<ul>
+<li>Fiyat Grubu eşleşmesi yapılacak. Mağaza kodu ile eşleşmesi gerekecek.</li>
+<li>Döviz Birimine göre FIYATDOVIZTIPI döviz eşleşmesine göre kontrol edilip</li>
+<li>Aşağıdakilerden hangisi kullanılacağı seçilecek.
+FIYAT1
+FIYAT2
+FIYAT3
+FIYAT4
+****************** Özel Fiyat Sistemi ******************/</li>
+</ul>
+<p>/****************** Detaylı Fiyat Listesi ******************
+Örnek DATA ve SQL cümleleri verilecek.
+****************** Detaylı Fiyat Listesi ******************/</p>
+<h3 id="groupprices">groupPrices</h3>
+<pre><code class="language-json">  &quot;groupPrices&quot;: [
+    {
+      &quot;groupId&quot;: 0,
+      &quot;priceId&quot;: 0,
+      &quot;price&quot;: 0
+    }
+  ],
+</code></pre>
+<h3 id="counrtyvatlist">counrtyVatList</h3>
+<pre><code class="language-json">  &quot;counrtyVatList&quot;: [
+    {
+      &quot;countryId&quot;: 0,           &gt; Sorulacak 0 olabilir
+      &quot;countryCode&quot;: &quot;string&quot;,  &gt; 'TR' mi gönderilecek sorulacak.
+      &quot;percent&quot;: 0              &gt; TBLSTSABIT.KDV_ORANI
+    }
+  ],
+</code></pre>
+<pre><code class="language-SQL">
+SELECT STOK_KODU,KDV_ORANI FROM TBLSTSABIT
+
+</code></pre>
+<h3 id="salesmessages">salesMessages</h3>
+<pre><code class="language-json"> &quot;salesMessages&quot;: [
+    0
+  ],
+</code></pre>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="disabled" type="checkbox" /> Sorulacak</li>
+</ul>
+<h2 id="doviz-kurlar">Döviz Kurları</h2>
+<ul class="contains-task-list">
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> api/Store/curreny-types metoduyla döviz tipleri alınacak ve ayarlardaki bizim Id lerimizle eşleştirilecek.</p>
+<table>
+<thead>
+<tr>
+<th>SIRA</th>
+<th>ISIM</th>
+<th>NCRDOVIZADI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>USD</td>
+<td>USD</td>
+</tr>
+<tr>
+<td>3</td>
+<td>EUR</td>
+<td>EUR</td>
+</tr>
+<tr>
+<td>4</td>
+<td>GBP</td>
+<td>GBP</td>
+</tr>
+<tr>
+<td>5</td>
+<td>JPY</td>
+<td>--</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li class="task-list-item"><p><input disabled="disabled" type="checkbox" /> DBO.KURBUL ile gelen sonuç 0 ise gönderilmeyecek. değer var ise <code>/api/Store/update-exhange-rates</code> ile eşleştirme tablosundan yararlanarak gönderilecek</p>
+</li>
+</ul>
+<blockquote>
+<p>1 Döviz Alış, 2 Döviz Satış, 3 Efektif Alış, 4 Efektif Satış</p>
+</blockquote>
+<pre><code class="language-sql">SELECT DBO.KURBUL(2,'20201003',2,1)
+    @DOVTIP	TDBBYTE
+    @TARIH	smalldatetime
+    @CEVRIM	TDBBYTE
+    @TIP	TDBBYTE
+</code></pre>
+<h1 id="sales">SALES</h1>
+
+
+</body>
+</html>

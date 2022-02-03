@@ -60,10 +60,10 @@ namespace DNA.API.Extensions {
                     if (controller == null)
                         continue;
                     var controllerSection = controllersSection.GetSection(name);
-                    var hiddenActions = controllerSection.GetSection("HiddenActions").Get<List<string>>() ?? new List<string>();
+                    var hiddenActions = (controllerSection.GetSection("HiddenActions").Get<List<string>>() ?? new List<string>()).Select(_ => _.Replace("Async", ""));
                     var visible = !controllerSection.GetValue<bool>("Hidden");
                     foreach (ActionModel action in controller.Actions) {
-                        action.ApiExplorer.IsVisible = visible ? !hiddenActions.Contains(action.ActionName) : false;
+                        action.ApiExplorer.IsVisible = visible ? !hiddenActions.Contains(action.ActionName.Replace("Async", "")) : false;
                     }
                 }
             }

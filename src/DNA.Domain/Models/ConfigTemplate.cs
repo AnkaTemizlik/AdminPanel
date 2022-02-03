@@ -8,6 +8,10 @@ using System.Text;
 
 namespace DNA.Domain.Models {
 
+    public interface IConfig
+    {
+
+    }
 
     public class ConfigTemplate {
         public ConfigEditingTemplate Editing { get; } = new ConfigEditingTemplate();
@@ -180,6 +184,39 @@ namespace DNA.Domain.Models {
             return this;
         }
 
+        public ConfigProperty Set(string name, bool visible, IConfig config) {
+            FieldTemplates.Add(name, new FieldTemplate() { visible = visible });
+            base.Add(name, config);
+            return this;
+        }
+
+        public ConfigProperty SetGuard(string mainModuleName, Services.Communication.Response licenseValidationResponse, params string[] mudules) {
+            var moduleProp = _config.Property();
+            if (mudules.Length > 0) {
+                foreach (var item in mudules) {
+                    moduleProp.Add(item, "00000000-0000-0000-0000-000000000000");
+                }
+            }
+
+            var guard = _config.Property()
+                .Add("BaseUrl", "http://192.168.34.60:57001", restartRequired: true)
+                .Set(mainModuleName, _config.Property()
+                    .Add("PublicKey", "00000000-0000-0000-0000-000000000000", restartRequired: true)
+                    .Set("LicenseStatus", false, _config.Property(readOnly: true)
+                        .Add("Success", licenseValidationResponse.Success)
+                        .Add("LastTry", DateTime.Now.ToString("o"))
+                        .AddTextArea("Message", licenseValidationResponse.Message ?? "")
+                        .AddTextArea("Solution", licenseValidationResponse.Success ? "" : "Check logs and settings then try restarting the service.")
+                        .Add("ErrorCode", licenseValidationResponse.Code)
+                        .AddTextArea("Comment", $"{licenseValidationResponse.Comment}")
+                        .AddTextArray("Details", false, (licenseValidationResponse?.Details ?? new List<string>()).ToArray())
+                    )
+                    .Set("Modules", moduleProp)
+                )
+                ;
+
+            return Set("Guard", guard);
+        }
         public ConfigProperty SetGuard(Services.Communication.Response licenseValidationResponse, params string[] mudules) {
             var moduleProp = _config.Property();
             if (mudules.Length > 0) {
@@ -360,6 +397,11 @@ namespace DNA.Domain.Models {
             return this;
         }
 
+        public ConfigProperty AddNumberArray(string name, bool? restartRequired = false, params int[] values) {
+            FieldTemplates.Add(name, _config.Editing.TextArray(null, restartRequired));
+            base.Add(name, values);
+            return this;
+        }
         public ConfigProperty AddKeyValue(string name, string keyCaption_, string valueCaption_, string caption_, params KeyValue<string>[] defaultKeyValues) {
             FieldTemplates.Add(name, _config.Editing.KeyValue(keyCaption_, valueCaption_, caption_));
             base.Add(name, defaultKeyValues.ToArray());
