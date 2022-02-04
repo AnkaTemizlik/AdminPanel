@@ -21,6 +21,7 @@ namespace DNA.API.PluginTemplate {
         public string Name => nameof(PluginStartupManager).ToTitleCase();
         public string SourcePath => @"D:\Develop\DNA\Source\DNA.API\Plugins\DNA.API.PluginTemplate";
         public bool IsModule => false;
+        public string MainModuleName => null;
 
         private readonly ILogger<PluginStartupManager> _logger;
         private readonly IProcessService _processService;

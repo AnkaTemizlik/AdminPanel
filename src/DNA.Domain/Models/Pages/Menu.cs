@@ -12,6 +12,7 @@ namespace DNA.Domain.Models.Pages {
         public string icon { get; set; }
         public string name { get; set; }
         public string target { get; set; }
+        public bool? mainModule { get; set; }
         public string color { get; set; }
         public bool? visible { get; set; }
         public bool? isDivider { get; set; }

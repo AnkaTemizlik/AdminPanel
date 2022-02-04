@@ -40,7 +40,6 @@ const createCustomStore = (options, key, defaultFilter, lists, onError) => {
 					params.filter = addQueryFilter(params.filter, defaultFilter)
 				}
 
-				console.warning("loadOptions", options, loadOptions)
 				return options.load(toQueryString(params))
 					.then((status) => {
 						if (status.Success) {

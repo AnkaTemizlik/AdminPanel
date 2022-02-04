@@ -48,7 +48,8 @@ export const getSettings = createAsyncThunk(
 			// }))
 			dispatch(getScreenConfig({
 				screenConfig: resource.screenConfig,
-				roles: state.auth2.user.Roles
+				roles: state.auth2.user.Roles,
+				mainModules: state.auth2.user.MainModules
 			}))
 		}
 		else
@@ -75,6 +76,7 @@ const settingsSlice = createSlice({
 				state.MultiLanguage = payload.Resource.configs.MultiLanguage
 				state.Logo = payload.Resource.configs.Logo
 				state.LicenseStatus = payload.Resource.configs.LicenseStatus
+				state.Guard = payload.Resource.configs.Guard
 			}
 			else
 				state.error = payload
@@ -130,7 +132,7 @@ const configureColumns = (name, columns, config) => {
 		col.dataField = col.name
 		col.hidden = col.hidden == true ? true : i > 14
 		col.editorType = "dxTextBox"
-
+		
 		// 'string' | 'number' | 'date' | 'boolean' | 'object' | 'datetime'
 		if (col.type == "date" || col.type == "time" || col.type == "datetime") {
 			if (!dateFormats)
@@ -152,6 +154,7 @@ const configureColumns = (name, columns, config) => {
 		}
 		else if (col.type == "numeric" || col.type == "number") {
 			col.dataType = "number"
+			col.alignment = col.alignment || "right"
 			col.editorType = "dxNumberBox"
 			if (col.currency) {
 				col.dataType = "currency"
@@ -162,7 +165,8 @@ const configureColumns = (name, columns, config) => {
 			}
 		}
 		else if (col.currency || col.type == "currency") {
-			col.dataType = "currency"
+			console.success("currency", col)
+			col.dataType = "number"
 			col.format = {
 				style: "currency",
 				currency: col.currency || "TRY"
@@ -172,6 +176,9 @@ const configureColumns = (name, columns, config) => {
 			col.editorType = "dxTextArea"
 			col.dataType = "string"
 			col.editorOptions.autoResizeEnabled = true
+		}
+		else if (col.type == "tagBox") {
+			col.editorType = "dxTagBox"
 		}
 		else if (col.type == "color") {
 			col.editorType = "dxColorBox"
@@ -189,15 +196,23 @@ const configureColumns = (name, columns, config) => {
 			col.editorOptions = { ...col.editorOptions, maxLength: col.stringLength }
 		}
 
-		// LOOKUP kolon set et
+		// LOOKUP kolon set et (sabit bir liste (enum vb))
 		if (col.autoComplete) {
-			// sabit bir liste (enum vb)
-			col.allowHeaderFiltering = true
-			col.editorType = "dxSelectBox"
-			col.lookup = {
-				dataSource: config.lists[col.autoComplete],
-				displayExpr: "caption",
-				valueExpr: "id"
+			if (col.editWith && col.editWith.type == "tagBox") {
+				col.editorType = "dxTagBox"
+				col.dataSource = config.lists[col.autoComplete]
+				col.editWith.displayExpr = col.editWith.displayExpr || "caption"
+				col.editWith.valueExpr = col.editWith.valueExpr || "id"
+				console.purple("TagBoxComponent autoComplete col", col)
+			}
+			else {
+				col.allowHeaderFiltering = true
+				col.editorType = "dxSelectBox"
+				col.lookup = {
+					dataSource: config.lists[col.autoComplete],
+					displayExpr: "caption",
+					valueExpr: "id"
+				}
 			}
 		}
 		else if (col.data) {
@@ -225,6 +240,7 @@ const configureColumns = (name, columns, config) => {
 			if (col.data.type == "simpleArray") {
 				col.allowHeaderFiltering = true
 				col.editorType = "dxSelectBox"
+
 				if (col.data.filter) {
 
 					// diğer kolon değeri değiştiğinde bu kolon değerini boşalt
@@ -365,7 +381,9 @@ const screenConfigSlice = createSlice({
 	reducers: {
 		getScreenConfig: (state, action) => {
 
-			let { screenConfig: config, roles } = { ...action.payload };
+			let { screenConfig: config, roles, mainModules } = { ...action.payload };
+
+			console.purple("getScreenConfig", mainModules)
 
 			// translate autoCoplete lists 
 			Object.keys(config.lists).map(n => config.lists[n].map(l => {

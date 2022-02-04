@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace DNA.API.Services {
 
-    [Service(typeof(IRestService), Lifetime.Scoped)]
+    [Service(typeof(IRestService), Lifetime.Transient)]
     public class RestService : IRestService {
 
         private readonly IConfiguration _configuration;
@@ -46,12 +46,24 @@ namespace DNA.API.Services {
             _client.AddDefaultParameter(name, value, ParameterType.HttpHeader);
         }
 
+        public void AddHeader(string name, string value) {
+            _client.AddDefaultParameter(name, value, ParameterType.HttpHeader);
+        }
+
         public async Task<Response<T>> GetAsync<T>(string endpoint) {
             return await ExecuteAsync<T>(HttpMethod.Get, endpoint);
         }
 
-        public async Task<Response<T>> PostAsync<T>(string endpoint, object body) {
-            return await ExecuteAsync<T>(HttpMethod.Post, endpoint, body);
+        public async Task<Response<string>> GetAsync(string endpoint, string contentType = null) {
+            return await ExecuteAsync(HttpMethod.Get, endpoint, contentType);
+        }
+
+        public async Task<Response<T>> PostAsync<T>(string endpoint, object body, string contentType = null) {
+            return await ExecuteAsync<T>(HttpMethod.Post, endpoint, body, contentType);
+        }
+
+        public async Task<Response<string>> PostAsync(string endpoint, object body, string contentType = null) {
+            return await ExecuteAsync(HttpMethod.Post, endpoint, body, contentType);
         }
 
         public T Get<T>(string urlPath, Dictionary<string, string> parameters) {
@@ -86,19 +98,46 @@ namespace DNA.API.Services {
             return result;
         }
 
-        public async Task<Response<T>> ExecuteAsync<T>(HttpMethod method, string endpoint, object body = null) {
+        public async Task<Response<string>> ExecuteAsync(HttpMethod method, string endpoint, object body = null, string contentType = null) {
+            if (_baseUrl == null || _client == null) {
+                throw new Exception($"Run 'Init' before execution.");
+            }
+
+            var request = new RestRequest(endpoint, _mapper.Map<Method>(method));
+            request.AddHeader("Content-Type", contentType ?? _contentType);
+
+            if (body != null)
+                if (contentType == "application/x-www-form-urlencoded")
+                    request.AddObject(body);
+                else
+                    request.AddJsonBody(body);
+            //request.AddJsonBody(body is string ? body : JsonConvert.SerializeObject(body));
+
+            var restResponse = await _client.ExecuteAsync(request);
+            var queryResult = new Response<string> {
+                Code = (int)restResponse.StatusCode,
+                Success = restResponse.StatusCode == System.Net.HttpStatusCode.OK,
+                Comment = restResponse.StatusDescription,
+                Message = restResponse.ErrorException?.Message,
+                Resource = restResponse.Content
+            };
+
+            return queryResult;
+        }
+
+        public async Task<Response<T>> ExecuteAsync<T>(HttpMethod method, string endpoint, object body = null, string contentType = null) {
             if (_baseUrl == null || _client == null) {
                 throw new Exception($"Run 'Init' before execution.");
             }
 
             var request = new RestRequest(endpoint, _mapper.Map<Method>(method), DataFormat.Json);
-            request.AddHeader("Content-Type", _contentType);
+            request.AddHeader("Content-Type", contentType ?? _contentType);
 
             if (body != null)
                 request.AddJsonBody(body);
-                //request.AddJsonBody(body is string ? body : JsonConvert.SerializeObject(body));
+            //request.AddJsonBody(body is string ? body : JsonConvert.SerializeObject(body));
 
-            var restResponse = _client.Execute<T>(request);
+            var restResponse = await _client.ExecuteAsync<T>(request);
             var queryResult = new Response<T> {
                 Code = (int)restResponse.StatusCode,
                 Success = restResponse.StatusCode == System.Net.HttpStatusCode.OK,
@@ -107,7 +146,7 @@ namespace DNA.API.Services {
                 Resource = restResponse.Data
             };
 
-            return await Task.FromResult(queryResult);
+            return queryResult;
         }
     }
 }

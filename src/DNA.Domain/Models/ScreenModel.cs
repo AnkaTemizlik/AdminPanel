@@ -75,6 +75,9 @@ namespace DNA.Domain.Utils {
         [JsonProperty("viewType")]
         public string ViewType { get; set; }
 
+        [JsonProperty("parent")]
+        public string Parent { get; set; }
+
         [JsonProperty("route")]
         public string Route { get; set; }
 
@@ -289,6 +292,11 @@ namespace DNA.Domain.Utils {
             return this;
         }
 
+        public ScreenModel SetParent(string name) {
+            this.Parent = name;
+            return this;
+        }
+
         public void GenerateDataSource(ScreenDataSource existing) {
             DataSource = existing;
         }
@@ -407,18 +415,23 @@ namespace DNA.Domain.Utils {
                     if (argumentType == null)
                         continue;
                     var refScreen = parent.Find(_ => _.Name == argumentType.Name);
-                    var subModel = SubModels.Find(_ => _.name == refScreen.Name);
-                    if (subModel == null) {
-                        subModel = new ScreenSubModel() { name = argumentType.Name };
-                        SubModels.Add(subModel);
+                    if (refScreen != null) {
+                        var subModel = SubModels.Find(_ => _.name == refScreen.Name);
+                        if (subModel == null) {
+                            subModel = new ScreenSubModel() { name = argumentType.Name };
+                            SubModels.Add(subModel);
+                        }
+                        subModel.title ??= $"{refScreen.Name} Screen";
+                        subModel.type ??= refScreen.ViewType ?? "list";
+                        subModel.icon ??= refScreen.Icon;
+                        subModel.dxIcon ??= refScreen.DxIcon;
+                        subModel.showIn ??= new string[] { "tab" };
+                        subModel.route ??= refScreen.Route;
+                        subModel.relationFieldNames ??= new object[2] { refScreen.KeyFieldName, "?" };
                     }
-                    subModel.title ??= $"{refScreen.Name} Screen";
-                    subModel.type ??= refScreen.ViewType ?? "list";
-                    subModel.icon ??= refScreen.Icon;
-                    subModel.dxIcon ??= refScreen.DxIcon;
-                    subModel.showIn ??= new string[] { "tab" };
-                    subModel.route ??= refScreen.Route;
-                    subModel.relationFieldNames ??= new object[2] { refScreen.KeyFieldName, "?" };
+                    else {
+
+                    }
                 }
             }
         }
@@ -597,6 +610,8 @@ namespace DNA.Domain.Utils {
         /// `url/${key}`
         /// </summary>
         public string delete { get; set; }
+
+        public bool? passWholeRowOnUpdate { get; set; }
     }
 
     public class ScreenSubMenu {
@@ -635,6 +650,7 @@ namespace DNA.Domain.Utils {
     public class ScreenColumn {
         public int? index { get; set; }
         public int? editIndex { get; set; }
+        public int? groupIndex { get; set; }
         public string name { get; set; }
         public string title { get; set; }
         public string caption { get; set; }
@@ -648,6 +664,10 @@ namespace DNA.Domain.Utils {
         // default: yyyy-MM-ddTHH:mm:ss
         public string dateSerializationFormat { get; set; }
         public string currency { get; set; }
+        /// <summary>
+        /// Accepted Values: undefined | 'center' | 'left' | 'right'
+        /// </summary>
+        public string alignment { get; set; }
         public string autoComplete { get; set; }
         public bool? withTimeEdit { get; set; }
         public int? colSpan { get; set; }

@@ -15,7 +15,7 @@ namespace DNA.Domain.Services {
         Task<T> GetAsync<T>(int id) where T : class;
         Task<int> InsertAsync<T>(T row) where T : class;
         Task<bool> UpdateAsync<T>(T row) where T : class;
-
+        Task<bool> DeleteAsync<T>(T row) where T : class;
     }
 }
 

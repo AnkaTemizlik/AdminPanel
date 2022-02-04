@@ -28,7 +28,7 @@ const LoadableApp = Loadable.Map({
 		settingsStatus: () => api.actions.run("GET", `/api/auth/settings`)
 			.then((status) => {
 				if (status.Success) {
-					const { Plugin, LicenseStatus } = status.Resource.configs
+					const { Plugin, LicenseStatus, Guard } = status.Resource.configs
 					console.warning("settingsStatus", status.Resource.configs)
 					if (LicenseStatus.Success == false) {
 						throw new Error(LicenseStatus.Message + ". " + LicenseStatus.Solution + "")

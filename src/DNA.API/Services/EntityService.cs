@@ -41,6 +41,8 @@ namespace DNA.API.Services {
         public bool TryFindType(string typeName, out Type type) {
             lock (typeCache) {
                 if (!typeCache.TryGetValue(typeName ?? "", out type)) {
+                    if (typeName == null)
+                        return type != null;
                     foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies()) {
                         type = a.GetType(typeName);
                         if (type != null)
@@ -162,7 +164,7 @@ namespace DNA.API.Services {
                         .Where(_ => _.GetCustomAttribute<Dapper.Contrib.Extensions.KeyAttribute>() == null)
                         .Where(_ => _.GetCustomAttribute<Dapper.Contrib.Extensions.ComputedAttribute>() == null)
                         .Select(_ => _.Name);
-                    var data = ((IDictionary<string, object>)obj).Keys.Where(_=> allKeys.Contains(_));
+                    var data = ((IDictionary<string, object>)obj).Keys.Where(_ => allKeys.Contains(_));
                     sql = sql.Replace("{Fields}", string.Join(",", data.Select(name => $"[{name}] = @{name}")));
                     if (sql.Contains("{InsertingFields}"))
                         sql = sql.Replace("{InsertingFields}", string.Join(",", data.Select(name => $"[{name}]")));

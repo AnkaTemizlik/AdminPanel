@@ -18,6 +18,7 @@ namespace DNA.API.Module {
         public string Name => nameof(BarcodeModuleStartupManager).ToTitleCase();
         public string SourcePath { get; set; } = @"D:\Develop\DNA\Source\DNA.API\Modules\DNA.API.BarcodeModule";
         public bool IsModule => true;
+        public string MainModuleName => null;
 
         private readonly ILogger<BarcodeModuleStartupManager> _logger;
 

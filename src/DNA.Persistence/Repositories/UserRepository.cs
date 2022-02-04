@@ -32,6 +32,7 @@ namespace DNA.Persistence.Repositories {
             , [Location] 
             , [PictureUrl] 
             , [IsDeleted] 
+            , [MainModules] 
             ";
 
         public UserRepository(IAppDbContext context) : base(context) {
@@ -89,14 +90,15 @@ namespace DNA.Persistence.Repositories {
                             , IsInitialPassword = @IsInitialPassword
                             , PasswordConfirmationCode = @EmailConfirmationCode
                             , IsDeleted = 0
+                            , MainModules = @MainModules
                         FROM [{{TablePrefix}}USER] AS u
                         WHERE Id = @Id AND IsDeleted = 1
                     END
                     ELSE 
                     BEGIN
-                        INSERT INTO [{{TablePrefix}}USER] ([FullName], [UserName], [Role], [Email], [PhoneNumber], [EmailConfirmed], [EmailConfirmationCode],[Password], [Token], [Location], [IsInitialPassword], [PasswordConfirmationCode])
+                        INSERT INTO [{{TablePrefix}}USER] ([FullName], [UserName], [Role], [Email], [PhoneNumber], [EmailConfirmed], [EmailConfirmationCode],[Password], [Token], [Location], [IsInitialPassword], [PasswordConfirmationCode], [MainModules])
                         VALUES (ISNULL(@FullName, ''), ISNULL(@UserName, @Email), @Role, @Email, @PhoneNumber, 0, @EmailConfirmationCode, 
-                            CONVERT(VARCHAR(1500), HASHBYTES('SHA2_512', CAST(@Password AS VARCHAR(50))), 1), @Token, @Location, @IsInitialPassword, @EmailConfirmationCode)
+                            CONVERT(VARCHAR(1500), HASHBYTES('SHA2_512', CAST(@Password AS VARCHAR(50))), 1), @Token, @Location, @IsInitialPassword, @EmailConfirmationCode, @MainModules)
                         SET @Id = ISNULL(SCOPE_IDENTITY(), 0)
                     END
                     SELECT {_fields} 
@@ -117,7 +119,8 @@ namespace DNA.Persistence.Repositories {
                     userIdentity.Location,
                     Role = !string.IsNullOrWhiteSpace(userIdentity.Role) ? userIdentity.Role : (branchId > 0 ? "Writer" : "Reader"),
                     BranchId = branchId,
-                    userIdentity.IsInitialPassword
+                    userIdentity.IsInitialPassword,
+                    userIdentity.MainModules
                 });
         }
 
@@ -135,6 +138,7 @@ namespace DNA.Persistence.Repositories {
                         [EmailConfirmationCode] = ISNULL(@EmailConfirmationCode, [EmailConfirmationCode]),
                         [PasswordConfirmationCode] = ISNULL(@PasswordConfirmationCode, [PasswordConfirmationCode]),
                         [Role] = ISNULL(@Role, [Role]),
+                        [MainModules] = @MainModules,
                         [LockoutEnabled] = @LockoutEnabled,
                         [LockoutEnd] = ISNULL(@LockoutEnd, [LockoutEnd])
                     FROM [{{TablePrefix}}USER] AS u
@@ -154,6 +158,7 @@ namespace DNA.Persistence.Repositories {
                     userIdentity.EmailConfirmationCode,
                     userIdentity.PasswordConfirmationCode,
                     Role = !string.IsNullOrWhiteSpace(userIdentity.Role) ? userIdentity.Role : "Reader",
+                    userIdentity.MainModules,
                     userIdentity.LockoutEnabled,
                     userIdentity.LockoutEnd
                 });

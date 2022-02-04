@@ -55,7 +55,7 @@ namespace DNA.API {
 
             // services.AddMemoryCache();
 
-            services.AddCustomSwagger();
+            services.AddCustomSwagger(Configuration);
 
             services.AddControllers(o => {
                 o.Conventions.Add(new ControllerHidingConvention(Configuration));

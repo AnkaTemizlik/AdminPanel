@@ -75,8 +75,9 @@ const SnackMessage = React.forwardRef((props, ref) => {
 
 	useEffect(() => {
 		let d = typeof message == "object"
-			? { ...message, Variant: message.Success ? "success" : "error" }
-			: { Message: message, Variant: variant ?? "info" }
+		? { ...message, Variant: message.Success ? "success" : "error" }
+		: { Message: message, Variant: variant ?? "info" }
+		console.purple("SnackMessage", d)
 		setData(d)
 	}, [message, variant])
 
@@ -103,7 +104,7 @@ const SnackMessage = React.forwardRef((props, ref) => {
 				{/* <AlertTitle>{message}</AlertTitle> */}
 				{data.Comment
 					? <>
-						<AlertTitle>{t(data.Message)}</AlertTitle>
+						<AlertTitle>{data.Message}</AlertTitle>
 						<Typography variant="subtitle2">{data.Comment}</Typography>
 						{data.Details &&
 							<Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -113,7 +114,7 @@ const SnackMessage = React.forwardRef((props, ref) => {
 							</Collapse>
 						}
 					</>
-					: <Typography variant="subtitle2">{t(data.Message || data.Resource)}</Typography>
+					: <Typography variant="subtitle2">{data.Message}</Typography>
 				}
 			</Alert>
 		</SnackbarContent>

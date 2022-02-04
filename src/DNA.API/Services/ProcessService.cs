@@ -62,5 +62,9 @@ namespace DNA.API.Services {
             return await _processRepository.UpdateAsync<T>(row);
         }
 
+        public async Task<bool> DeleteAsync<T>(T row) where T : class {
+            return await _processRepository.DeleteAsync<T>(row);
+        }
+
     }
 }

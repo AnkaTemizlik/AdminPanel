@@ -26,6 +26,7 @@ namespace DNA.API.Services {
 
         //private readonly IWebHostEnvironment _environment;
         private readonly IConfigurationRoot _configuration;
+        private JObject _appsettingsConfig;
         private readonly IServiceProvider _serviceProvider;
         private readonly IMenuService _menuService;
         private readonly JsonMergeSettings _jsonMergeSettings = new JsonMergeSettings {
@@ -128,6 +129,7 @@ namespace DNA.API.Services {
             var AppId = jObject.SelectToken("AppId.WEB");
             var Logo = jObject.SelectToken("Worker.Logo") ?? "";
             var LicenseStatus = jObject.SelectToken("Config.Guard.LicenseStatus") ?? new JObject();
+            var Guard = jObject.SelectToken("Config.Guard") ?? new JObject();
 
             if (!isAuthenticated) {
                 return new {
@@ -144,7 +146,8 @@ namespace DNA.API.Services {
                     Plugin,
                     AppId,
                     Logo,
-                    LicenseStatus
+                    LicenseStatus,
+                    Guard
                 };
             }
 
@@ -183,7 +186,8 @@ namespace DNA.API.Services {
                 Plugin,
                 AppId,
                 Logo,
-                LicenseStatus
+                LicenseStatus,
+                Guard
             };
         }
 
@@ -222,6 +226,9 @@ namespace DNA.API.Services {
         public void GenerateConfigs() {
             try {
                 var tablePrefix = _configuration["Config:Database:TablePrefix"];
+                
+                LoadAppsettingsConfig();
+
                 var models = new ScreenModelCollection(tablePrefix);
 
                 models.TryAdd(new ScreenModel(typeof(Notification), true, true).HiddenInSidebar());
@@ -233,12 +240,13 @@ namespace DNA.API.Services {
                     );
                 models.TryAdd(new ScreenModel(typeof(LogLevelTypes), false, true));
                 models.TryAdd(new ScreenModel(typeof(OperatorTypes), false, true));
+                var roles = Roles.Values();
 
                 var moduleScreenDefaults = JObject.FromObject(new {
                     ScreenConfig = new {
                         Lists = new {
                             // Roles
-                            Roles = Roles.Values()
+                            Roles = roles
                         }
                     }
                 });
@@ -249,6 +257,7 @@ namespace DNA.API.Services {
                 var menus = LoadMenus();
                 var extraScreenLists = new Dictionary<string, IEnumerable>();
                 var pluginNotifyTypes = new NotificationTypes();
+                var mainModuleNames = new List<string>();
                 pluginNotifyTypes.AddDefaults();
 
                 extraScreenLists.Add("NotificationTypes", pluginNotifyTypes);
@@ -264,6 +273,29 @@ namespace DNA.API.Services {
                     // add notify types
                     pluginNotifyTypes.AddRange(manager.GetNotificationTypes());
 
+                    // Main Module grouping
+                    if (!string.IsNullOrWhiteSpace(manager.MainModuleName)) {
+                        
+                        if (_appsettingsConfig["Config"]["Guard"] != null)
+                        if (_appsettingsConfig["Config"]["Guard"][manager.MainModuleName] != null)
+                            _appsettingsConfig["Config"]["Guard"][manager.MainModuleName]["LicenseStatus"] = new JObject();
+
+                        mainModuleNames.Add(manager.MainModuleName);
+                        if (_menuService.Root["panel"].menus.Find(_ => _.name == manager.MainModuleName) == null) {
+                            _menuService.Root["panel"].menus.Insert(0, new Menu {
+                                name = manager.MainModuleName,
+                                areMenusVisible = true,
+                                isHeaderVisible = true,
+                                noLink = true,
+                                label = manager.MainModuleName,
+                                menus = new MenuCollection(),
+                                to = null,
+                                visible = true,
+                                mainModule = true
+                            });
+                        }
+                    }
+
                     // add extra list to screen config
                     var pluginExtraLists = manager.GenerateScreenLists();
                     if (pluginExtraLists != null) {
@@ -273,12 +305,20 @@ namespace DNA.API.Services {
                             }
                         }
                     }
+
                     // change menus
                     manager.ApplyPluginMenus();
                 }
 
+                // add Main Module Names
+                if (mainModuleNames.Count > 0) {
+                    if (!extraScreenLists.ContainsKey("MainModules")) {
+                        extraScreenLists.Add("MainModules", mainModuleNames.OrderBy(_ => _).Select((_, i) => new IdValue(i+1, _)));
+                    }
+                }
+
+
                 // önce modül olmayanlar çalışsın
-                
                 foreach (var manager in provider.GetServices<IPluginStartupManager>().OrderBy(_ => _.IsModule)) {
                     // config
                     if (manager.IsModule) {
@@ -337,6 +377,18 @@ namespace DNA.API.Services {
             string result = json.ToString();
             _menuService.Load(json);
             return json;
+        }
+
+        void LoadAppsettingsConfig() {
+            _appsettingsConfig = null;
+            var fileName = "appsettings.config.json";
+            var fileFullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+            if (!File.Exists(fileFullName))
+                return;
+            var jsonText = File.ReadAllText(fileFullName);
+            jsonText = jsonText.Replace("DiyalogoService", "ELogoService");
+            jsonText = jsonText.Replace("GIBService", "TNBService");
+            _appsettingsConfig = JObject.Parse(jsonText);
         }
 
         //void WriteMenus(JObject json) {
@@ -621,6 +673,11 @@ namespace DNA.API.Services {
                                     jsonWriter.WriteValue(getVal("viewType", t.ViewType));
                                 }
 
+                                if (!string.IsNullOrWhiteSpace(t.Parent)) {
+                                    jsonWriter.WritePropertyName("parent");
+                                    jsonWriter.WriteValue(getVal("parent", t.Parent));
+                                }
+
                                 if ((bool)visible.Value) {
 
                                     jsonWriter.WritePropertyName("route");
@@ -890,16 +947,11 @@ namespace DNA.API.Services {
         void ConfigMigration(string pluginSourcePath, JObject pluginTemplate, params Type[] autoCompleteListTypes) {
             var template = GetConfigTemplate();
             var fileName = "appsettings.config.json";
-            var fileFullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
-            if (!File.Exists(fileFullName))
+            if (_appsettingsConfig == null)
                 return;
-            var jsonText = File.ReadAllText(fileFullName);
-            jsonText = jsonText.Replace("DiyalogoService", "ELogoService");
-            jsonText = jsonText.Replace("GIBService", "TNBService");
-            var json = JObject.Parse(jsonText);
 
-            if (json["Config"]["Guard"] != null)
-                json["Config"]["Guard"]["LicenseStatus"] = new JObject();
+            if (_appsettingsConfig["Config"]["Guard"] != null)
+                _appsettingsConfig["Config"]["Guard"]["LicenseStatus"] = new JObject();
 
             var Config = template.GetConfig();
 
@@ -933,7 +985,7 @@ namespace DNA.API.Services {
             );
 
             templateObj.Merge(pluginTemplate, _jsonMergeSettings);
-            templateObj.Merge(json, _jsonMergeSettings);
+            templateObj.Merge(_appsettingsConfig, _jsonMergeSettings);
 
             string result = templateObj.ToString();
             var fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);

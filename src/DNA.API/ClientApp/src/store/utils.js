@@ -26,6 +26,8 @@ export const supplant = (text, data, alternate) => {
 		return text
 	if (!data)
 		return text
+	if (typeof text != "string")
+		return text
 	var result = text.replace(/{([^{}]*)}/g,
 		function (a, b) {
 			let val = data[b] || (alternate && alternate[b])

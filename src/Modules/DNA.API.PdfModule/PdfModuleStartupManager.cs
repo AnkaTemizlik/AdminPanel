@@ -18,6 +18,7 @@ namespace DNA.API.PdfModule {
         public string Name => nameof(PdfModuleStartupManager).ToTitleCase();
         public string SourcePath { get; set; } = @"D:\Develop\DNA\Source\DNA.API\Modules\DNA.API.PdfModule";
         public bool IsModule => true;
+        public string MainModuleName => null;
 
         private readonly ILogger<PdfModuleStartupManager> _logger;
 

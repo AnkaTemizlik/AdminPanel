@@ -5,6 +5,7 @@ import { useTranslation } from "../../store/i18next";
 import { CssBaseline, Box, Toolbar, Hidden, IconButton, Divider, Typography, Tooltip, Avatar } from "@material-ui/core";
 import DashboardIcon from "@material-ui/icons/DashboardTwoTone";
 import HomeIcon from "@material-ui/icons/HomeTwoTone";
+import MenuIcon from "@material-ui/icons/Menu";
 import * as Treasury from "@mui-treasury/layout";
 import Footer from "../../components/Navigation/Footer";
 import Layout from "../../components/Layout";
@@ -29,6 +30,7 @@ const treasuryConfig = {
 		sidebar: {
 			variant: "temporary", // ["permanent","persistent","temporary"]
 			width: 300,
+			collapsible: false,
 		},
 		secondarySidebar: {
 			variant: "temporary",
@@ -49,7 +51,7 @@ const treasuryConfig = {
 			position: "absolute", // ["absolute","fixed","relative","static","sticky"]
 			clipped: true,
 		},
-	}),
+	})
 };
 
 const Panel = (props) => {
@@ -60,8 +62,9 @@ const Panel = (props) => {
 	const { menus, screenConfig, settings } = useSelector((state) => state)
 	const isAuthenticated = useSelector((state) => state.auth.token !== null)
 	const { loading } = useSelector(selectScreen)
-	const { names } = useSelector((state) => state.screenConfig)
 	let panelMenu = menus ? menus.panel || {} : {};
+
+	console.info("treasuryConfig", treasuryConfig)
 
 	useEffect(() => {
 		if (isAuthenticated)
@@ -71,8 +74,8 @@ const Panel = (props) => {
 	return (
 		<Layout config={treasuryConfig}>
 			{(args) => {
-				const { footerStyles, setOpened, setSecondaryOpened } = args;
-
+				console.info("treasuryConfig", args)
+				const { footerStyles, setOpened, setSecondaryOpened, opened } = args;
 				return (
 					<>
 						<CssBaseline />
@@ -142,7 +145,7 @@ const Panel = (props) => {
 							<Container loading={loading}>
 								<Switch>
 
-									{names && names.map((n, i) => {
+									{screenConfig && screenConfig.names && screenConfig.names.map((n, i) => {
 										var s = screenConfig.screens[n];
 										if (s.type == "customPage") {
 											// Plugin.Pages

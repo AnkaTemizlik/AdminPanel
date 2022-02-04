@@ -187,6 +187,10 @@ namespace DNA.Domain.Services.Communication {
         public QueryResultResponse(Response response)
             : base(response) {
         }
+
+        public QueryResultResponse(Response<T> response)
+            : base(response) {
+        }
     }
 
     /// <summary>
@@ -209,8 +213,19 @@ namespace DNA.Domain.Services.Communication {
             Message = error;
             Resource = default;
         }
-
         public Response(Response response) {
+            if (response != null) {
+                Success = response.Success;
+                Message = response.Message;
+                Comment = response.Comment;
+                Details = response.Details;
+                Code = response.Code;
+                Resource = response.Resource == null
+                    ? default
+                    : (T)Convert.ChangeType(response.Resource, typeof(T));
+            }
+        }
+        public Response(Response<T> response) {
             if (response != null) {
                 Success = response.Success;
                 Message = response.Message;

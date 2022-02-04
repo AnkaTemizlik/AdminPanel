@@ -10,6 +10,7 @@ namespace DNA.API.Models {
 
     [Table("{TablePrefix}USER")]
     public class User : Model {
+
         [Column] public bool IsDeleted { get; set; }
         [Column(DisplayExpr = true)] [Required] [StringLength(150)] public string FullName { get; set; }
         [Column] [Required] [StringLength(50)] public string Role { get; set; }
@@ -20,7 +21,7 @@ namespace DNA.API.Models {
         [Column] [JsonIgnore] public string EmailConfirmationCode { get; set; }
         [Column] [JsonIgnore] public string PasswordConfirmationCode { get; set; }
         [Column(Image = true)] [StringLength(int.MaxValue)] public string PictureUrl { get; set; }
-
+        [Column] [StringLength(500)] public string MainModules { get; set; }
     }
 
     public class ApplicationUser : User {
@@ -33,8 +34,7 @@ namespace DNA.API.Models {
         public int ExpiresIn { get; set; } = 1 * 60 * 60 * 12;
 
         List<string> _Roles;
-        public List<string> Roles
-        {
+        public List<string> Roles {
             get {
                 if (_Roles == null)
                     _Roles = string.IsNullOrWhiteSpace(Role)
@@ -46,8 +46,6 @@ namespace DNA.API.Models {
 
         [JsonIgnore]
         public string Location { get; set; }
-
-
 
         public bool LockoutEnabled { get; set; }
 

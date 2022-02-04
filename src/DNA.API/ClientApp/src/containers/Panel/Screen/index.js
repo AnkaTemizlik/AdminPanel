@@ -16,6 +16,7 @@ import View from "./View";
 import Calendar from "./Calendar";
 import { Button } from "devextreme-react";
 import Iconify from "../../../components/UI/Icons/Iconify";
+import { Alert, AlertTitle } from "@material-ui/lab";
 
 function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -30,11 +31,13 @@ const Screen = React.memo((props) => {
 	let { path, url } = useRouteMatch();
 	const dispatch = useDispatch();
 	const { currentScreen, row, loading } = useSelector(selectScreen)
+	const { settings, screenConfig } = useSelector(s => s)
 	const [error, setError] = useState(null);
 	const [grid, setGrid] = useState(null);
 	const [filter, setFilter] = useState(null);
+	const licenseStatus = (currentScreen&&currentScreen.parent && settings.Guard && settings.Guard[currentScreen.parent]) ? settings.Guard[currentScreen.parent].LicenseStatus : { Success: true }
 
-	//console.info("filter", path, url, query.get("title"), params)
+	// console.info("filter", path, url, query.get("title"), params)
 
 	const subMenu = currentScreen && currentScreen.subMenus && currentScreen.subMenus.find(f => f.name == params.subMenuName);
 
@@ -113,6 +116,15 @@ const Screen = React.memo((props) => {
 
 						</Toolbar>
 					</Grid>
+
+					{licenseStatus.Success == false &&
+						<Grid item xs={12}>
+							<Alert variant="filled" severity="error">
+								<AlertTitle>Error</AlertTitle>
+								{settings.Guard[currentScreen.parent].LicenseStatus.Message}
+							</Alert>
+						</Grid>
+					}
 
 					<Grid item xs={12}>
 

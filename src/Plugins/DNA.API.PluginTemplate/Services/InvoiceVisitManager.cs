@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace DNA.API.PluginTemplate.Services {
     [Service(typeof(IScopedVisitManager), Lifetime.Scoped)]
     public class InvoiceVisitManager : VisitManager<IInvoiceService, InvoiceState>, IScopedVisitManager {
-        public string VisitorName { get; set; } = "InvoiceVisitManager";
+        public string VisitorName { get; set; } = nameof(InvoiceVisitManager);
 
         //public INoXService NoX { get; }
 

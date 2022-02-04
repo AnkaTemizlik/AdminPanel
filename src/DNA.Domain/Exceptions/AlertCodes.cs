@@ -52,6 +52,7 @@ namespace DNA.Domain.Exceptions {
         public static KeyValue DeleteError = new KeyValue(13, nameof(DeleteError));
         public static KeyValue GetInfo = new KeyValue(nameof(GetInfo));
         public static KeyValue GetError = new KeyValue(14, nameof(GetError));
+        public static KeyValue ObjectAlreadyExists = new KeyValue(15, nameof(ObjectAlreadyExists));
 
         public static KeyValue UndefinedError = new KeyValue(100, nameof(UndefinedError));
         public static KeyValue ControllerIncomingData = new KeyValue(nameof(ControllerIncomingData));

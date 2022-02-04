@@ -55,7 +55,7 @@ namespace DNA.API.Extensions {
         public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration) {
 
             services.AddSingleton<IJwtFactory, JwtFactory>();
-
+            
             // api user claim policy
             services.AddAuthorization(options => {
                 options.AddPolicy(Policies.ReadOnly, builder => builder.RequireRole(Roles.Admin, Roles.Writer, Roles.Reader));
@@ -143,11 +143,11 @@ namespace DNA.API.Extensions {
             return services;
         }
 
-        public static IServiceCollection AddCustomSwagger(this IServiceCollection services) {
+        public static IServiceCollection AddCustomSwagger(this IServiceCollection services, IConfiguration configuration) {
 
             services.AddOpenApiDocument(document => {
 
-                document.Title = "Open API Documentation";
+                document.Title = $"{configuration["Config:Company:CompanyName"]} - {configuration["Config:Company:ProgramName"]} - Open API Documentation";
 
                 document.AddSecurity("JWT", Enumerable.Empty<string>(), new NSwag.OpenApiSecurityScheme {
                     Type = NSwag.OpenApiSecuritySchemeType.ApiKey,

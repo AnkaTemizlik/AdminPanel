@@ -76,6 +76,7 @@ namespace DNA.Persistence.Contexts {
                 connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_UpdateTime));
                 connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_PictureUrl));
                 connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_IsDeleted));
+                connection.Execute(SetTablePrefix(TableScripts.User_AddColumn_MainModules));
                 connection.Execute(SetTablePrefix(TableScripts.User_Insert_Admin));
                 connection.Execute(SetTablePrefix(TableScripts.User_Update_Admin));
 
